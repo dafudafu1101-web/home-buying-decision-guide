@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<!-- v13 polished customer UI -->
+<!-- v15 integrated decision UX -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
 <title>3分でできる 購入合格ラインチェック</title>
-<h3>WAITを選ぶなら、待ち方を決める</h3><style>
+<style>
 :root{
   --bg:#f4f2ee; --paper:#fff; --ink:#111; --muted:#6b6862;
   --gold:#b88a2e; --gold-soft:#f4ead4; --line:#ddd9d1;
@@ -138,6 +138,66 @@ textarea{min-height:76px;resize:vertical}
 .rating button{min-height:46px;padding:6px 3px}.rating button.on{transform:translateY(-1px)}
 .resultLead{font-size:14px;line-height:1.7;margin:10px 0 2px}.quickHint{font-size:11px;line-height:1.55;opacity:.72;margin-top:6px}
 @media(max-width:380px){.rateWord{font-size:9px}.rating button{padding:5px 1px}}
+
+/* v14 mobile polish */
+body{overflow-x:hidden}
+.app{box-shadow:0 0 0 1px rgba(0,0,0,.02)}
+.hero{padding-top:18px}
+.hero .card{padding:22px 18px 20px}
+.hero .num{font-size:82px;margin-top:2px}
+.hero h1{font-size:39px;line-height:1.18;margin-top:0}
+.hero .lead{font-size:13px;line-height:1.75}
+.heroPoints{margin-top:12px}
+.heroPoint{min-height:64px;display:flex;flex-direction:column;justify-content:center}
+.mustHint{margin:0 0 10px;color:#6b6862}
+.rating button{min-height:50px}
+.rateWord{font-size:11px}
+.nav{box-shadow:0 -8px 24px rgba(0,0,0,.04)}
+@media(max-width:430px){
+  .top{padding-left:12px;padding-right:12px}
+  .brand b{font-size:15px}
+  .hero{min-height:calc(100svh - 52px);padding:16px 12px 24px}
+  .hero .card{border-radius:18px;padding:20px 16px}
+  .hero .num{font-size:76px}
+  .hero h1{font-size:35px}
+  .hero .resultLead{font-size:13px;line-height:1.65}
+  .hero .lead{font-size:12px}
+  .heroPoint{font-size:11px;padding:10px 4px}
+  .heroPoint b{font-size:18px}
+  .primary,.secondary,.ghost{min-height:48px}
+  .screen{padding-top:17px;padding-bottom:96px}
+  h2{font-size:27px}
+  .lead{font-size:14px}
+  .choice{padding:13px 11px}
+  .scoreHead,.scoreRow{grid-template-columns:1.15fr .42fr 1.95fr}
+  .scoreHead>div,.scoreRow>div{padding:8px 5px}
+  .rating{gap:3px}
+  .rating button{min-height:48px;padding:5px 2px}
+  .rateWord{font-size:10px;line-height:1.2}
+  .gw{grid-template-columns:1fr}
+  .resultWrap{grid-template-columns:1fr}
+  .two.stackMobile{grid-template-columns:1fr}
+}
+
+/* v15 integrated UX */
+.scoreTable{display:grid;gap:10px}
+.scoreHead{display:none}
+.scoreRow{display:block!important;border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+.scoreRow>div{border:0!important;padding:0!important}
+.scoreMeta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+.scoreLabel{font-weight:800;font-size:13px;line-height:1.4}
+.scorePts{font-weight:900;font-size:12px;white-space:nowrap}
+.rating{display:grid!important;grid-template-columns:repeat(5,1fr);gap:5px}
+.rating button{min-height:50px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:5px 3px}
+.rating button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.resultBig{font-size:28px;font-weight:900;line-height:1.15}
+.band.currentBand{outline:2px solid var(--gold);background:#fff8e8}
+@media(max-width:430px){
+ .scoreRow{padding:11px}
+ .scoreLabel{font-size:12px}
+ .rating button{min-height:52px}
+ .rateWord{font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -153,7 +213,7 @@ textarea{min-height:76px;resize:vertical}
         <div class="kicker">HOME BUYING DECISION CHECK</div>
         <div class="num">3</div>
         <h1>分でできる<br>購入合格ライン<br>チェック</h1><p class="resultLead"><b>「買う・待つ」を決める前に、まず自分の合格ラインを見える化。</b><br>正解を出す診断ではなく、迷いを整理するためのチェックシートです。</p>
-        <p class="lead">気になる物件、本当に買っていい？<br>予算・条件・暮らしやすさをチェックして、自分の基準でGO / WAITを整理します。</p>
+        <p class="lead">気になる物件を、自分の基準でチェック。<br>「買う・待つ」を感覚ではなく整理して考えられます。</p>
       </div>
       <div class="heroBottom">
         <div class="heroPoints">
@@ -169,11 +229,12 @@ textarea{min-height:76px;resize:vertical}
 
   <section class="screen" data-step="2">
     <div class="stepLabel">STEP 1</div>
-    <h2>絶対条件を3つ決める</h2>
-    <p class="lead">この条件を1つでも満たさない物件は、点数にかかわらず原則NGです。</p>
+    <h2>絶対条件を3つまで決める</h2>
+    <p class="lead">「これを満たさないなら買わない」という条件だけ、3つまで選びます。</p>
     <div class="tip"><b>絶対条件は3つまで。</b><br>それ以外は「希望条件」として点数で比較します。</div>
     <div class="grid" id="mustChoices">
-      <label class="choice"><p class="quickHint">ここを満たさない物件は、点数にかかわらず原則NG。希望条件ではなく「本当に譲れない条件」だけ選びます。</p><input type="checkbox" value="予算（総額）">予算（総額）</label>
+      <p class="quickHint mustHint">希望条件ではなく、<b>「これを満たさないなら買わない」条件だけ</b>選びます。</p>
+      <label class="choice"><input type="checkbox" value="予算（総額）">予算（総額）</label>
       <label class="choice"><input type="checkbox" value="エリア・駅距離">エリア・駅距離</label>
       <label class="choice"><input type="checkbox" value="広さ・間取り">広さ・間取り</label>
       <label class="choice"><input type="checkbox" value="学区">学区</label>
@@ -181,19 +242,24 @@ textarea{min-height:76px;resize:vertical}
       <label class="choice"><input type="checkbox" value="2階建">2階建</label>
       <label class="choice"><input type="checkbox" value="日当たり・開放感">日当たり・開放感</label>
     </div>
+    <div class="field" id="mustBudgetWrap" style="display:none">
+      <label>予算上限（万円）</label>
+      <input id="mustBudgetCap" type="number" inputmode="numeric" placeholder="例）10000">
+      <p class="quickHint">「予算」を絶対条件にした場合だけ設定。STEP2で物件価格と自動判定します。</p>
+    </div>
     <div class="field"><label>その他の絶対条件</label><input id="customMust" type="text" placeholder="例）○○小学校区"></div>
   </section>
 
   <section class="screen" data-step="3">
     <div class="stepLabel">STEP 2</div>
-    <h2>物件情報と絶対条件を確認</h2>
-    <p class="lead">分かる範囲だけでOKです。</p>
+    <h2>物件情報を入力</h2>
+    <p class="lead">分かる範囲だけでOK。絶対条件はこのあと自動・手動で確認します。</p>
     <div class="field"><label>物件名</label><input id="propName" type="text" placeholder="例）世田谷区○○ 新築戸建"></div>
     <div class="two">
       <div class="field"><label>物件価格（万円）</label><input id="price" type="number" inputmode="numeric"></div>
       <div class="field"><label>駅徒歩（分）</label><input id="walk" type="number" inputmode="numeric"></div>
     </div>
-    <div class="field"><label>物件価格の上限（万円）</label><input id="budgetCap" type="number" inputmode="numeric" placeholder="例）10000"></div>
+    <div class="field" style="display:none"><label>物件価格の上限（万円）</label><input id="budgetCap" type="number" inputmode="numeric"></div>
     <details class="noteBox">
       <summary>詳細な総予算も設定する</summary>
       <div class="two">
@@ -211,11 +277,11 @@ textarea{min-height:76px;resize:vertical}
       <div class="field"><label>間取り</label><input id="layout" type="text" placeholder="4LDK"></div>
       <div class="field"><label>築年数</label><input id="age" type="number" inputmode="numeric"></div>
     </div>
-    <h3>資金余力の簡単チェック</h3>
+    <h3>資金計画について</h3>
     <div class="grid">
       <label class="choice"><input type="checkbox" id="monthlyOk">月々の支払いに無理がない</label>
-      <label class="choice"><input type="checkbox" id="reserveOk">購入後も生活防衛資金を残せる</label>
-      <label class="choice"><input type="checkbox" id="futureCostOk">教育費・車・将来支出を考えても無理がない</label>
+      <label class="choice"><input type="checkbox" id="reserveOk">手元資金を残して購入できる</label>
+      <label class="choice"><input type="checkbox" id="futureCostOk">諸費用・リフォーム等を含めても無理がない</label>
     </div>
     <div id="budgetGuide" class="tip">上限内かどうかは絶対条件、上限までの余裕は採点。物件価格の上限を入れると参考評価を表示します。</div>
     <div id="budgetApply" class="autoSuggest" style="display:none"></div>
@@ -225,10 +291,10 @@ textarea{min-height:76px;resize:vertical}
 
   <section class="screen" data-step="4">
     <div class="stepLabel">STEP 3</div>
-    <h2>直感で選ぶだけ。あなたの基準と物件の相性を整理します</h2>
+    <h2>直感でOK。7項目を5段階で選ぶだけです。</h2>
     <p class="lead">迷ったら「基準通り」でOK。あとから変更できます。</p>
     <div class="tip"><b>厳しい / 気になる / 基準通り / 良い / かなり良い</b></div>
-    <div class="quickHint">各項目を5段階でタップ。<b>「基準通り」＝あなたの合格ライン</b>です。迷ったらここから考えてOKです。</div>
+    <div class="quickHint">各項目を5段階でタップ。<b>「基準通り」＝最低限これならOKという合格ライン</b>です。迷ったらここから考えてOKです。</div>
 <div class="tip"><b>資産性は担当者と一緒に確認できます。</b><br>駅距離だけでなく、道路・間口・土地形状・建物の入り方・2階建/3階建・周辺需要などを見ます。分からない場合は無理に判断せず、担当者と確認できます。</div>
     <div class="scoreTable" id="scoreTable">
       <div class="scoreHead"><div>項目</div><div>配点</div><div>評価</div></div>
@@ -265,18 +331,24 @@ textarea{min-height:76px;resize:vertical}
       <ul id="reasonList"></ul>
     </div>
     <p class="small">※この結果は購入を推奨・決定するものではありません。物件比較と意思決定を整理するための目安です。契約前には資金計画・権利関係・建物状態などを個別に確認してください。</p>
-    <div class="bandGrid">
+    <div class="bandGrid" id="bandGrid">
       <div class="band"><b>85〜100</b>非常に良い</div>
       <div class="band"><b>75〜84</b>合格ライン</div>
       <div class="band"><b>50〜74</b>慎重に比較</div>
       <div class="band"><b>0〜49</b>見送り候補</div>
     </div>
+    <div id="bandPointer" class="tip"></div>
   </section>
 
   <section class="screen" data-step="6">
     <div class="stepLabel">STEP 5</div>
-    <h2>最後に、今どうするか整理</h2>
+    <h2>最後に、今どうするか確認</h2>
     <p class="lead">物件の点数と「今買うか」は別です。購入条件が整っているかを確認します。</p>
+    <div class="resultCard" id="autoDecision" style="margin-bottom:12px">
+      <span class="small">現在の判定</span>
+      <div class="resultBig" id="autoDecisionTitle">要確認</div>
+      <p class="resultLead" id="autoDecisionText">チェック内容から現在の状態を整理します。</p>
+    </div>
     <div class="gw">
       <div class="gwCard go">
         <div class="gwTitle">✓ GO候補</div>
@@ -306,13 +378,14 @@ textarea{min-height:76px;resize:vertical}
       <label class="choice"><input type="checkbox" id="lifeOk">家族のライフプランに合っている</label>
     </div>
 
-    <div class="two" style="margin-top:12px">
-      <button class="primary" id="chooseGo">GO候補として考える</button>
-      <button class="ghost" id="chooseWait">WAITとして考える</button>
+    <div class="two stackMobile" style="margin-top:12px">
+      <button class="primary" id="chooseGo">GO候補として進める</button>
+      <button class="ghost" id="chooseWait">それでも今回は待ちたい</button>
     </div>
 
     <div class="waitStrategy" id="waitStrategy">
-      <div class="tip"><b>WAITするなら「何となく待つ」はやめる。</b><br>次の4つを決めます。</div>
+      <h3>WAITを選ぶなら、4つだけ決めておきましょう</h3>
+      <div class="tip"><b>待つこと自体は間違いではありません。</b><br>「何となく待つ」のではなく、理由と期限を決めて待つことが大切です。</div>
       <div class="field"><label>① 守る条件</label><input id="waitKeep" type="text" placeholder="例）学区・2階建"></div>
       <div class="field"><label>② 待つ期限・再判断タイミング</label><input id="waitUntil" type="date"></div>
       <div class="field"><label>③ 改善が期待できる項目と根拠</label><textarea id="waitImprove"></textarea></div>
@@ -333,7 +406,8 @@ textarea{min-height:76px;resize:vertical}
   <section class="screen" data-step="7">
     <div class="stepLabel">RESULT</div>
     <h2>複数物件を同じ基準で比較</h2>
-    <p class="lead">最大5件まで保存できます。</p>
+    <p class="lead">今回の結果を残して、同じ基準で最大5件まで比較できます。</p>
+    <div class="resultCard" id="finalCurrentSummary" style="margin-bottom:12px"></div>
     <div style="overflow:auto">
       <table class="compare">
         <thead><tr><th>No.</th><th>物件名</th><th>点数</th><th>絶対条件</th><th>最終</th></tr></thead>
@@ -343,7 +417,7 @@ textarea{min-height:76px;resize:vertical}
     <div class="finalMessage">
       <b>100点の物件ではなく、自分にとって十分に良い物件を納得して選ぶ。</b>
     </div>
-    <button class="primary" id="another">＋ もう1件チェックする</button>
+    <button class="primary" id="another">＋ 同じ条件で、もう1件チェックする</button>
     <div style="height:8px"></div>
     <button class="secondary" id="copy">診断結果をコピー</button>
     <div style="height:8px"></div>
@@ -386,10 +460,23 @@ function show(n){
  $("#nav").style.display=step===1?"none":"flex";
  $("#back").style.visibility=step===1?"hidden":"visible";
  $("#next").textContent=step===7?"完了":"次へ進む →";
- if(step===3) renderMustStatus();
+ if(step===3){syncMustBudget();renderMustStatus();}
  if(step===5) renderResult();
- if(step===7) renderCompare();
+ if(step===6) renderAutoDecision();
+ if(step===7){
+   const p=current();
+   $("#finalCurrentSummary").innerHTML=`<span class="small">今回の結果</span><div class="resultBig">${p.score}点 / 100点</div><p class="resultLead">絶対条件：${p.must==="ok"?"○ クリア":p.must==="ng"?"× 未達":"△ 要確認"} ／ 最終：${finalVerdict(p)}</p>`;
+   renderCompare();
+ }
  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function syncMustBudget(){
+ const on=selectedMusts().includes("予算（総額）");
+ $("#mustBudgetWrap").style.display=on?"block":"none";
+ const cap=$("#mustBudgetCap").value;
+ $("#budgetCap").value=cap;
+ budgetGuide();
 }
 
 function selectedMusts(){
@@ -398,7 +485,7 @@ function selectedMusts(){
  if(c && arr.length<3)arr.push(c);
  return arr.slice(0,3);
 }
-$$("#mustChoices input").forEach(cb=>cb.onchange=()=>{
+$$("#mustChoices input").forEach(cb=>cb.onchange=()=>{syncMustBudget();
  const all=$$("#mustChoices input:checked");
  if(all.length>3){cb.checked=false;alert("絶対条件は3つまでです。");}
  $$("#mustChoices .choice").forEach(l=>l.classList.toggle("selected",$("input",l).checked));
@@ -406,35 +493,34 @@ $$("#mustChoices input").forEach(cb=>cb.onchange=()=>{
 
 function renderMustStatus(){
  const arr=selectedMusts();
- mustState={};
- $("#mustStatus").innerHTML=arr.length?arr.map((m,i)=>`
-  <div class="mustItem">
-    <b>${m}</b>
-    <div class="tri">
-      <button type="button" data-k="${i}" data-v="ok">○ 満たす</button>
-      <button type="button" data-k="${i}" data-v="warn">△ 要確認</button>
-      <button type="button" data-k="${i}" data-v="ng">× 満たさない</button>
-    </div>
-  </div>`).join(""):'<div class="tip">前の画面で絶対条件を選んでください。</div>';
+ $("#mustStatus").innerHTML=arr.length?arr.map((m,i)=>{
+   if(m==="予算（総額）"){
+     const cap=+($("#mustBudgetCap").value||0), price=+($("#price").value||0);
+     let state="warn", text="上限と物件価格を入力すると自動判定します。";
+     if(cap&&price){state=price<=cap?"ok":"ng";text=price<=cap?`○ ${cap.toLocaleString()}万円以内 → ${price.toLocaleString()}万円`:`× 上限 ${cap.toLocaleString()}万円 → ${price.toLocaleString()}万円`;}
+     mustState[i]=state;
+     return `<div class="mustItem"><b>${m}</b><div class="small">${text}</div></div>`;
+   }
+   return `<div class="mustItem"><b>${m}</b><div class="tri">
+      <button type="button" data-k="${i}" data-v="ok" class="${mustState[i]==="ok"?"on ok":""}">○ 満たす</button>
+      <button type="button" data-k="${i}" data-v="warn" class="${mustState[i]==="warn"?"on warn":""}">△ 要確認</button>
+      <button type="button" data-k="${i}" data-v="ng" class="${mustState[i]==="ng"?"on ng":""}">× 満たさない</button>
+    </div></div>`;
+ }).join(""):'<div class="tip">前の画面で絶対条件を選んでください。</div>';
  $$("#mustStatus .tri button").forEach(b=>b.onclick=()=>{
-   const k=b.dataset.k,v=b.dataset.v;
-   mustState[k]=v;
-   $$('.tri button[data-k="'+k+'"]').forEach(x=>x.classList.remove("on","ok","warn","ng"));
-   b.classList.add("on",v);
+   const k=b.dataset.k,v=b.dataset.v;mustState[k]=v;renderMustStatus();
  });
 }
 
 function buildScores(){
+ $("#scoreTable").innerHTML="";
  scoreItems.forEach(item=>{
-  const row=document.createElement("div"); row.className="scoreRow";
-  row.innerHTML=`<div><b>${item.label}</b></div><div style="text-align:center;font-weight:800">${item.weight}点</div><div class="rating" data-key="${item.key}"></div>`;
+  const row=document.createElement("div");row.className="scoreRow";
+  row.innerHTML=`<div class="scoreMeta"><div class="scoreLabel">${item.label}</div><div class="scorePts" id="pts_${item.key}">0 / ${item.weight}点</div></div><div class="rating" data-key="${item.key}"></div>`;
   const r=$(".rating",row);
   ["厳しい","気になる","基準通り","良い","かなり良い"].forEach((lab,idx)=>{
-    const b=document.createElement("button");b.type="button";b.innerHTML=`<span class="rateNum">${idx+1}</span><span class="rateWord">${lab}</span>`;b.title=lab;b.setAttribute("aria-label",lab);
-    b.onclick=()=>{
-      ratings[item.key]=idx;
-      $$("button",r).forEach(x=>x.classList.remove("on"));b.classList.add("on");updateScore();
-    };
+    const b=document.createElement("button");b.type="button";b.innerHTML=`<span class="rateWord">${lab}</span>`;
+    b.onclick=()=>{ratings[item.key]=idx;$$("button",r).forEach((x,i)=>x.classList.toggle("on",i===idx));updateScore();};
     r.appendChild(b);
   });
   $("#scoreTable").appendChild(row);
@@ -445,7 +531,10 @@ buildScores();
 function calcScore(){
  return Math.round(scoreItems.reduce((sum,i)=>sum+(ratings[i.key]===undefined?0:i.weight*factors[ratings[i.key]]),0));
 }
-function updateScore(){$("#scoreNow").textContent=calcScore()}
+function updateScore(){
+ $("#scoreNow").textContent=calcScore();
+ scoreItems.forEach(i=>{const idx=ratings[i.key];const pts=idx===undefined?0:Math.round(i.weight*factors[idx]);const el=$("#pts_"+i.key);if(el)el.textContent=`${pts} / ${i.weight}点`;});
+}
 
 function chipGroup(id,items,type){
  const box=$(id);
@@ -489,6 +578,10 @@ function renderResult(){
  else if(s>=50) human="良い点はありますが、気になる項目も残っています。WAITや他物件との比較が向いています。";
  else human="現時点では希望との差が大きめです。条件を変えてまで選ぶ理由があるか確認しましょう。";
  $("#humanResult").textContent=human;
+ const bands=$$("#bandGrid .band");bands.forEach(x=>x.classList.remove("currentBand"));
+ const bi=s>=85?0:s>=75?1:s>=50?2:3;if(bands[bi])bands[bi].classList.add("currentBand");
+ const bandText=s>=85?"85〜100｜非常に良い":s>=75?"75〜84｜合格ライン":s>=50?"50〜74｜慎重に比較":"0〜49｜見送り候補";
+ $("#bandPointer").innerHTML=`<b>今ここ：${bandText}</b><br>点数は結論ではありません。次に資金・致命的懸念・生活設計を確認します。`;
 
  const ranked=scoreItems.map(i=>{
    const idx=ratings[i.key];
@@ -556,7 +649,22 @@ function budgetGuide(){
    alert("参考評価を反映しました。資金余力や価格への納得感に合わせて変更できます。");
  };
 }
-["price","budgetCap","costs","reform","totalBudget"].forEach(id=>$("#"+id).addEventListener("input",budgetGuide));
+["price","budgetCap","costs","reform","totalBudget"].forEach(id=>$("#"+id).addEventListener("input",()=>{budgetGuide();renderMustStatus();}));
+$("#mustBudgetCap").addEventListener("input",()=>{syncMustBudget();renderMustStatus();});
+
+
+function renderAutoDecision(){
+ const sc=calcScore(), mv=mustVerdict();
+ const checks=$("#financeOk").checked&&$("#fatalOk").checked&&$("#lifeOk").checked;
+ let title="要確認",text="絶対条件と3つの最終確認を見ながら、現在の判断を整理します。";
+ if(mv==="ng"){title="NG";text="絶対条件に未達があります。点数にかかわらず原則見送りです。";}
+ else if(mv==="warn"){title="要確認";text="絶対条件に未確認があります。確認できるまでは結論を急がなくて大丈夫です。";}
+ else if(sc>=75&&checks){title="GO候補";text="購入を具体的に検討してよい条件が揃っています。『買うべき』という意味ではありません。";}
+ else if(sc>=50){title="WAIT / 慎重に比較";text="見送ると決める前に、何が足りないのかを整理しましょう。";}
+ else {title="見送り候補";text="希望との差が大きめです。条件を変えてまで選ぶ理由があるか確認しましょう。";}
+ $("#autoDecisionTitle").textContent=title;$("#autoDecisionText").textContent=text;
+}
+["financeOk","fatalOk","lifeOk"].forEach(id=>$("#"+id).addEventListener("change",renderAutoDecision));
 
 function current(){
  return {
@@ -564,7 +672,7 @@ function current(){
   budget:{price:$("#price").value,cap:$("#budgetCap").value,costs:$("#costs").value,reform:$("#reform").value,total:$("#totalBudget").value},
   funding:{monthly:$("#monthlyOk").checked,reserve:$("#reserveOk").checked,future:$("#futureCostOk").checked},
   finalChecks:{finance:$("#financeOk").checked,fatal:$("#fatalOk").checked,life:$("#lifeOk").checked},
-  choice:choiceFinal||"WAIT",
+  choice:choiceFinal,
   plus:$$("#plusChips .chip.on").map(x=>x.textContent),
   warn:$$("#warnChips .chip.on").map(x=>x.textContent),
   wait:{keep:$("#waitKeep").value,until:$("#waitUntil").value,improve:$("#waitImprove").value,change:$("#waitChange").value,risks:$$(".risk:checked").map(x=>x.value)}
@@ -600,9 +708,9 @@ function renderCompare(){
 $("#another").onclick=()=>{
  ratings={};mustState={};choiceFinal="";
  $$(".rating button,.chip").forEach(x=>x.classList.remove("on","plus","warn"));
- ["propName","price","walk","land","building","layout","age","budgetCap","costs","reform","totalBudget"].forEach(id=>$("#"+id).value="");
+ ["propName","price","walk","land","building","layout","age","costs","reform","totalBudget"].forEach(id=>$("#"+id).value="");
  $("#financeOk").checked=$("#fatalOk").checked=$("#lifeOk").checked=$("#monthlyOk").checked=$("#reserveOk").checked=$("#futureCostOk").checked=false; budgetGuide();
- $("#waitStrategy").classList.remove("show");updateScore();show(3);
+ $("#waitStrategy").classList.remove("show");syncMustBudget();updateScore();show(3);
 };
 $("#copy").onclick=async()=>{
  const lines=["3分でできる 購入合格ラインチェック",""];
@@ -616,6 +724,7 @@ $("#start").onclick=()=>show(2);
 $("#back").onclick=()=>show(step-1);
 $("#next").onclick=()=>{
  if(step===2 && !selectedMusts().length)return alert("絶対条件を1〜3つ選んでください。");
+ if(step===2 && selectedMusts().includes("予算（総額）") && !+$("#mustBudgetCap").value)return alert("予算を絶対条件にした場合は、予算上限を入力してください。");
  if(step===3 && selectedMusts().some((_,i)=>!mustState[i]))return alert("絶対条件ごとに「○ / △ / ×」を選んでください。");
  if(step===4 && Object.keys(ratings).length<scoreItems.length)return alert("7項目すべて評価してください。");
  show(step+1);
