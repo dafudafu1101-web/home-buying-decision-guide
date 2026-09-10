@@ -107,7 +107,7 @@ export function CandidateCard({
                 label="無理のない予算との差"
                 value={
                   budgetCeilingManYen === null
-                    ? "MARKETで予算上限が未入力です"
+                    ? "予算上限がまだ入力されていません"
                     : diffLabel(figures.budgetDiff, "超過しています", "余裕があります")
                 }
               />
@@ -130,7 +130,7 @@ export function CandidateCard({
           />
 
           <div>
-            <span className="field-label">SELFで守ると決めた価値との一致</span>
+            <span className="field-label">守りたいものとの一致</span>
             <div style={{ marginTop: 6 }}>
               <ChoiceList
                 name="valueAlignment"

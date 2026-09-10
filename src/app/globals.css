@@ -37,29 +37,30 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
     "Yu Gothic", Meiryo, sans-serif;
   -webkit-font-smoothing: antialiased;
-  line-height: 1.65;
+  font-size: 17px;
+  line-height: 1.7;
 }
 
 h1,
 h2,
 h3 {
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  line-height: 1.4;
+  line-height: 1.45;
   margin: 0 0 0.5em;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
 
 h1 {
-  font-size: 26px;
+  font-size: 27px;
 }
 
 h2 {
-  font-size: 21px;
+  font-size: 23px;
 }
 
 h3 {
-  font-size: 17px;
+  font-size: 18px;
 }
 
 p {
@@ -103,7 +104,7 @@ a {
 }
 
 .small {
-  font-size: 13px;
+  font-size: 14.5px;
 }
 
 .tiny {
@@ -124,7 +125,7 @@ a {
 }
 
 .stack-lg > * + * {
-  margin-top: 24px;
+  margin-top: 28px;
 }
 
 .card {
@@ -159,8 +160,8 @@ a {
 
 .lead {
   color: #3c3a35;
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 17px;
+  line-height: 1.75;
 }
 
 /* buttons */
@@ -271,13 +272,15 @@ a {
 }
 
 .choice-title {
+  display: block;
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 15.5px;
 }
 
 .choice-desc {
+  display: block;
   margin-top: 3px;
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--muted);
   line-height: 1.55;
 }
@@ -493,7 +496,7 @@ a {
 
 @media (max-width: 380px) {
   h1 {
-    font-size: 23px;
+    font-size: 24px;
   }
   .field-row {
     grid-template-columns: 1fr;

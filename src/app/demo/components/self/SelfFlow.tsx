@@ -55,18 +55,16 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
 
   if (step === 0) {
     return (
-      <ScreenShell phaseLabel="SELF・自分を知る" progress={progress} onExit={onExit} nav={<Button onClick={goNext}>はじめる（約90秒）</Button>}>
+      <ScreenShell phaseLabel="自分のこと" progress={progress} onExit={onExit} nav={<Button onClick={goNext}>はじめる（約90秒）</Button>}>
         <div className="stack-lg">
           <div>
-            <span className="kicker">住まい探し整理</span>
-            <h1>物件を探す前に、「探し方」を整理してみる。</h1>
-            <p className="lead">
-              買う・買わないを決める診断ではありません。希望・予算・今の市場を整理して、自分に合った探し方を見つけます。
-            </p>
+            <span className="kicker">自分のこと</span>
+            <h1>まずは、あなたの希望から。</h1>
+            <p className="lead">希望や予算の感じ方を、5つの質問で整理します。</p>
           </div>
           <Card tone="soft">
             <p className="small" style={{ margin: 0 }}>
-              約90秒・スマホで完結・1画面1問。あとで戻って直すこともできます。
+              約90秒・1問ずつ。あとから何度でも直せます。
             </p>
           </Card>
         </div>
@@ -77,7 +75,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   if (step === 1) {
     return (
       <ScreenShell
-        phaseLabel="SELF・1/5"
+        phaseLabel="自分のこと・1/5"
         progress={progress}
         onBack={goBack}
         onExit={onExit}
@@ -94,7 +92,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   if (step === 2) {
     return (
       <ScreenShell
-        phaseLabel="SELF・2/5"
+        phaseLabel="自分のこと・2/5"
         progress={progress}
         onBack={goBack}
         onExit={onExit}
@@ -116,7 +114,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   if (step === 3) {
     return (
       <ScreenShell
-        phaseLabel="SELF・3/5"
+        phaseLabel="自分のこと・3/5"
         progress={progress}
         onBack={goBack}
         onExit={onExit}
@@ -139,7 +137,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   if (step === 4) {
     return (
       <ScreenShell
-        phaseLabel="SELF・4/5"
+        phaseLabel="自分のこと・4/5"
         progress={progress}
         onBack={goBack}
         onExit={onExit}
@@ -161,7 +159,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   if (step === 5) {
     return (
       <ScreenShell
-        phaseLabel="SELF・5/5"
+        phaseLabel="自分のこと・5/5"
         progress={progress}
         onBack={goBack}
         onExit={onExit}
@@ -187,11 +185,11 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
   // step === 6: summary
   return (
     <ScreenShell
-      phaseLabel="SELF・まとめ"
+      phaseLabel="自分のこと・まとめ"
       progress={100}
       onBack={goBack}
       onExit={onExit}
-      nav={<Button onClick={onComplete}>MARKETへ進む</Button>}
+      nav={<Button onClick={onComplete}>今の市場を見る</Button>}
     >
       <div className="stack-lg">
         <div>
@@ -214,7 +212,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
           </dl>
         </Card>
         <p className="small muted" style={{ margin: 0 }}>
-          このあとの MARKET では、今の市場の中でこの希望がどこに位置するかを、デモデータで確認します。
+          このあと、この希望が今の市場のどこに位置するかを確認します。
         </p>
       </div>
     </ScreenShell>

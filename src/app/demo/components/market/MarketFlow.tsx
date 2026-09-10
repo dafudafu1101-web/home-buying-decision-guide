@@ -38,7 +38,7 @@ export function MarketFlow({ market, onSearch, onComplete, onBackToSelf, onExit 
   if (step === 0) {
     return (
       <ScreenShell
-        phaseLabel="MARKET・市場を知る"
+        phaseLabel="今の市場"
         progress={progress}
         onBack={onBackToSelf}
         onExit={onExit}
@@ -67,7 +67,7 @@ export function MarketFlow({ market, onSearch, onComplete, onBackToSelf, onExit 
   if (step === 1) {
     return (
       <ScreenShell
-        phaseLabel="MARKET・条件入力"
+        phaseLabel="今の市場・条件入力"
         progress={progress}
         onBack={() => setStep(0)}
         onExit={onExit}
@@ -129,7 +129,7 @@ export function MarketFlow({ market, onSearch, onComplete, onBackToSelf, onExit 
   // step === 2: results
   return (
     <ScreenShell
-      phaseLabel="MARKET・結果"
+      phaseLabel="今の市場・結果"
       progress={100}
       onBack={() => setStep(1)}
       onExit={onExit}
@@ -138,7 +138,7 @@ export function MarketFlow({ market, onSearch, onComplete, onBackToSelf, onExit 
           <Button variant="outline" onClick={() => setStep(1)}>
             条件を変える
           </Button>
-          <Button onClick={onComplete}>DECIDEへ進む</Button>
+          <Button onClick={onComplete}>候補を比べる</Button>
         </>
       }
     >

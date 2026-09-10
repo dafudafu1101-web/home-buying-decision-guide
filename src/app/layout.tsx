@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "住まい探し整理 | 住宅購入意思決定OS",
+  title: "住まい探し整理",
   description:
-    "買う・買わないを決める診断ではありません。希望・予算・今の市場を整理して、自分に合った探し方と、自分の言葉で説明できる結論を見つけるためのツールです。",
+    "希望・予算・今の市場を整理しながら、自分に合った住まいの探し方を見つけるツールです。",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -68,7 +68,7 @@ export function DecideFlow({
   if (step === 0) {
     return (
       <ScreenShell
-        phaseLabel="DECIDE・物件を決める"
+        phaseLabel="候補を比べる"
         progress={progress}
         onBack={onBackToMarket}
         onExit={onExit}
@@ -76,11 +76,11 @@ export function DecideFlow({
       >
         <div className="stack-lg">
           <div>
-            <span className="kicker">物件を決める</span>
+            <span className="kicker">候補を比べる</span>
             <h1>候補を並べて、事実として整理する。</h1>
             <p className="lead">
-              ここでは総合点やAIによる「GO / WAIT」判定は出しません。価格・費用・予算との差・市場との比較・
-              SELFで決めた価値との一致を整理したうえで、最後は必ずあなた自身が選びます。
+              点数による順位づけや、買う・待つの自動判定は出しません。価格や予算との差、市場との比較を並べたうえで、
+              最後はあなた自身が選びます。
             </p>
           </div>
         </div>
@@ -91,7 +91,7 @@ export function DecideFlow({
   if (step === 1) {
     return (
       <ScreenShell
-        phaseLabel="DECIDE・候補の整理"
+        phaseLabel="候補を比べる・整理"
         progress={progress}
         onBack={() => setStep(0)}
         onExit={onExit}
@@ -155,7 +155,7 @@ export function DecideFlow({
 
   // step === 3: explanation summary
   return (
-    <ScreenShell phaseLabel="DECIDE・まとめ" progress={100} onBack={() => setStep(2)} onExit={onExit} nav={undefined}>
+    <ScreenShell phaseLabel="候補を比べる・まとめ" progress={100} onBack={() => setStep(2)} onExit={onExit} nav={undefined}>
       <div className="stack-lg">
         <div>
           <span className="kicker">整理の記録</span>
@@ -163,18 +163,18 @@ export function DecideFlow({
         </div>
 
         <Card>
-          <h3 style={{ marginTop: 0 }}>SELF</h3>
+          <h3 style={{ marginTop: 0 }}>自分のこと</h3>
           <div className="stack-sm">
             <SummaryRow label="実現したいこと" value={self.want ? WANT_LABEL[self.want] : "-"} />
             <SummaryRow label="守りたいもの" value={self.protect ? PROTECT_LABEL[self.protect] : "-"} />
             <SummaryRow label="予算への感じ方" value={self.budgetStance ? BUDGET_STANCE_LABEL[self.budgetStance] : "-"} />
             <SummaryRow label="動かせる条件" value={self.flexAxis ? FLEX_AXIS_LABEL[self.flexAxis] : "-"} />
-            <SummaryRow label="SELF時点の気持ち" value={self.currentWill ? CURRENT_WILL_LABEL[self.currentWill] : "-"} />
+            <SummaryRow label="最初の気持ち" value={self.currentWill ? CURRENT_WILL_LABEL[self.currentWill] : "-"} />
           </div>
         </Card>
 
         <Card>
-          <h3 style={{ marginTop: 0 }}>MARKET</h3>
+          <h3 style={{ marginTop: 0 }}>今の市場</h3>
           <p className="small" style={{ margin: 0 }}>{market.position.message || "市場の確認はまだ行っていません。"}</p>
         </Card>
 
@@ -271,7 +271,7 @@ function FinalChoiceStep({
 
   return (
     <ScreenShell
-      phaseLabel="DECIDE・意思確認"
+      phaseLabel="候補を比べる・意思確認"
       progress={progress}
       onBack={onBack}
       onExit={onExit}
