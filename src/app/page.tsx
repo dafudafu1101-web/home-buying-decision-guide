@@ -7,11 +7,7 @@ export default function Home() {
         <div className="stack-lg">
           <div>
             <span className="kicker">住まい探し整理</span>
-            <h1>
-              物件を探す前に、いちど
-              <br />
-              「探し方」を整理してみる。
-            </h1>
+            <h1>物件を探す前に、いちど「探し方」を整理してみる。</h1>
             <p className="lead">
               希望・予算・今の市場を整理しながら、自分に合った住まいの探し方を見つけます。
             </p>

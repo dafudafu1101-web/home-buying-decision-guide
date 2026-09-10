@@ -26,18 +26,18 @@ interface SelfFlowProps {
   onExit: () => void;
 }
 
-const STEP_COUNT = 7; // intro, q1-q5, summary
+const STEP_COUNT = 6; // q1-q5, summary
 
 function isAllAnswered(a: SelfAnswers): boolean {
   return Boolean(a.want && a.protect && a.budgetStance && a.flexAxis && a.currentWill);
 }
 
 export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProps) {
-  const [step, setStep] = useState<number>(() => (isAllAnswered(answers) ? 6 : 0));
+  const [step, setStep] = useState<number>(() => (isAllAnswered(answers) ? 5 : 0));
 
   const progress = useMemo(() => Math.round(((step + 1) / STEP_COUNT) * 100), [step]);
 
-  const goNext = () => setStep((s) => Math.min(s + 1, 6));
+  const goNext = () => setStep((s) => Math.min(s + 1, 5));
   const goBack = () => setStep((s) => Math.max(s - 1, 0));
 
   const nav = (canNext: boolean, onNext: () => void, nextLabel = "次へ") => (
@@ -55,29 +55,9 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
 
   if (step === 0) {
     return (
-      <ScreenShell phaseLabel="自分のこと" progress={progress} onExit={onExit} nav={<Button onClick={goNext}>はじめる（約90秒）</Button>}>
-        <div className="stack-lg">
-          <div>
-            <span className="kicker">自分のこと</span>
-            <h1>まずは、あなたの希望から。</h1>
-            <p className="lead">希望や予算の感じ方を、5つの質問で整理します。</p>
-          </div>
-          <Card tone="soft">
-            <p className="small" style={{ margin: 0 }}>
-              約90秒・1問ずつ。あとから何度でも直せます。
-            </p>
-          </Card>
-        </div>
-      </ScreenShell>
-    );
-  }
-
-  if (step === 1) {
-    return (
       <ScreenShell
         phaseLabel="自分のこと・1/5"
         progress={progress}
-        onBack={goBack}
         onExit={onExit}
         nav={nav(!!answers.want, goNext)}
       >
@@ -89,7 +69,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
     );
   }
 
-  if (step === 2) {
+  if (step === 1) {
     return (
       <ScreenShell
         phaseLabel="自分のこと・2/5"
@@ -111,7 +91,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
     );
   }
 
-  if (step === 3) {
+  if (step === 2) {
     return (
       <ScreenShell
         phaseLabel="自分のこと・3/5"
@@ -134,7 +114,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
     );
   }
 
-  if (step === 4) {
+  if (step === 3) {
     return (
       <ScreenShell
         phaseLabel="自分のこと・4/5"
@@ -156,7 +136,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
     );
   }
 
-  if (step === 5) {
+  if (step === 4) {
     return (
       <ScreenShell
         phaseLabel="自分のこと・5/5"
@@ -182,7 +162,7 @@ export function SelfFlow({ answers, onUpdate, onComplete, onExit }: SelfFlowProp
     );
   }
 
-  // step === 6: summary
+  // step === 5: summary
   return (
     <ScreenShell
       phaseLabel="自分のこと・まとめ"

@@ -52,7 +52,11 @@ h3 {
 }
 
 h1 {
-  font-size: 27px;
+  font-size: 23px;
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-wrap: balance;
+  max-width: 22ch;
 }
 
 h2 {
@@ -203,9 +207,19 @@ a {
 
 .btn-ghost {
   background: transparent;
+  border: none;
   color: var(--muted);
   font-weight: 600;
   padding: 10px 12px;
+}
+
+.exit-link {
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  color: var(--muted-2);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .btn-danger-ghost {
@@ -496,7 +510,7 @@ a {
 
 @media (max-width: 380px) {
   h1 {
-    font-size: 24px;
+    font-size: 21px;
   }
   .field-row {
     grid-template-columns: 1fr;

@@ -29,7 +29,7 @@ export function ScreenShell({ phaseLabel, progress, onBack, onExit, nav, childre
             <span>{phaseLabel}</span>
             <span>
               {onExit && (
-                <button type="button" className="btn-ghost" style={{ padding: 0 }} onClick={onExit}>
+                <button type="button" className="exit-link" onClick={onExit}>
                   今日はここまで
                 </button>
               )}
