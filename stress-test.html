@@ -1,17 +1,16 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<!-- v13 housing-choice-margin -->
+<!-- v13 stress test -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>3分でできる 住宅選択余白チェック</title>
+<title>3分でできる 住宅購入ストレステスト v13</title>
 <style>
 :root{
   --bg:#f4f2ee; --paper:#fff; --ink:#111; --muted:#6b6862;
   --gold:#b88a2e; --gold-soft:#f4ead4; --line:#ddd9d1;
   --soft:#f8f6f1; --danger:#b42318; --warn:#9a6b13; --ok:#177245;
-  --green:#177245; --blue:#1a5fb4; --purple:#7b3fa0; --red:#b42318;
 }
 *{box-sizing:border-box}
 body{
@@ -37,17 +36,18 @@ button{cursor:pointer}
 }
 .card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 18px 20px;box-shadow:0 18px 45px rgba(0,0,0,.06)}
 .kicker{font-weight:800;color:var(--gold);font-size:13px;letter-spacing:.08em}
+.num{font:700 82px/1 Georgia,serif;color:var(--gold);margin-top:2px}
 h1,h2,h3{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;line-height:1.22;margin:.3em 0 .5em}
-h1{font-size:33px;letter-spacing:-.03em}
+h1{font-size:39px;letter-spacing:-.04em}
 h2{font-size:27px;letter-spacing:-.03em}
-h3{font-size:18px}
+h3{font-size:19px}
 .lead{color:#393734;line-height:1.7;font-size:13px}
 .resultLead{font-size:14px;line-height:1.7;margin:10px 0 2px}
 .quickHint{font-size:11px;line-height:1.55;opacity:.72;margin-top:6px}
 .heroBottom{color:white}
 .heroPoints{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0 18px}
 .heroPoint{border:1px solid #7e704f;border-radius:15px;padding:11px 6px;text-align:center;font-size:11px;min-height:62px;display:flex;flex-direction:column;justify-content:center}
-.heroPoint b{display:block;color:#e2ba62;font-size:17px;margin-bottom:4px}
+.heroPoint b{display:block;color:#e2ba62;font-size:19px;margin-bottom:4px}
 .primary,.secondary,.ghost{
   width:100%;border:none;border-radius:12px;padding:14px 16px;font-weight:800;min-height:48px
 }
@@ -62,46 +62,61 @@ h3{font-size:18px}
 .choice.selected{border-color:var(--gold);background:#fffaf1}
 .field{margin:12px 0}
 .field label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}
-.field .unit{font-weight:400;color:var(--muted);font-size:11px}
 input[type=text],input[type=number],input[type=date],textarea{
   width:100%;border:1px solid #d6d2ca;border-radius:9px;padding:12px;background:white
 }
 textarea{min-height:70px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.noteBox{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:14px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.segBtn{border:1px solid var(--line);border-radius:10px;padding:11px 4px;text-align:center;background:#fff;font-size:12px;font-weight:800;cursor:pointer}
+.segBtn input{position:absolute;opacity:0;pointer-events:none}
+.segBtn.on{background:#111;color:#fff;border-color:#111}
+.noteBox{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px}
 .noteBox summary{cursor:pointer;font-weight:800}
-.resultCard{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:10px}
-.bigStat{font:700 30px/1.2 Georgia,serif}
-.bigStat small{font-size:14px;font-weight:400}
-.zoneBanner{border-radius:16px;padding:18px;margin-bottom:14px;color:#fff}
-.zoneBanner.green{background:linear-gradient(135deg,#1c8a58,#177245)}
-.zoneBanner.blue{background:linear-gradient(135deg,#2f74c9,#1a5fb4)}
-.zoneBanner.purple{background:linear-gradient(135deg,#8f4cbd,#7b3fa0)}
-.zoneBanner.red{background:linear-gradient(135deg,#c9432a,#b42318)}
-.zoneEmoji{font-size:34px;line-height:1}
-.zoneLabel{font:700 24px/1.2 Georgia,serif;margin-top:4px}
-.zoneDesc{font-size:13px;line-height:1.6;margin-top:8px;opacity:.95}
-.rangeVal{font:700 22px/1.3 Georgia,serif}
-.marginVal{font:700 30px/1.2 Georgia,serif}
-.marginVal.plus{color:var(--ok)}
-.marginVal.minus{color:var(--danger)}
-.tableWrap{overflow-x:auto;margin-top:10px;-webkit-overflow-scrolling:touch}
-.compare{width:100%;border-collapse:collapse;font-size:11.5px;min-width:520px}
-.compare th,.compare td{border:1px solid var(--line);padding:9px 6px;text-align:center}
-.compare th{background:#222;color:#fff;font-weight:800}
-.compare td:first-child,.compare th:first-child{text-align:left;background:#faf8f4;font-weight:800;min-width:118px}
-.compare td.current,.compare th.current{background:#fff8e8}
-.marginUseGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
-.marginUseCard{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
-.marginUseCard .em{font-size:22px}
-.marginUseCard b{display:block;font-size:13px;margin:5px 0 3px}
-.marginUseCard span{font-size:11px;color:var(--muted);line-height:1.5}
-.ctaCard{background:linear-gradient(135deg,#111,#2a2a2a);color:#fff;border-radius:16px;padding:18px;margin-top:16px}
-.ctaCard .kicker{color:#e2ba62}
-.ctaCard p{font-size:13px;line-height:1.7;color:#e7e5e0}
-.ctaNote{display:none;font-size:12px;background:#222;border-radius:10px;padding:10px;margin-top:10px;color:#f4ead4}
-.ctaNote.show{display:block}
+.condList{display:grid;gap:8px;margin-top:10px}
+.condItem{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start}
+.condItem .mark{flex:0 0 auto;width:26px;height:26px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff}
+.condItem.ok .mark{background:var(--ok)}
+.condItem.ng .mark{background:var(--danger)}
+.condItem b{display:block;font-size:13px}
+.condItem span{font-size:12px;color:var(--muted)}
+.resultWrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.resultCard{border:1px solid var(--line);border-radius:14px;padding:16px}
+.bigScore{font:700 52px/1 Georgia,serif}
+.resultGold{background:linear-gradient(135deg,#b88a2e,#d4ae58);color:white}
+.verdict{font:700 26px/1.25 Georgia,serif;margin-top:4px}
+.reason{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+.reason ul{padding-left:20px;margin-bottom:0}
+.reason li{margin:4px 0;font-size:13px}
+.bandGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.band{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px}
+.band b{display:block;font-size:16px}
+.scoreBreakdown{display:grid;gap:9px;margin-top:12px}
+.scoreRow{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px}
+.scoreMeta{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+.scoreLabel{font-weight:800;font-size:12.5px;line-height:1.4}
+.scorePts{font-weight:900;font-size:12px;white-space:nowrap}
+.barTrack{height:8px;border-radius:99px;background:#ece9e3;overflow:hidden}
+.barFill{height:100%;background:linear-gradient(90deg,#a8781f,#d1a64e);border-radius:99px}
+.scoreNow{display:flex;justify-content:space-between;align-items:center;border-top:2px solid #111;padding-top:12px;margin-top:14px}
+.gw{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.gwCard{border:1px solid var(--line);border-radius:14px;padding:14px}
+.gwCard.go{background:#fffaf1;border-color:#d2b16d}
+.gwCard.wait{background:#f4f3ef}
+.gwTitle{font:700 26px/1 Georgia,serif}
+.gwCard ul{padding-left:18px;font-size:12px}
+.finalCheck{display:grid;gap:8px;margin-top:12px}
+.waitStrategy{display:none;margin-top:12px}
+.waitStrategy.show{display:block}
+.finalMessage{background:var(--soft);border-radius:14px;padding:16px;margin-top:15px}
 .footer{background:#111;color:#fff;padding:18px;text-align:center;font-size:12px;margin-top:16px}
+.compare{width:100%;border-collapse:collapse;font-size:11px}
+.compare th{background:#222;color:white;padding:8px 5px}
+.compare td{border:1px solid var(--line);padding:8px 5px}
+.status{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}
+.status.go{background:#f1dfb7;color:#6d4b09}
+.status.wait{background:#fee4e2;color:#a22218}
+.status.check{background:#fff3d8;color:#855d0d}
 .nav{
   position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(560px,100%);z-index:40;
   display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
@@ -116,125 +131,221 @@ textarea{min-height:70px;resize:vertical}
   .brand b{font-size:15px}
   .hero{min-height:calc(100svh - 52px);padding:14px 12px 24px}
   .hero .card{border-radius:18px;padding:20px 16px}
-  .hero h1{font-size:28px}
+  .hero .num{font-size:70px}
+  .hero h1{font-size:32px}
   .screen{padding-top:17px;padding-bottom:96px}
   h2{font-size:24px}
-  .marginUseGrid{grid-template-columns:1fr}
+  .resultWrap{grid-template-columns:1fr}
+  .gw{grid-template-columns:1fr}
+  .two.stackMobile{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="brand"><b>ADCAST</b><span id="count">1 / 3</span></div>
+    <div class="brand"><b>ADCAST</b><span id="count">1 / 7</span></div>
     <div class="progress"><i id="bar"></i></div>
   </div>
 
   <section class="screen active" data-step="1">
     <div class="hero">
       <div class="card">
-        <div class="kicker">HOUSING CHOICE MARGIN</div>
-        <h1>今考えている予算、<br>本当にちょうどいい？</h1>
-        <p class="resultLead">住宅予算を下げるための診断ではありません。<br>今の予算がちょうどいいのか、実は選択肢が残っているのかを確認します。</p>
-        <p class="lead">中心にあるのは「住宅選択余白」という考え方です。今の家計から見て、今の予算が広いレンジのどこに位置するのかを、比較用のレンジで見える化します。</p>
+        <div class="kicker">HOME BUYING STRESS TEST</div>
+        <div class="num">13</div>
+        <h1>分でできる<br>住宅購入<br>ストレステスト</h1>
+        <p class="resultLead"><b>金利が上がったら、収入が減ったら。それでも今の資金計画は耐えられますか。</b><br>「買える・買えない」を断定する診断ではなく、資金計画の余裕度を見える化するためのチェックです。</p>
+        <p class="lead">返済負担率の上限判定と、ストレス時の余裕度採点は分けて考えます。点数だけで購入結論は出しません。</p>
       </div>
       <div class="heroBottom">
         <div class="heroPoints">
-          <div class="heroPoint"><b>📐</b>比較レンジで表示</div>
-          <div class="heroPoint"><b>⚖️</b>3案で比較</div>
-          <div class="heroPoint"><b>🧭</b>余白の使い道</div>
+          <div class="heroPoint"><b>％</b>負担率判定</div>
+          <div class="heroPoint"><b>⚡</b>金利・収入ストレス</div>
+          <div class="heroPoint"><b>◎</b>100点換算</div>
         </div>
-        <button class="primary" id="start">3分でチェックする →</button>
-        <p class="small" style="color:#ccc;text-align:center">「○万円まで安全」と断定するものではありません。あくまで比較のための目安です。</p>
+        <button class="primary" id="start">3分ストレステストを始める →</button>
+        <p class="small" style="color:#ccc;text-align:center">正解や合否を断定するテストではなく、資金計画の弱点を先に見つけるためのチェックです。</p>
       </div>
     </div>
   </section>
 
   <section class="screen" data-step="2">
     <div class="stepLabel">STEP 1</div>
-    <h2>8項目を入力</h2>
-    <p class="lead">分かる範囲の概算でOKです。世帯全体の数字で入力してください。</p>
-
-    <div class="field"><label>世帯年収 <span class="unit">（万円・額面）</span></label><input id="grossIncome" type="number" inputmode="decimal" placeholder="例）650"></div>
-    <div class="field"><label>世帯の手取り月収 <span class="unit">（万円）</span></label><input id="netMonthlyIncome" type="number" inputmode="decimal" placeholder="例）32"></div>
-    <div class="field"><label>年間の手取り賞与 <span class="unit">（万円）</span></label><input id="bonusAnnual" type="number" inputmode="decimal" placeholder="例）60（なければ0）"></div>
-    <div class="field"><label>現在の金融資産 <span class="unit">（万円）</span></label><input id="currentAssets" type="number" inputmode="decimal" placeholder="例）500"></div>
-    <div class="field"><label>現在検討している物件価格 <span class="unit">（万円）</span></label><input id="consideredPrice" type="number" inputmode="decimal" placeholder="例）4000"></div>
-    <div class="field"><label>予定頭金 <span class="unit">（万円）</span></label><input id="downPayment" type="number" inputmode="decimal" placeholder="例）300（なければ0）"></div>
-    <div class="field"><label>住宅費を除く月間生活費 <span class="unit">（万円）</span></label><input id="livingCostMonthly" type="number" inputmode="decimal" placeholder="例）18"></div>
-    <div class="field"><label>今後増えそうな月間支出 <span class="unit">（万円）</span></label><input id="futureExpenseMonthly" type="number" inputmode="decimal" placeholder="教育費など。なければ0"></div>
-
-    <details class="noteBox">
-      <summary>詳細設定（金利タイプ）</summary>
-      <p class="quickHint">迷ったら「変動金利」のままでOKです。全期間固定を選ぶと、将来の金利上昇シナリオを反映しません。</p>
-      <div class="grid" style="margin-top:8px">
-        <label class="choice"><input type="radio" name="rateType" value="variable" checked>変動金利・期間固定</label>
-        <label class="choice"><input type="radio" name="rateType" value="fixed">全期間固定金利（フラット35等）</label>
-      </div>
-    </details>
-
-    <div class="tip"><b>簡易シミュレーションの前提</b><br>現在金利1.3%・35年返済・購入諸費用6%として概算します。実際の金利・審査基準は金融機関ごとに異なります。</div>
-    <p class="warnMsg" id="warn2">世帯年収・手取り月収・検討価格・生活費は入力してください（0円は不可）。</p>
+    <h2>収入と借入計画を入力</h2>
+    <p class="lead">世帯の手取りと、想定している借入条件を入力します。分かる範囲の概算でOKです。</p>
+    <div class="field"><label>世帯の手取り月収（万円）</label><input id="netIncome" type="number" inputmode="decimal" placeholder="例）38"></div>
+    <div class="field"><label>年間ボーナス手取り（万円・任意）</label><input id="bonusAnnual" type="number" inputmode="decimal" placeholder="任意"></div>
+    <div class="two">
+      <div class="field"><label>借入希望額（万円）</label><input id="loanAmount" type="number" inputmode="decimal" placeholder="例）4500"></div>
+      <div class="field"><label>適用予定金利（％）</label><input id="rate" type="number" inputmode="decimal" step="0.01" placeholder="例）0.7"></div>
+    </div>
+    <div class="two">
+      <div class="field"><label>返済期間（年）</label><input id="termYears" type="number" inputmode="numeric" placeholder="例）35"></div>
+      <div class="field"><label>他の毎月ローン返済（万円）</label><input id="otherLoans" type="number" inputmode="decimal" placeholder="車・教育ローン等"></div>
+    </div>
+    <h3>金利タイプ</h3>
+    <div class="grid" id="rateTypeChoices">
+      <label class="choice"><input type="radio" name="rateType" value="variable">変動金利・期間固定（一定期間後に金利が変わる）</label>
+      <label class="choice"><input type="radio" name="rateType" value="fixed">全期間固定金利（フラット35等）</label>
+    </div>
+    <div class="tip"><b>ここでは審査上限ではなく、実際の返済負担感を確認します。</b><br>全期間固定を選んだ場合、返済額は金利上昇シナリオの影響を受けない前提で計算します。実際の審査基準・条件は金融機関・FPに確認してください。</div>
+    <p class="warnMsg" id="warn2">手取り月収・借入希望額・金利・返済期間・金利タイプを入力してください。</p>
   </section>
 
   <section class="screen" data-step="3">
-    <div class="stepLabel">RESULT</div>
+    <div class="stepLabel">STEP 2</div>
+    <h2>防衛資金と収入構成を入力</h2>
+    <p class="lead">返済とは別に確保している貯蓄と、収入の作られ方を確認します。</p>
+    <div class="field"><label>返済とは別に確保している生活防衛資金（万円）</label><input id="reserveFund" type="number" inputmode="decimal" placeholder="例）200"></div>
+    <p class="quickHint">住宅購入の諸費用・頭金として使う分は除いた、緊急時に取り崩せる貯蓄額です。</p>
+    <h3>収入源の数</h3>
+    <div class="grid" id="dualIncomeChoices">
+      <label class="choice"><input type="radio" name="dualIncome" value="yes">共働き・複数の収入源がある</label>
+      <label class="choice"><input type="radio" name="dualIncome" value="no">収入源は1つ（片働き）</label>
+    </div>
+    <h3>ボーナス返済の利用</h3>
+    <div class="grid" id="bonusChoices">
+      <label class="choice"><input type="radio" name="bonusDependent" value="yes">返済の一部をボーナス払いに充てる予定</label>
+      <label class="choice"><input type="radio" name="bonusDependent" value="no">ボーナス払いは利用しない</label>
+    </div>
+    <div class="tip"><b>ボーナス依存・片働きは「悪い」ではなく「揺れやすい」条件です。</b><br>その分、金利上昇や収入減少に対する余裕度を厚めに見ておくと安心です。</div>
+    <p class="warnMsg" id="warn3">防衛資金・収入源・ボーナス返済の利用有無を入力してください。</p>
+  </section>
+
+  <section class="screen" data-step="4">
+    <div class="stepLabel">STEP 3</div>
+    <h2>ストレスシナリオを選ぶ</h2>
+    <p class="lead">迷ったら初期設定のままでOKです。保守的な一般的シナリオを既定値にしています。</p>
+    <h3>金利上昇シナリオ</h3>
+    <div class="three" id="rateStressChoices">
+      <label class="segBtn"><input type="radio" name="rateStress" value="1.0">+1.0%</label>
+      <label class="segBtn"><input type="radio" name="rateStress" value="1.5">+1.5%</label>
+      <label class="segBtn on"><input type="radio" name="rateStress" value="2.0" checked>+2.0%</label>
+    </div>
+    <h3>収入減少シナリオ</h3>
+    <div class="three" id="incomeDropChoices">
+      <label class="segBtn"><input type="radio" name="incomeDrop" value="10">-10%</label>
+      <label class="segBtn on"><input type="radio" name="incomeDrop" value="20" checked>-20%</label>
+      <label class="segBtn"><input type="radio" name="incomeDrop" value="30">-30%</label>
+    </div>
+    <div class="tip"><b>「必ず起きる」という予測ではありません。</b><br>変動金利や単一収入への依存度が高いほど、大きめのシナリオで確認しておくと安心です。迷ったら初期設定（+2.0% / -20%）のままで確認しましょう。</div>
+    <p class="quickHint" id="fixedNote" style="display:none">全期間固定金利を選択しているため、金利上昇シナリオは返済額の計算に反映されません（収入減少シナリオのみ反映されます）。</p>
+  </section>
+
+  <section class="screen" data-step="5">
+    <div class="stepLabel">STEP 4</div>
     <h2>結果を確認する</h2>
+    <div class="resultWrap">
+      <div class="resultCard">
+        <span class="small">余裕度スコア</span>
+        <div><span class="bigScore" id="resultScore">0</span> /100</div>
+      </div>
+      <div class="resultCard resultGold">
+        <span class="small" style="color:white">資金体力の判定</span>
+        <div class="verdict" id="resultVerdict">—</div>
+        <div id="resultSub" class="small" style="color:#fff2d9">判定前</div>
+      </div>
+    </div>
+    <div class="tip"><b>① 返済計画の相性 → ② 今の資金体力 → ③ 待つなら理由と期限</b><br>点数が高くても、絶対条件を満たさなければ「待つべき」でOK。点数だけで結論を出しません。</div>
 
-    <div class="zoneBanner" id="zoneBanner">
-      <div class="zoneEmoji" id="zoneEmoji">🔵</div>
-      <div class="zoneLabel" id="zoneLabel">バランス</div>
-      <div class="zoneDesc" id="zoneDesc">—</div>
+    <h3>絶対条件（これを満たさないと今は待つべき）</h3>
+    <div class="condList" id="condList"></div>
+
+    <h3>余裕度スコアの内訳（採点）</h3>
+    <div class="scoreBreakdown" id="scoreBreakdown"></div>
+
+    <div class="reason">
+      <b>判定の理由</b>
+      <ul id="reasonList"></ul>
+    </div>
+    <p class="small">※この結果は購入の可否を保証・断定するものではありません。資金計画を整理するための目安です。実際の審査基準・金利条件・保険料等は金融機関・ファイナンシャルプランナーに個別に確認してください。</p>
+    <div class="bandGrid" id="bandGrid">
+      <div class="band"><b>85〜100</b>非常に良い</div>
+      <div class="band"><b>75〜84</b>合格ライン</div>
+      <div class="band"><b>50〜74</b>慎重に比較</div>
+      <div class="band"><b>0〜49</b>見送り候補</div>
+    </div>
+  </section>
+
+  <section class="screen" data-step="6">
+    <div class="stepLabel">STEP 5</div>
+    <h2>最後に、今どうするか確認</h2>
+    <p class="lead">スコアと「今買うか」は別です。絶対条件が整っているかを最終確認します。</p>
+    <div class="resultCard" id="autoDecision" style="margin-bottom:12px">
+      <span class="small">現在の判定</span>
+      <div class="verdict" id="autoDecisionTitle">要確認</div>
+      <p class="resultLead" id="autoDecisionText">チェック内容から現在の状態を整理します。</p>
+    </div>
+    <div class="gw">
+      <div class="gwCard go">
+        <div class="gwTitle">✓ 進めやすい</div>
+        <ul>
+          <li>絶対条件をすべて満たす</li>
+          <li>75点以上をひとつの目安</li>
+          <li>ストレス時も返済負担率が過大でない</li>
+          <li>防衛資金に一定の厚みがある</li>
+        </ul>
+      </div>
+      <div class="gwCard wait">
+        <div class="gwTitle">⌛ 待つべき</div>
+        <ul>
+          <li>絶対条件を1つでも満たさない</li>
+          <li>待つ理由に根拠がある</li>
+          <li>期限と再判断のタイミングが決まっている</li>
+          <li>期限後に何を変えるかが明確</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="resultCard">
-      <span class="small">① 現在検討価格</span>
-      <div class="bigStat" id="statPrice">0<small> 万円</small></div>
-    </div>
-    <div class="resultCard">
-      <span class="small">② バランスレンジ<br><span class="quickHint">「○万円まで安全」という断定ではなく、比較のための目安レンジです。</span></span>
-      <div class="rangeVal" id="statRange">— 万円 〜 — 万円</div>
-    </div>
-    <div class="resultCard">
-      <span class="small">③ 住宅選択余白<br><span class="quickHint">バランスレンジの上限までの差です。プラスは余白あり、マイナスはレンジ上限を超えていることを示します。</span></span>
-      <div class="marginVal" id="statMargin">— 万円</div>
+    <h3>最終確認</h3>
+    <div class="finalCheck">
+      <label class="choice"><input type="checkbox" id="planFinanceOk">返済計画の前提を金融機関・FPに確認した</label>
+      <label class="choice"><input type="checkbox" id="planStressOk">ストレスシナリオの結果を踏まえても許容できる</label>
+      <label class="choice"><input type="checkbox" id="planLifeOk">家族のライフプラン（教育費・働き方の変化等）に合っている</label>
     </div>
 
-    <h3>④ 3案比較</h3>
-    <p class="lead">同じ前提で、価格だけを変えた3つの案を比較します。「現在の検討価格」以外は仮の比較用の価格です。</p>
-    <div class="tableWrap">
+    <div class="two stackMobile" style="margin-top:12px">
+      <button class="primary" id="chooseGo">GO候補として進める</button>
+      <button class="ghost" id="chooseWait">それでも今回は待ちたい</button>
+    </div>
+
+    <div class="waitStrategy" id="waitStrategy">
+      <h3>待つなら、4つだけ決めておきましょう</h3>
+      <div class="tip"><b>待つこと自体は間違いではありません。</b><br>「何となく待つ」のではなく、理由と期限を決めて待つことが大切です。</div>
+      <div class="field"><label>① 変えない・守る借入条件</label><input id="waitKeep" type="text" placeholder="例）借入額は増やさない"></div>
+      <div class="field"><label>② 待つ期限・再判断タイミング</label><input id="waitUntil" type="date"></div>
+      <div class="field"><label>③ 改善が期待できる項目と根拠</label><textarea id="waitImprove"></textarea></div>
+      <div class="field"><label>④ 期限後に何を変えるか</label><textarea id="waitChange"></textarea></div>
+      <h3>待つリスク</h3>
+      <div class="grid">
+        <label class="choice"><input class="risk" type="checkbox" value="金利上昇">金利上昇</label>
+        <label class="choice"><input class="risk" type="checkbox" value="物件価格の上昇">物件価格の上昇</label>
+        <label class="choice"><input class="risk" type="checkbox" value="審査基準・借入条件の変化">審査基準・借入条件の変化</label>
+        <label class="choice"><input class="risk" type="checkbox" value="収入回復・増加の遅れ">収入回復・増加の遅れ</label>
+        <label class="choice"><input class="risk" type="checkbox" value="待機中の家賃・住居費">待機中の家賃・住居費</label>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <button class="secondary" id="saveScenario">このシナリオを比較表に保存</button>
+  </section>
+
+  <section class="screen" data-step="7">
+    <div class="stepLabel">RESULT</div>
+    <h2>複数シナリオを同じ基準で比較</h2>
+    <p class="lead">借入額や金利条件を変えて、最大5件まで同じ基準で比較できます。</p>
+    <div class="resultCard" id="finalCurrentSummary" style="margin-bottom:12px"></div>
+    <div style="overflow:auto">
       <table class="compare">
-        <thead>
-          <tr><th>項目</th><th>安心重視ライン</th><th class="current">現在の検討価格</th><th>住宅優先ライン</th></tr>
-        </thead>
+        <thead><tr><th>No.</th><th>条件</th><th>スコア</th><th>絶対条件</th><th>最終</th></tr></thead>
         <tbody id="compareBody"></tbody>
       </table>
     </div>
-    <p class="quickHint">金利ストレス時の年間余力・10年後残債は、10年目時点の残債に対して試算しています（変動金利の場合は10年後金利4%、固定金利の場合は金利変更なしを想定）。価格下落時の売却余力は、価格が20%下落した場合の想定売却額と10年後残債の差です。</p>
-
-    <h3>住宅選択余白の使い道</h3>
-    <p class="lead">余白がある＝高い住宅を買うべき、という意味ではありません。どれを選ぶかはご自身の価値観次第です。</p>
-    <div class="marginUseGrid">
-      <div class="marginUseCard"><div class="em">💰</div><b>残す</b><span>そのまま貯蓄・生活防衛資金として持っておく</span></div>
-      <div class="marginUseCard"><div class="em">📈</div><b>運用する</b><span>NISA・iDeCoなど資産形成に回す</span></div>
-      <div class="marginUseCard"><div class="em">📍</div><b>住環境へ使う</b><span>駅距離・学区・広さなど住環境の向上に使う</span></div>
-      <div class="marginUseCard"><div class="em">🏠</div><b>住宅の質へ使う</b><span>性能・仕様など住宅そのものの質の向上に使う</span></div>
+    <div class="finalMessage">
+      <b>ストレステストは「買うな」を言うためのものではなく、無理のない計画で進むための確認です。</b>
     </div>
-
-    <p class="small" style="margin-top:14px">※この結果は購入の可否を判定・保証するものではありません。あくまで比較のための目安です。実際の借入可能額・金利条件・審査基準は金融機関に個別にご確認ください。</p>
-
-    <div class="ctaCard">
-      <div class="kicker">NEXT STEP</div>
-      <h3 style="color:#fff">もっと詳しく見るなら</h3>
-      <p>教育費・老後・保険・車・修繕・資産運用・昇給・退職金まで入れて、自分のお金の最適配分を見る。</p>
-      <button class="secondary" id="ctaDetail" style="background:#e2ba62;color:#111">詳細版について見る</button>
-      <div class="ctaNote" id="ctaNote">詳細版は準備中です。公開までしばらくお待ちください。</div>
-    </div>
-
-    <div style="height:12px"></div>
-    <button class="ghost" id="another">条件を変えてもう一度試す</button>
+    <button class="primary" id="another">＋ 条件を変えて、もう一度シミュレーションする</button>
     <div style="height:8px"></div>
-    <button class="secondary" id="copy">結果をコピーする</button>
+    <button class="secondary" id="copy">診断結果をコピー</button>
     <div style="height:8px"></div>
     <button class="ghost" id="reset">最初からやり直す</button>
     <div class="footer">ADCAST ｜ 住まい選びに、確かな基準を。</div>
@@ -250,24 +361,53 @@ textarea{min-height:70px;resize:vertical}
 const $=(q,e=document)=>e.querySelector(q);
 const $$=(q,e=document)=>[...e.querySelectorAll(q)];
 let step=1;
-
-const BASE_RATE=1.3, TERM_YEARS=35, COST_RATE=0.06, FUTURE_RATE=4.0;
-const SEVERE_RATE=5.0, SEVERE_INCOME_DROP=0.10, SEVERE_PRICE_DROP=0.20;
-const RATIO_GREEN=0.25, RATIO_BLUE=0.35, RATIO_PURPLE=0.45, GROSS_RATIO_LIMIT=0.35;
-
-const ZONE_META={
-  green:{emoji:"🟢",label:"安心重視",desc:"住宅にかける負担は軽めで、他の使い道にも余白が残りやすい水準です。"},
-  blue:{emoji:"🔵",label:"バランス",desc:"収入とのバランスが取れた、比較の目安となる水準です。"},
-  purple:{emoji:"🟣",label:"住宅を優先",desc:"住宅を優先した、やや積極的な水準です。無理のない範囲かどうかを確認しておきましょう。"},
-  red:{emoji:"🔴",label:"要調整",desc:"簡易ストレス条件では収支や資金繰りに無理が生じうる水準です。予算・頭金・条件を見直す余地があります。"}
-};
+let choiceFinal="";
+let currentScenario=null;
+let saved=JSON.parse(localStorage.getItem("hbg_stress_v13_saved")||"[]");
 
 function num(id){const v=parseFloat($("#"+id).value);return isNaN(v)?0:v;}
-function yen(v){
-  const r=Math.round(v);
-  return (r<0?"▲"+Math.abs(r).toLocaleString("ja-JP"):r.toLocaleString("ja-JP"))+"万円";
+
+function show(n){
+  step=Math.max(1,Math.min(7,n));
+  $$(".screen").forEach(s=>s.classList.toggle("active",+s.dataset.step===step));
+  $("#count").textContent=step+" / 7";
+  $("#bar").style.width=(step/7*100)+"%";
+  $("#nav").style.display=step===1?"none":"flex";
+  $("#back").style.visibility=step===1?"hidden":"visible";
+  $("#next").textContent=step===7?"完了":"次へ進む →";
+  if(step===4) syncRateType();
+  if(step===5) renderResult();
+  if(step===6) renderAutoDecision();
+  if(step===7){
+    const s=currentScenario||buildScenario();
+    $("#finalCurrentSummary").innerHTML=`<span class="small">今回の結果</span><div class="bigScore" style="font-size:34px">${s.totalScore}点 / 100点</div><p class="resultLead">絶対条件：${s.allPass?"○ クリア":"× 未達"} ／ 最終：${verdictLabel(s)}</p>`;
+    renderCompare();
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
 }
-function roundTo(v,step){return Math.round(v/step)*step;}
+
+function syncRateType(){
+  const fixed=($('input[name="rateType"]:checked')||{}).value==="fixed";
+  $("#fixedNote").style.display=fixed?"block":"none";
+  $$('input[name="rateStress"]').forEach(r=>{
+    r.disabled=fixed;
+    r.closest(".segBtn").style.opacity=fixed?0.4:1;
+  });
+}
+
+function fieldsOk(s){
+  if(s===2){
+    const ok=num("netIncome")>0 && num("loanAmount")>0 && $("#rate").value!=="" && num("termYears")>0 && $('input[name="rateType"]:checked');
+    $("#warn2").classList.toggle("show",!ok);
+    return ok;
+  }
+  if(s===3){
+    const ok=$("#reserveFund").value!=="" && $('input[name="dualIncome"]:checked') && $('input[name="bonusDependent"]:checked');
+    $("#warn3").classList.toggle("show",!ok);
+    return ok;
+  }
+  return true;
+}
 
 function pmt(principal,annualRatePct,years){
   const n=years*12;
@@ -276,188 +416,219 @@ function pmt(principal,annualRatePct,years){
   if(r<=0) return principal/n;
   return principal*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
 }
-function remainingBalance(principal,annualRatePct,years,elapsedYears){
-  const n=years*12, k=elapsedYears*12;
-  const r=annualRatePct/100/12;
-  if(k>=n) return 0;
-  if(r<=0) return principal*(1-k/n);
-  return principal*(Math.pow(1+r,n)-Math.pow(1+r,k))/(Math.pow(1+r,n)-1);
+
+function bandRatio(v,thresholds,points){
+  for(let i=0;i<thresholds.length;i++){ if(v<=thresholds[i]) return points[i]; }
+  return 0;
+}
+function bandRunway(v){
+  if(v>=6) return 100;
+  if(v>=4) return 75;
+  if(v>=3) return 50;
+  if(v>=1) return 25;
+  return 0;
+}
+function bandStructure(dual,bonusDep){
+  if(dual && !bonusDep) return 100;
+  if(dual && bonusDep) return 75;
+  if(!dual && !bonusDep) return 50;
+  return 25;
 }
 
-function show(n){
-  step=Math.max(1,Math.min(3,n));
-  $$(".screen").forEach(s=>s.classList.toggle("active",+s.dataset.step===step));
-  $("#count").textContent=step+" / 3";
-  $("#bar").style.width=(step/3*100)+"%";
-  $("#nav").style.display=step===1?"none":"flex";
-  $("#back").style.visibility=step===1?"hidden":"visible";
-  $("#next").textContent=step===3?"完了":"次へ進む →";
-  if(step===3) renderResult();
-  window.scrollTo({top:0,behavior:"smooth"});
+function computeAll(){
+  const netIncome=num("netIncome");
+  const bonusAnnual=num("bonusAnnual");
+  const loanAmount=num("loanAmount");
+  const rate=num("rate");
+  const termYears=num("termYears");
+  const otherLoans=num("otherLoans");
+  const reserveFund=num("reserveFund");
+  const dualIncome=($('input[name="dualIncome"]:checked')||{}).value==="yes";
+  const bonusDependent=($('input[name="bonusDependent"]:checked')||{}).value==="yes";
+  const rateType=($('input[name="rateType"]:checked')||{}).value||"variable";
+  const rateStressAdd=parseFloat(($('input[name="rateStress"]:checked')||{}).value||"2.0");
+  const incomeDropPct=parseFloat(($('input[name="incomeDrop"]:checked')||{}).value||"20");
+  const effectiveRateStressAdd=rateType==="fixed"?0:rateStressAdd;
+
+  const basePayment=pmt(loanAmount,rate,termYears);
+  const stressPayment=pmt(loanAmount,rate+effectiveRateStressAdd,termYears);
+
+  const totalBase=basePayment+otherLoans;
+  const totalStressRate=stressPayment+otherLoans;
+  const incomeStressed=netIncome*(1-incomeDropPct/100);
+
+  const ratioBase=netIncome>0?totalBase/netIncome*100:0;
+  const ratioRateStress=netIncome>0?totalStressRate/netIncome*100:0;
+  const ratioIncomeStress=incomeStressed>0?totalBase/incomeStressed*100:0;
+  const ratioDouble=incomeStressed>0?totalStressRate/incomeStressed*100:0;
+  const runway=totalBase>0?reserveFund/totalBase:0;
+
+  return {netIncome,bonusAnnual,loanAmount,rate,termYears,otherLoans,reserveFund,dualIncome,bonusDependent,
+    rateType,rateStressAdd,effectiveRateStressAdd,incomeDropPct,basePayment,stressPayment,totalBase,totalStressRate,incomeStressed,
+    ratioBase,ratioRateStress,ratioIncomeStress,ratioDouble,runway};
 }
 
-function fieldsOk(){
-  const ok=num("grossIncome")>0 && num("netMonthlyIncome")>0 && num("consideredPrice")>0 && num("livingCostMonthly")>0;
-  $("#warn2").classList.toggle("show",!ok);
-  return ok;
+function buildScenario(){
+  const c=computeAll();
+  const rateStressLabel=c.rateType==="fixed"
+    ? `金利上昇耐性（全期間固定のため影響なし・返済負担率 ${c.ratioRateStress.toFixed(1)}%）`
+    : `金利上昇耐性（+${c.rateStressAdd}%時の返済負担率 ${c.ratioRateStress.toFixed(1)}%）`;
+  const items=[
+    {key:"rateStress",label:rateStressLabel,weight:25,points:bandRatio(c.ratioRateStress,[25,30,35,40],[100,75,50,25])},
+    {key:"incomeStress",label:`収入減少耐性（-${c.incomeDropPct}%時の返済負担率 ${c.ratioIncomeStress.toFixed(1)}%）`,weight:25,points:bandRatio(c.ratioIncomeStress,[25,30,35,40],[100,75,50,25])},
+    {key:"double",label:(c.rateType==="fixed"?`複合ストレス耐性（固定金利のため収入減少のみ反映 ${c.ratioDouble.toFixed(1)}%）`:`複合ストレス耐性（金利上昇＋収入減少 ${c.ratioDouble.toFixed(1)}%）`),weight:20,points:bandRatio(c.ratioDouble,[30,35,40,45],[100,75,50,25])},
+    {key:"reserve",label:`生活防衛資金の厚み（返済維持可能 約${c.runway.toFixed(1)}ヶ月）`,weight:20,points:bandRunway(c.runway)},
+    {key:"structure",label:"収入構成の安定性（収入源・ボーナス依存度）",weight:10,points:bandStructure(c.dualIncome,c.bonusDependent)}
+  ];
+  const totalScore=Math.round(items.reduce((s,i)=>s+i.weight*i.points/100,0));
+
+  const condA={ok:c.ratioBase<=35,label:"現在の返済負担率が過大でない",detail:`目安35%以内 ／ 現在 ${c.ratioBase.toFixed(1)}%`};
+  const condB={ok:c.ratioDouble<=50,label:"金利上昇＋収入減少が重なっても返済負担率が過大にならない",detail:`目安50%以内 ／ 複合ストレス時 ${c.ratioDouble.toFixed(1)}%`};
+  const condC={ok:c.runway>=3,label:"返済とは別に、最低3ヶ月分の生活防衛資金がある",detail:`目安3ヶ月以上 ／ 現在 約${c.runway.toFixed(1)}ヶ月`};
+  const allPass=condA.ok && condB.ok && condC.ok;
+
+  return {...c,items,totalScore,condA,condB,condC,allPass};
 }
 
-function readInputs(){
-  return {
-    grossIncome:num("grossIncome"),
-    netMonthlyIncome:num("netMonthlyIncome"),
-    bonusAnnual:num("bonusAnnual"),
-    currentAssets:num("currentAssets"),
-    consideredPrice:num("consideredPrice"),
-    downPayment:num("downPayment"),
-    livingCostMonthly:num("livingCostMonthly"),
-    futureExpenseMonthly:num("futureExpenseMonthly"),
-    rateType:($('input[name="rateType"]:checked')||{}).value||"variable"
-  };
+function scoreBand(score){
+  if(score>=85) return "非常に良い";
+  if(score>=75) return "合格ライン";
+  if(score>=50) return "慎重に比較";
+  return "見送り候補";
 }
 
-function computeCore(inputs){
-  const netAnnualIncome=inputs.netMonthlyIncome*12+inputs.bonusAnnual;
-  const freeAnnualCashFlow=netAnnualIncome-(inputs.livingCostMonthly+inputs.futureExpenseMonthly)*12;
-  const k=pmt(1,BASE_RATE,TERM_YEARS);
-  return {netAnnualIncome,freeAnnualCashFlow,k};
+function verdictInfo(s){
+  if(!s.allPass) return {title:"待つべき状態",sub:"絶対条件が未クリアです",tier:"wait"};
+  if(s.totalScore>=75) return {title:"今の計画なら進めやすい",sub:"合格ラインの余裕度です",tier:"go"};
+  if(s.totalScore>=50) return {title:"進められるが要確認",sub:"余裕度は限定的です",tier:"check"};
+  return {title:"要注意",sub:"絶対条件はクリアも、余裕が乏しい状態です",tier:"caution"};
 }
+function verdictLabel(s){ return verdictInfo(s).title; }
 
-function loanAmountForPrice(price,downPayment){
-  return Math.max(0,price*(1+COST_RATE)-downPayment);
+function reasonsFor(s){
+  const r=[];
+  r.push((s.condA.ok?"○ ":"× ")+s.condA.label+"（"+s.condA.detail+"）");
+  r.push((s.condB.ok?"○ ":"× ")+s.condB.label+"（"+s.condB.detail+"）");
+  r.push((s.condC.ok?"○ ":"× ")+s.condC.label+"（"+s.condC.detail+"）");
+  const weakest=[...s.items].sort((a,b)=>a.points-b.points)[0];
+  if(weakest && weakest.points<75) r.push(`特に見直したいのは「${weakest.label}」です。`);
+  if(s.bonusDependent) r.push("ボーナス払いを利用予定です。ボーナス減額・不支給時の代替手段も想定しておきましょう。");
+  if(!s.dualIncome) r.push("収入源が1つのため、収入減少シナリオの影響を受けやすい構成です。");
+  if(s.rateType==="fixed") r.push("全期間固定金利のため、金利上昇による返済額の変動リスクは抑えられています。");
+  return r;
 }
-
-function priceForRatio(ratio,core,downPayment){
-  if(core.freeAnnualCashFlow<=0||core.k<=0) return downPayment/(1+COST_RATE);
-  const loan=ratio*core.freeAnnualCashFlow/(12*core.k);
-  return Math.max(0,(loan+downPayment)/(1+COST_RATE));
-}
-
-function ratioForPrice(price,core,downPayment){
-  if(core.freeAnnualCashFlow<=0) return Infinity;
-  const loan=loanAmountForPrice(price,downPayment);
-  return (12*core.k*loan)/core.freeAnnualCashFlow;
-}
-
-function computeCaseMetrics(price,inputs,core){
-  const loan=loanAmountForPrice(price,inputs.downPayment);
-  const monthlyPayment=core.k*loan;
-  const balanceAt10=remainingBalance(loan,BASE_RATE,TERM_YEARS,10);
-  const stressRate10=inputs.rateType==="fixed"?BASE_RATE:FUTURE_RATE;
-  const stressPayment10=pmt(balanceAt10,stressRate10,TERM_YEARS-10);
-  const annualMarginStress=core.freeAnnualCashFlow-stressPayment10*12;
-  const postPurchaseCash=inputs.currentAssets-inputs.downPayment-price*COST_RATE;
-  const resaleValueSevere=price*(1-SEVERE_PRICE_DROP);
-  const saleMarginSevere=resaleValueSevere-balanceAt10;
-  return {price,loan,monthlyPayment,balanceAt10,annualMarginStress,postPurchaseCash,saleMarginSevere};
-}
-
-function determineZone(inputs,core){
-  const ratio=ratioForPrice(inputs.consideredPrice,core,inputs.downPayment);
-  let zone= ratio<=RATIO_GREEN?"green": ratio<=RATIO_BLUE?"blue": ratio<=RATIO_PURPLE?"purple":"red";
-
-  const loan=loanAmountForPrice(inputs.consideredPrice,inputs.downPayment);
-  const severePayment=pmt(loan,SEVERE_RATE,TERM_YEARS);
-  const severeAnnualIncome=core.netAnnualIncome*(1-SEVERE_INCOME_DROP);
-  const severeCashFlow=severeAnnualIncome-(inputs.livingCostMonthly+inputs.futureExpenseMonthly)*12-severePayment*12;
-  const severeFail=severeCashFlow<0;
-
-  const baseAnnualPayment=core.k*loan*12;
-  const grossRatio=inputs.grossIncome>0?baseAnnualPayment/inputs.grossIncome:0;
-  const grossFail=grossRatio>GROSS_RATIO_LIMIT;
-
-  const postCash=inputs.currentAssets-inputs.downPayment-inputs.consideredPrice*COST_RATE;
-  const cashFail=postCash<0;
-
-  if(zone!=="red" && (severeFail||grossFail||cashFail)) zone="red";
-  return {zone,ratio,severeFail,grossFail,cashFail};
-}
-
-let lastResult=null;
 
 function renderResult(){
-  const inputs=readInputs();
-  const core=computeCore(inputs);
-  const zoneInfo=determineZone(inputs,core);
-  const meta=ZONE_META[zoneInfo.zone];
+  const s=buildScenario();
+  currentScenario=s;
+  $("#resultScore").textContent=s.totalScore;
+  const v=verdictInfo(s);
+  $("#resultVerdict").textContent=v.title;
+  $("#resultSub").textContent=v.sub+"（スコア評価："+scoreBand(s.totalScore)+"）";
 
-  $("#zoneBanner").className="zoneBanner "+zoneInfo.zone;
-  $("#zoneEmoji").textContent=meta.emoji;
-  $("#zoneLabel").textContent=meta.label;
-  $("#zoneDesc").textContent=meta.desc;
+  $("#condList").innerHTML=[s.condA,s.condB,s.condC].map(c=>`
+    <div class="condItem ${c.ok?"ok":"ng"}">
+      <div class="mark">${c.ok?"○":"×"}</div>
+      <div><b>${c.label}</b><span>${c.detail}</span></div>
+    </div>`).join("");
 
-  $("#statPrice").innerHTML=Math.round(inputs.consideredPrice).toLocaleString("ja-JP")+"<small> 万円</small>";
+  $("#scoreBreakdown").innerHTML=s.items.map(i=>`
+    <div class="scoreRow">
+      <div class="scoreMeta"><span class="scoreLabel">${i.label}</span><span class="scorePts">${Math.round(i.weight*i.points/100)} / ${i.weight}点</span></div>
+      <div class="barTrack"><div class="barFill" style="width:${i.points}%"></div></div>
+    </div>`).join("");
 
-  const p1=roundTo(priceForRatio(RATIO_GREEN,core,inputs.downPayment),10);
-  const p2=roundTo(priceForRatio(RATIO_BLUE,core,inputs.downPayment),10);
-  const p3=roundTo(priceForRatio(RATIO_PURPLE,core,inputs.downPayment),10);
+  $("#reasonList").innerHTML=reasonsFor(s).map(t=>`<li>${t}</li>`).join("");
+}
 
-  $("#statRange").textContent=`${p1.toLocaleString("ja-JP")}万円 〜 ${p2.toLocaleString("ja-JP")}万円`;
+function renderAutoDecision(){
+  choiceFinal="";
+  const s=currentScenario||buildScenario();
+  const v=verdictInfo(s);
+  $("#autoDecisionTitle").textContent=v.title;
+  $("#autoDecisionText").textContent=(s.allPass
+    ? `絶対条件はすべてクリアしています。余裕度スコアは${s.totalScore}点（${scoreBand(s.totalScore)}）です。`
+    : `絶対条件のうち、${[s.condA,s.condB,s.condC].filter(c=>!c.ok).map(c=>c.label).join("・")}が未達です。`);
+  $("#autoDecision").style.borderColor=s.allPass?"#d2b16d":"#efc1bb";
+  $("#waitStrategy").classList.toggle("show",!s.allPass);
+  if(!s.allPass && !$("#waitImprove").value){
+    const target=(s.totalBase*3).toFixed(0);
+    $("#waitImprove").value=`生活防衛資金を返済3ヶ月分（目安 約${target}万円）まで積み増す。可能であれば借入額の見直しも検討する。`;
+  }
+}
 
-  const margin=p2-inputs.consideredPrice;
-  const marginEl=$("#statMargin");
-  marginEl.textContent=yen(margin);
-  marginEl.className="marginVal "+(margin>=0?"plus":"minus");
+function renderCompare(){
+  $("#compareBody").innerHTML=saved.map((p,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${p.loanAmount}万円 / ${p.rate}% / ${p.termYears}年</td>
+      <td>${p.totalScore}</td>
+      <td>${p.allPass?"○":"×"}</td>
+      <td><span class="status ${p.tier}">${p.title}</span></td>
+    </tr>`).join("") || `<tr><td colspan="5" class="small" style="text-align:center;padding:14px">まだ保存されたシナリオはありません</td></tr>`;
+}
 
-  const cases=[
-    {label:"安心重視ライン",price:p1,cls:""},
-    {label:"現在の検討価格",price:inputs.consideredPrice,cls:"current"},
-    {label:"住宅優先ライン",price:p3,cls:""}
-  ].map(c=>({...c,m:computeCaseMetrics(c.price,inputs,core)}));
-
-  const rows=[
-    {label:"価格",get:c=>Math.round(c.price).toLocaleString("ja-JP")+"万円"},
-    {label:"月返済",get:c=>yen(c.m.monthlyPayment)},
-    {label:"金利ストレス時<br>年間余力",get:c=>yen(c.m.annualMarginStress)},
-    {label:"購入後手元資金",get:c=>yen(c.m.postPurchaseCash)},
-    {label:"10年後残債",get:c=>yen(c.m.balanceAt10)},
-    {label:"価格下落時<br>売却余力",get:c=>yen(c.m.saleMarginSevere)}
-  ];
-
-  $("#compareBody").innerHTML=rows.map(r=>`
-    <tr><td>${r.label}</td>${cases.map(c=>`<td class="${c.cls}">${r.get(c)}</td>`).join("")}</tr>
-  `).join("");
-
-  lastResult={inputs,core,zoneInfo,meta,p1,p2,p3,margin,cases};
+function saveCurrentScenario(){
+  const s=currentScenario||buildScenario();
+  const auto=verdictInfo(s);
+  const title=choiceFinal==="GO"?"GO候補として進める":choiceFinal==="WAIT"?"それでも待つ":auto.title;
+  const tier=choiceFinal==="GO"?"go":choiceFinal==="WAIT"?"wait":auto.tier;
+  saved.push({loanAmount:s.loanAmount,rate:s.rate,termYears:s.termYears,totalScore:s.totalScore,allPass:s.allPass,title,tier});
+  if(saved.length>5) saved.shift();
+  localStorage.setItem("hbg_stress_v13_saved",JSON.stringify(saved));
 }
 
 function summaryText(){
-  const s=lastResult||(renderResult(),lastResult);
-  const lines=[
-    "【住宅選択余白チェック v13】",
-    `現在検討価格：${Math.round(s.inputs.consideredPrice).toLocaleString("ja-JP")}万円`,
-    `バランスレンジ：${s.p1.toLocaleString("ja-JP")}万円 〜 ${s.p2.toLocaleString("ja-JP")}万円`,
-    `住宅選択余白：${yen(s.margin)}`,
-    `位置：${s.meta.emoji} ${s.meta.label}`,
+  const s=currentScenario||buildScenario();
+  const v=verdictInfo(s);
+  return [
+    "【住宅購入ストレステスト v13】",
+    `借入 ${s.loanAmount}万円 / 金利 ${s.rate}% / ${s.termYears}年`,
+    `余裕度スコア：${s.totalScore}点（${scoreBand(s.totalScore)}）`,
+    `資金体力の判定：${v.title}`,
+    `絶対条件：${s.allPass?"クリア":"未達あり"}`,
     "",
-    "※この結果は購入の可否を判定・保証するものではありません。比較のための目安です。"
-  ];
-  return lines.join("\n");
+    ...reasonsFor(s)
+  ].join("\n");
 }
 
 $("#start").addEventListener("click",()=>show(2));
 $("#next").addEventListener("click",()=>{
-  if(step===2 && !fieldsOk()) return;
-  if(step===3) return;
+  if(step<7 && !fieldsOk(step)) return;
+  if(step===7){ return; }
   show(step+1);
 });
 $("#back").addEventListener("click",()=>show(step-1));
 
+$$(".segBtn").forEach(l=>{
+  l.addEventListener("click",()=>{
+    const name=l.querySelector("input").name;
+    $$(`.segBtn`).forEach(o=>{ if(o.querySelector("input").name===name) o.classList.remove("on"); });
+    l.classList.add("on");
+  });
+});
 $$('.choice input[type=radio]').forEach(r=>{
   r.addEventListener("change",()=>{
     $$(`.choice input[name="${r.name}"]`).forEach(o=>o.closest(".choice").classList.toggle("selected",o.checked));
   });
 });
 
-$("#ctaDetail").addEventListener("click",()=>{ $("#ctaNote").classList.add("show"); });
+$("#chooseGo").addEventListener("click",()=>{ choiceFinal="GO"; $("#waitStrategy").classList.remove("show"); });
+$("#chooseWait").addEventListener("click",()=>{ choiceFinal="WAIT"; $("#waitStrategy").classList.add("show"); });
+
+$("#saveScenario").addEventListener("click",()=>{ saveCurrentScenario(); show(7); });
 $("#another").addEventListener("click",()=>show(2));
 $("#reset").addEventListener("click",()=>{
-  if(!confirm("入力内容をクリアして最初からやり直します。よろしいですか？")) return;
-  $$("input[type=number]").forEach(i=>i.value="");
+  if(!confirm("保存したシナリオも含めて最初からやり直します。よろしいですか？")) return;
+  saved=[]; localStorage.removeItem("hbg_stress_v13_saved");
+  $$("input[type=text],input[type=number],input[type=date],textarea").forEach(i=>i.value="");
+  $$("input[type=checkbox],input[type=radio]").forEach(i=>i.checked=false);
   $$(".choice").forEach(c=>c.classList.remove("selected"));
-  $('input[name="rateType"][value="variable"]').checked=true;
-  $('input[name="rateType"][value="variable"]').closest(".choice").classList.add("selected");
-  $("#ctaNote").classList.remove("show");
+  $$(".segBtn").forEach(l=>l.classList.remove("on"));
+  $('.segBtn input[value="2.0"]').checked=true; $('.segBtn input[value="2.0"]').closest(".segBtn").classList.add("on");
+  $('.segBtn input[value="20"]').checked=true; $('.segBtn input[value="20"]').closest(".segBtn").classList.add("on");
+  syncRateType();
+  choiceFinal="";
   show(1);
 });
 $("#copy").addEventListener("click",async ()=>{
@@ -468,7 +639,7 @@ $("#copy").addEventListener("click",async ()=>{
   }catch{
     $("#copy").textContent="コピーできませんでした";
   }
-  setTimeout(()=>{ $("#copy").textContent="結果をコピーする"; },1800);
+  setTimeout(()=>{ $("#copy").textContent="診断結果をコピー"; },1800);
 });
 
 show(1);
