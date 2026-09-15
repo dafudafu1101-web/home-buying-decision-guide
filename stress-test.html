@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111111">
-<title>3分 住宅予算・資産配分チェック｜ADCAST</title>
+<title>3分 住宅予算の決め方チェック｜ADCAST</title>
 <style>
 :root{
   --bg:#f4f1eb;--paper:#fff;--ink:#111;--muted:#6b665f;--line:#ddd7cd;
@@ -15,23 +15,28 @@
 button,input,select{font:inherit}.app{max-width:620px;margin:0 auto;min-height:100vh;background:#fff}
 .top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 18px 10px}
 .brand{display:flex;justify-content:space-between;align-items:center}.brand b{font-size:20px;letter-spacing:.06em}.brand span{font-size:14px}.progress{height:5px;border-radius:99px;background:#ece8df;margin-top:10px;overflow:hidden}.progress i{display:block;height:100%;width:33%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:.2s}
-.screen{display:none;padding:24px 20px 130px;min-height:calc(100vh - 66px)}.screen.active{display:block}.hero{display:flex;flex-direction:column;min-height:calc(100svh - 92px);justify-content:space-between}.heroCard{border:1px solid var(--line);border-radius:22px;padding:26px 22px;background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.05)}
-.kicker{font-size:13px;font-weight:900;letter-spacing:.11em;color:var(--gold)}h1,h2,h3{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;line-height:1.25;margin:.35em 0 .55em}h1{font-size:38px;letter-spacing:-.035em}h2{font-size:29px}h3{font-size:20px}.lead{font-size:15px;line-height:1.85;color:#3f3b35}.small{font-size:12px;line-height:1.65;color:var(--muted)}
+.screen{display:none;padding:24px 20px 140px;min-height:calc(100vh - 66px)}.screen.active{display:block}.hero{display:flex;flex-direction:column;min-height:calc(100svh - 92px);justify-content:space-between}.heroCard{border:1px solid var(--line);border-radius:22px;padding:26px 22px;background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.05)}
+.kicker{font-size:13px;font-weight:900;letter-spacing:.11em;color:var(--gold)}h1,h2,h3{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;line-height:1.25;margin:.35em 0 .55em}h1{font-size:37px;letter-spacing:-.035em}h2{font-size:27px}h3{font-size:19px}.lead{font-size:15px;line-height:1.85;color:#3f3b35}.small{font-size:12px;line-height:1.65;color:var(--muted)}
 .heroBottom{background:var(--black);color:#fff;margin:22px -20px -24px;padding:24px 20px calc(28px + env(safe-area-inset-bottom))}.heroGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.heroPoint{border:1px solid #6f6247;border-radius:15px;padding:14px 6px;text-align:center;font-size:12px}.heroPoint b{display:block;font-size:23px;margin-bottom:6px}
 .primary,.secondary,.ghost{width:100%;border:none;border-radius:14px;min-height:54px;padding:14px 16px;font-weight:900}.primary{background:linear-gradient(90deg,#a8781f,#d5b35e);color:#111}.secondary{background:#111;color:#fff}.ghost{background:#fff;color:#111;border:1px solid var(--line)}
 .stepLabel{display:inline-block;padding:5px 10px;background:#111;color:#fff;font-size:12px;font-weight:900;letter-spacing:.12em}.sectionNote{background:var(--goldsoft);border-left:4px solid var(--gold);padding:13px 14px;border-radius:10px;font-size:13px;line-height:1.65;margin:14px 0 18px}.groupTitle{font-weight:900;font-size:13px;margin:22px 0 8px;color:#2d2a26}.field{margin:14px 0}.field label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}.unit{font-weight:500;color:var(--muted);font-size:12px}.hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.55}input[type=number],select{width:100%;border:1px solid #d5d0c7;border-radius:12px;padding:13px 14px;background:#fff;min-height:50px;font-size:16px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.warn{display:none;color:var(--red);background:#fff1f0;border:1px solid #f0bbb5;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.55;margin-top:10px}.warn.show{display:block}
 details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:18px}summary{font-weight:900;cursor:pointer}.radioGrid{display:grid;gap:9px;margin-top:12px}.choice{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px}.choice input{width:18px;height:18px;accent-color:var(--gold)}
-.resultHero{border-radius:19px;padding:20px;color:#fff;margin:12px 0 16px}.resultHero.green{background:linear-gradient(135deg,#228c5e,#16744a)}.resultHero.blue{background:linear-gradient(135deg,#3a78c6,#255fa8)}.resultHero.purple{background:linear-gradient(135deg,#8d5bb8,#7346a1)}.resultHero.red{background:linear-gradient(135deg,#cc513d,#b42318)}.resultHero .emoji{font-size:35px}.resultHero .title{font:700 29px/1.3 "Yu Mincho","Hiragino Mincho ProN",serif;margin:4px 0}.resultHero p{font-size:14px;line-height:1.7;margin:8px 0 0}
-.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}.metric{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.metric b{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.metric strong{font-family:Georgia,"Yu Mincho",serif;font-size:26px}.metric p{font-size:11px;line-height:1.5;color:var(--muted);margin:6px 0 0}
-.strategyWrap{display:grid;gap:13px;margin-top:12px}.strategy{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff;position:relative}.strategy.current{border:2px solid var(--gold);box-shadow:0 8px 28px rgba(184,138,46,.14)}.strategy.current:before{content:"今の検討価格に近い";position:absolute;right:12px;top:-11px;background:var(--gold);color:#111;font-size:10px;font-weight:900;border-radius:999px;padding:5px 9px}.strategyHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.strategyName{font-weight:900;font-size:18px}.strategyPrice{font:700 25px/1.2 Georgia,"Yu Mincho",serif}.strategyDesc{font-size:13px;line-height:1.65;color:#3f3b35;margin:8px 0}.trade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.trade div{border-radius:10px;padding:10px;font-size:11px;line-height:1.5}.gain{background:#eef8f2}.cost{background:#fff4ee}.trade b{display:block;font-size:11px;margin-bottom:3px}.strategyMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{font-size:10px;font-weight:800;background:#f3f1ec;border-radius:999px;padding:5px 8px}
-.choiceMargin{background:#111;color:#fff;border-radius:18px;padding:18px;margin:17px 0}.choiceMargin .big{font:700 34px/1.2 Georgia,"Yu Mincho",serif;color:#e1bf6e}.choiceMargin p{font-size:13px;line-height:1.7;color:#eee;margin:7px 0 0}
-.explain{border:1px solid var(--line);border-radius:16px;padding:15px;margin:12px 0}.explain h3{font-family:inherit;font-size:15px;margin:0 0 7px}.explain p{font-size:12px;line-height:1.7;color:#4d4942;margin:0}.explain strong{color:#111}
-.detailsToggle{margin-top:18px}.detailCards{display:grid;gap:9px;margin-top:12px}.detailCard{border:1px solid var(--line);border-radius:12px;padding:12px}.detailCard b{font-size:12px}.detailCard strong{display:block;font-size:20px;margin:5px 0}.detailCard span{font-size:11px;line-height:1.55;color:var(--muted)}
+.hidden{display:none!important}
+.alertBox{display:none;background:#fff1f0;border:1px solid #eeb3ab;color:var(--red);border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.65;margin-top:12px;font-weight:700}.alertBox.show{display:block}
+.liveCalc{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px;background:var(--soft)}.liveCalc .row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0}.liveCalc .row b{font-weight:800}.liveCalc .row strong{font-family:Georgia,"Yu Mincho",serif;font-size:15px}
+.resultHero{border-radius:19px;padding:20px;color:#fff;margin:12px 0 16px}.resultHero.green{background:linear-gradient(135deg,#228c5e,#16744a)}.resultHero.blue{background:linear-gradient(135deg,#3a78c6,#255fa8)}.resultHero.purple{background:linear-gradient(135deg,#8d5bb8,#7346a1)}.resultHero.red{background:linear-gradient(135deg,#cc513d,#b42318)}.resultHero .emoji{font-size:35px}.resultHero .title{font:700 27px/1.3 "Yu Mincho","Hiragino Mincho ProN",serif;margin:4px 0}.resultHero p{font-size:14px;line-height:1.7;margin:8px 0 0}
+.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.metric{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.metric b{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.metric strong{font-family:Georgia,"Yu Mincho",serif;font-size:24px;display:block}.metric p{font-size:11px;line-height:1.5;color:var(--muted);margin:6px 0 0}
+.strategyWrap{display:grid;gap:13px;margin-top:12px}.strategy{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff;position:relative}.strategy.current{border:2px solid var(--gold);box-shadow:0 8px 28px rgba(184,138,46,.14)}.strategy.current:before{content:attr(data-badge);position:absolute;right:12px;top:-11px;background:var(--gold);color:#111;font-size:10px;font-weight:900;border-radius:999px;padding:5px 9px}.strategyHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.strategyName{font-weight:900;font-size:17px}.strategyPrice{font:700 24px/1.2 Georgia,"Yu Mincho",serif}.strategyDesc{font-size:13px;line-height:1.65;color:#3f3b35;margin:8px 0}.trade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.trade div{border-radius:10px;padding:10px;font-size:11px;line-height:1.5}.gain{background:#eef8f2}.cost{background:#fff4ee}.trade b{display:block;font-size:11px;margin-bottom:3px}.strategyMeta{display:grid;gap:6px;margin-top:10px}.pill{font-size:10.5px;font-weight:800;background:#f3f1ec;border-radius:10px;padding:7px 9px;display:flex;justify-content:space-between}
+.choiceMargin{background:#111;color:#fff;border-radius:18px;padding:18px;margin:17px 0}.choiceMargin .big{font:700 32px/1.2 Georgia,"Yu Mincho",serif;color:#e1bf6e}.choiceMargin p{font-size:13px;line-height:1.7;color:#eee;margin:7px 0 0}
+.overCard{background:#fff8ea;border:1px solid #ecd19c;border-radius:16px;padding:17px;margin:16px 0}.overCard .kicker{color:#9a6b13}.overCard h3{font-size:16px;margin:6px 0 8px}.overCard p{font-size:12.5px;line-height:1.75;color:#4d4232;margin:0 0 6px}
+.detailsToggle{margin-top:18px}.detailCards{display:grid;gap:9px;margin-top:12px}.detailCard{border:1px solid var(--line);border-radius:12px;padding:12px}.detailCard.ref{background:var(--soft)}.detailCard b{font-size:12px}.detailCard strong{display:block;font-size:19px;margin:5px 0}.detailCard span{font-size:11px;line-height:1.55;color:var(--muted)}
+.equityCard{border:1px solid var(--line);border-radius:16px;padding:16px;margin:16px 0}.equityCard h3{font-size:16px;margin:0 0 6px}.equityCard .lead{font-size:12.5px;margin-bottom:10px}.equityRow{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:9px 0;font-size:12.5px}.equityRow:first-of-type{border-top:none}.equityRow strong{font-family:Georgia,"Yu Mincho",serif;font-size:16px}.equityExplain{font-size:11.5px;line-height:1.75;color:#4d4942;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.netWorthList{display:grid;gap:10px;margin-top:12px}.netWorthCard{border:1px solid var(--line);border-radius:14px;padding:13px}.netWorthCard b{font-size:12.5px;display:block;margin-bottom:6px}.netWorthCard .nwGrid{display:grid;gap:4px;font-size:11.5px;color:var(--muted)}.netWorthCard .nwFinal{font-family:Georgia,"Yu Mincho",serif;font-size:18px;color:var(--ink);margin-top:5px}
 .useGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.useCard{border:1px solid var(--line);border-radius:16px;padding:14px}.useCard .icon{font-size:24px}.useCard h3{font-family:inherit;font-size:15px;margin:5px 0 8px}.useCard .pro,.useCard .con{font-size:11px;line-height:1.55;margin:6px 0}.useCard .pro b{color:var(--green)}.useCard .con b{color:#8b5b17}
 .selectPrompt{background:var(--soft);border-radius:16px;padding:17px;margin:20px 0}.selectPrompt h3{font-family:inherit;font-size:16px;margin:0 0 10px}.strategyButtons{display:grid;gap:8px}.strategyButtons button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px;text-align:left;font-weight:800}.strategyButtons button.on{background:#111;color:#fff;border-color:#111}
-.cta{background:linear-gradient(135deg,#151515,#282828);color:#fff;border-radius:19px;padding:20px;margin:18px 0}.cta .kicker{color:#e0bf70}.cta h2{font-size:25px;margin-top:5px}.cta p{font-size:13px;line-height:1.75;color:#ece9e3}.cta ul{padding-left:20px;font-size:12px;line-height:1.7;color:#e9e6df}.cta button{margin-top:8px}.ctaMsg{margin-top:10px;background:#222;border-radius:10px;padding:11px;font-size:12px;line-height:1.6;display:none}.ctaMsg.show{display:block}
-.disclaimer{font-size:11px;line-height:1.65;color:var(--muted);margin:14px 0}.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:0;width:min(620px,100%);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px}.nav button{flex:1}.screen[data-step="3"]{padding-bottom:40px}.screen[data-step="3"]~.nav{}
-@media(max-width:480px){h1{font-size:33px}.screen{padding:20px 16px 122px}.heroBottom{margin-left:-16px;margin-right:-16px}.summaryGrid,.useGrid{grid-template-columns:1fr}.trade{grid-template-columns:1fr}.strategyHead{display:block}.strategyPrice{margin-top:5px}.two{grid-template-columns:1fr}.resultHero .title{font-size:26px}}
+.cta{background:linear-gradient(135deg,#151515,#282828);color:#fff;border-radius:19px;padding:20px;margin:18px 0}.cta .kicker{color:#e0bf70}.cta h2{font-size:23px;margin-top:5px}.cta p{font-size:13px;line-height:1.75;color:#ece9e3}.cta ul{padding-left:20px;font-size:12px;line-height:1.7;color:#e9e6df}.cta button{margin-top:8px}.ctaMsg{margin-top:10px;background:#222;border-radius:10px;padding:11px;font-size:12px;line-height:1.6;display:none}.ctaMsg.show{display:block}
+.disclaimer{font-size:11px;line-height:1.65;color:var(--muted);margin:14px 0}.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:0;width:min(620px,100%);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px}.nav button{flex:1}
+@media(max-width:480px){h1{font-size:31px}.screen{padding:20px 16px 130px}.heroBottom{margin-left:-16px;margin-right:-16px}.summaryGrid,.useGrid{grid-template-columns:1fr}.trade{grid-template-columns:1fr}.strategyHead{display:block}.strategyPrice{margin-top:5px}.two{grid-template-columns:1fr}.resultHero .title{font-size:24px}}
 </style>
 </head>
 <body>
@@ -42,10 +47,10 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
     <section class="screen active" data-step="1">
       <div class="hero">
         <div class="heroCard">
-          <div class="kicker">3分 住宅予算・資産配分チェック</div>
-          <h1>住宅に、どこまで<br>お金を使う？</h1>
-          <p class="lead">家を安くするための診断ではありません。東京で住まいと資産形成を両立するために、<b>住宅・現金・資産運用のどこにお金を置くか</b>を整理する入口です。</p>
-          <p class="small">簡易版では「安心重視・バランス・住宅優先」の3つの配分戦略を比較します。最終的に本当に大丈夫かは、教育費・老後・保険・レジャーなどを含む詳細ライフプランで確認します。</p>
+          <div class="kicker">住宅予算の決め方チェック</div>
+          <h1>今の予算、<br>本当にちょうどいい？</h1>
+          <p class="lead">住宅に使う・現金を残す・運用に回す。<b>3つを比べて、自分たちに合う住宅予算の考え方</b>を3分で整理します。</p>
+          <p class="small">簡易版では「余白を厚く残す・住宅と余白を両立する・住宅への配分を高める」の3つの配分戦略を比較します。最終的に本当に大丈夫かは、教育費・老後・保険・レジャーなどを含む詳細ライフプランで確認します。</p>
         </div>
         <div class="heroBottom">
           <div class="heroGrid">
@@ -69,14 +74,28 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <div class="field"><label>主な借入予定者の年齢 <span class="unit">（歳）</span></label><input id="age" type="number" inputmode="numeric" placeholder="例）35"></div>
         <div class="field"><label>お子さまの人数 <span class="unit">（人）</span></label><input id="children" type="number" inputmode="numeric" min="0" max="6" placeholder="例）2"></div>
       </div>
-      <div class="field"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">子どもはいない</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">簡易版では年齢帯だけを使います。私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
+      <div class="field" id="childStageWrap"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">子どもはいない</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">簡易版では年齢帯だけを使います。私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
+
+      <div class="groupTitle">借入方法</div>
+      <div class="radioGrid" style="margin-top:0">
+        <label class="choice"><input type="radio" name="borrowMethod" value="single" checked>単独で借り入れる</label>
+        <label class="choice"><input type="radio" name="borrowMethod" value="pair">ペアローン・収入合算で借り入れる</label>
+      </div>
 
       <div class="groupTitle">家計と住宅</div>
       <div class="field"><label>世帯年収 <span class="unit">（万円・額面）</span></label><input id="grossIncome" type="number" inputmode="decimal" placeholder="例）1500"></div>
       <div class="field"><label>現在の金融資産 <span class="unit">（万円）</span></label><input id="assets" type="number" inputmode="decimal" placeholder="例）1500"></div>
       <div class="field"><label>現在検討している物件価格 <span class="unit">（万円）</span></label><input id="price" type="number" inputmode="decimal" placeholder="例）9000"></div>
-      <div class="field"><label>予定頭金 <span class="unit">（万円）</span></label><input id="down" type="number" inputmode="decimal" placeholder="例）0"></div>
+      <div class="field"><label>借入予定額 <span class="unit">（万円）</span></label><input id="loanAmount" type="number" inputmode="decimal" placeholder="例）6500"><div class="hint">頭金ではなく、実際に借り入れる予定額を入力します。諸費用を含めて借りる場合は、物件価格を超える金額でも構いません。</div></div>
       <div class="field"><label>住宅費を除く月間生活費 <span class="unit">（万円）</span></label><input id="living" type="number" inputmode="decimal" placeholder="例）35"></div>
+
+      <div class="liveCalc" id="liveCalc">
+        <div class="row"><span>総取得額（物件価格＋諸費用7%）</span><strong id="liveTotalCost">—</strong></div>
+        <div class="row"><span>必要自己資金</span><strong id="liveEquity">—</strong></div>
+        <div class="row"><span>購入後金融資産</span><strong id="livePostAssets">—</strong></div>
+      </div>
+      <div class="sectionNote hidden" id="loanExceedsNote"><b>諸費用も借入でまかなう計画です</b><br>借入予定額が物件価格を超えているため、諸費用の一部または全部を借入でまかなう計画になります。</div>
+      <div class="alertBox" id="insufficientNote"><b>必要自己資金が現在の金融資産を超えています。</b><br>このままでは自己資金が不足する可能性があります。借入予定額・物件価格・頭金代わりの資金計画を見直すことをおすすめします。</div>
 
       <div class="sectionNote"><b>手取りは自動で概算</b><br>額面年収から簡易的に推計します。実際の手取りが分かる場合は詳細設定で上書きできます。</div>
 
@@ -91,9 +110,10 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <label class="choice"><input type="radio" name="rateType" value="variable" checked>変動金利・期間固定</label>
           <label class="choice"><input type="radio" name="rateType" value="fixed">全期間固定金利</label>
         </div>
+        <p class="hint">固定金利を選ぶと、将来の金利上昇シナリオは返済額に反映しません。</p>
       </details>
 
-      <div class="sectionNote"><b>簡易計算の前提</b><br>購入諸費用は物件価格の<b>7%</b>で概算。変動金利は10年後4%のストレスも比較します。実際の審査・金利・団信条件は金融機関により異なります。</div>
+      <div class="sectionNote"><b>簡易計算の前提</b><br>購入諸費用は物件価格の<b>7%</b>で概算。変動金利は10年後<b>3%</b>への上昇を標準シナリオとして比較し、より厳しく見る場合の参考として<b>4%</b>も表示します（将来の金利を予測・保証するものではありません）。実際の審査・金利・団信条件は金融機関により異なります。</div>
       <div class="warn" id="warn"></div>
     </section>
 
@@ -103,24 +123,47 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="resultHero" id="resultHero"><div class="emoji" id="zoneEmoji">🔵</div><div class="title" id="zoneTitle">バランス寄り</div><p id="zoneText"></p></div>
 
       <div class="summaryGrid">
-        <div class="metric"><b>現在の住宅価格</b><strong id="currentPrice">—</strong><p id="multipleText">年収倍率を表示</p></div>
+        <div class="metric"><b>現在検討している価格</b><strong id="currentPrice">—</strong><p id="multipleText">年収倍率を表示</p></div>
         <div class="metric"><b>概算の年間手取り</b><strong id="netText">—</strong><p>額面年収からの簡易推計。詳細設定で上書き可。</p></div>
+        <div class="metric"><b>必要自己資金</b><strong id="equityText">—</strong><p>総取得額（物件価格＋諸費用7%）から借入予定額を引いた金額です。</p></div>
+        <div class="metric"><b>購入後金融資産</b><strong id="postAssetsText">—</strong><p>現在の金融資産から必要自己資金を引いた概算です。</p></div>
       </div>
+      <div class="alertBox" id="insufficientNoteResult"><b>必要自己資金が現在の金融資産を超えています。</b><br>資金計画の見直しをおすすめします。</div>
 
-      <div class="choiceMargin"><div class="kicker">住宅条件を上げる比較余地</div><div class="big" id="marginText">—</div><p id="marginDesc"></p></div>
+      <div class="choiceMargin"><div class="kicker">住宅への配分を高める比較ラインまで</div><div class="big" id="marginText">—</div><p id="marginDesc"></p></div>
 
-      <h2 style="font-size:24px;margin-top:26px">3つの資産配分戦略</h2>
+      <h2 style="font-size:23px;margin-top:26px">3つの資産配分戦略</h2>
       <p class="lead">価格の高低ではなく、<b>住宅・現金・運用にどう配分するか</b>の違いです。どれが正解ということではありません。</p>
       <div class="strategyWrap" id="strategies"></div>
 
+      <div class="overCard hidden" id="overCard">
+        <div class="kicker">ONE MORE STEP</div>
+        <h3>この価格は簡易チェックだけで決めず、詳細確認をおすすめします</h3>
+        <p>「買えない」という意味ではありません。教育費・私立や大学の学費・旅行やレジャー・車・保険・老後資金・昇給や退職金・資産運用まで含めて確認すると、見え方が変わることがあります。</p>
+      </div>
+
       <div class="detailsToggle">
         <details>
-          <summary>数字をもう少し詳しく見る</summary>
+          <summary>金利が上がった場合の余力を見る</summary>
           <div class="detailCards" id="detailCards"></div>
         </details>
       </div>
 
-      <h2 style="font-size:24px;margin-top:28px">余白を住宅以外に使うなら</h2>
+      <div class="equityCard hidden" id="equityCard">
+        <h3>自己資金、本当にこの金額を入れる？</h3>
+        <p class="lead" id="equityLead"></p>
+        <div class="equityRow"><span>月返済</span><strong id="eqPayment">—</strong></div>
+        <div class="equityRow"><span>購入後金融資産</span><strong id="eqAssets">—</strong></div>
+        <div class="equityRow"><span>総支払利息（返済期間全体）</span><strong id="eqInterest">—</strong></div>
+        <p class="equityExplain">自己資金を増やすと月返済と確定的な利息負担は減ります。一方で、現金・教育費・生活防衛資金・資産運用に回せる資金は減ります。住宅ローン金利を上回る運用成果が得られれば資産が増える可能性もありますが、投資収益は保証されません。</p>
+      </div>
+
+      <h2 style="font-size:23px;margin-top:28px">10年後、住宅にどのくらい純資産が残る？</h2>
+      <p class="lead">価格の変化を4パターンで比較します。将来の価格を予測・保証するものではありません。</p>
+      <div class="netWorthList" id="netWorthList"></div>
+      <p class="hint" id="netWorthNote"></p>
+
+      <h2 style="font-size:23px;margin-top:28px">余白を住宅以外に使うなら</h2>
       <p class="lead">住宅予算を抑えた場合も、現金を残すだけが正解ではありません。余白をどう働かせるかまで考えます。</p>
       <div class="useGrid">
         <div class="useCard"><div class="icon">💰</div><h3>現金として残す</h3><div class="pro"><b>メリット</b>教育・転職・病気などへの対応力が上がる</div><div class="con"><b>注意点</b>現金だけではインフレ時に実質価値が目減りすることも</div></div>
@@ -132,9 +175,9 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="selectPrompt">
         <h3>今の感覚に一番近いのは？</h3>
         <div class="strategyButtons">
-          <button data-choice="safe">🟢 住宅は抑えめにして、他の資産にも余白を残したい</button>
-          <button data-choice="balance">🔵 住宅条件と家計余力の両方を取りたい</button>
-          <button data-choice="housing">🟣 住宅を資産形成の中心にして、少し攻めたい</button>
+          <button data-choice="safe">🟢 住宅は抑えめにして、余白を厚く残したい</button>
+          <button data-choice="balance">🔵 住宅と余白のバランスを取りたい</button>
+          <button data-choice="housing">🟣 住宅への配分を高めて、資産性を取りにいきたい</button>
         </div>
       </div>
 
@@ -146,7 +189,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <button class="primary" id="ctaBtn">詳細ライフプランで確認する →</button><div class="ctaMsg" id="ctaMsg">簡易結果を引き継ぎ、人生全体のお金の配分を確認する想定です。予約・送信機能はまだ接続していません。</div>
       </div>
 
-      <p class="disclaimer">※本ツールは購入可否・借入可能額・将来の資産価値を保証するものではありません。年収倍率は東京で住宅取得を検討する際の比較軸として用いる内部目安です。実際の借入期間・団信・審査・金利条件は金融機関ごとに異なります。</p>
+      <p class="disclaimer">※本ツールは購入可否・借入可能額・将来の資産価値を保証するものではありません。年収倍率は住宅取得を検討する際の比較軸として用いる内部目安です。将来の物件価格・売却費用も予測や保証ではなく、比較のための仮定です。実際の借入期間・団信・審査・金利条件は金融機関ごとに異なります。</p>
       <button class="ghost" id="again">条件を変えてもう一度試す</button>
     </section>
   </main>
@@ -157,41 +200,271 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let step=1, selectedChoice=null, last=null;
 const COST_RATE=.07;
+const STRESS_STANDARD=3, STRESS_STRICT=4;
+const SALE_COST_RATE=.035;
+const EQUITY_STEP=500;
+const HEAVY_EQUITY_RATIO=.2;
+
 function money(v){const n=Math.round(v);return (n<0?'▲':'')+Math.abs(n).toLocaleString('ja-JP')+'万円'}
-function pct(v){return (Math.round(v*10)/10).toFixed(1)+'%'}
 function payment(principal,annualRate,years){if(principal<=0)return 0;const m=annualRate/100/12,n=years*12;if(m===0)return principal/n;return principal*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1)}
 function balance(principal,annualRate,years,afterYears){if(principal<=0)return 0;const m=annualRate/100/12,n=years*12,k=Math.min(afterYears*12,n);const p=payment(principal,annualRate,years);if(m===0)return Math.max(0,principal-p*k);return Math.max(0,principal*Math.pow(1+m,k)-p*(Math.pow(1+m,k)-1)/m)}
 function netRate(g){if(g<=500)return .79;if(g<=800)return .76;if(g<=1200)return .73;if(g<=1800)return .70;if(g<=2500)return .67;return .64}
-function inputs(){return {age:+$('#age').value,children:+$('#children').value,childStage:$('#childStage').value,gross:+$('#grossIncome').value,assets:+$('#assets').value,price:+$('#price').value,down:+$('#down').value,living:+$('#living').value,rate:+$('#rate').value||1.3,term:+$('#term').value||35,netOverride:+$('#netOverride').value||0,rateType:$('input[name=rateType]:checked').value}}
+
+function inputs(){return {
+  age:+$('#age').value,
+  children:+$('#children').value,
+  childStage:$('#childStage').value,
+  borrowMethod:$('input[name=borrowMethod]:checked').value,
+  gross:+$('#grossIncome').value,
+  assets:+$('#assets').value,
+  price:+$('#price').value,
+  loanAmount:+$('#loanAmount').value,
+  living:+$('#living').value,
+  rate:+$('#rate').value||1.3,
+  term:+$('#term').value||35,
+  netOverride:+$('#netOverride').value||0,
+  rateType:$('input[name=rateType]:checked').value
+}}
 function estimatedNet(v){return v.netOverride>0?v.netOverride:v.gross*netRate(v.gross)}
-function validate(v){const arr=[];if(!(v.age>=20&&v.age<=75))arr.push('年齢は20〜75歳の範囲で入力してください。');if(v.gross<=0)arr.push('世帯年収を入力してください。');if(v.price<=0)arr.push('検討価格を入力してください。');if(v.assets<0||v.down<0||v.living<0)arr.push('資産・頭金・生活費は0以上で入力してください。');if(v.down>v.assets)arr.push('予定頭金が現在の金融資産を超えています。');if(v.children===0&&v.childStage!=='none')arr.push('お子さま0人の場合、年齢帯は「子どもはいない」を選んでください。');if(v.children>0&&v.childStage==='none')arr.push('お子さまがいる場合、年齢帯を選んでください。');if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');return arr}
-function adjustments(v,net){let a=0; if(v.age<=34)a+=.15; else if(v.age>=50)a-=1; else if(v.age>=45)a-=.55; else if(v.age>=40)a-=.2;
+
+function validate(v){
+  const arr=[];
+  if(!(v.age>=20&&v.age<=75))arr.push('年齢は20〜75歳の範囲で入力してください。');
+  if(v.gross<=0)arr.push('世帯年収を入力してください。');
+  if(v.price<=0)arr.push('検討価格を入力してください。');
+  if(v.assets<0||v.loanAmount<0||v.living<0)arr.push('資産・借入予定額・生活費は0以上で入力してください。');
+  if(v.children===0&&v.childStage!=='none')arr.push('お子さま0人の場合、年齢帯は「子どもはいない」にしてください。');
+  if(v.children>0&&v.childStage==='none')arr.push('お子さまがいる場合、年齢帯を選んでください。');
+  if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');
+  return arr;
+}
+
+function adjustments(v,net){
+  let a=0;
+  if(v.age<=34)a+=.15; else if(v.age>=50)a-=1; else if(v.age>=45)a-=.55; else if(v.age>=40)a-=.2;
   if(v.children===0)a+=.15; else if(v.children===1)a-=.05; else if(v.children===2)a-=.25; else a-=.45;
   if(v.childStage==='teen')a-=.15; if(v.childStage==='college')a-=.1; if(v.childStage==='mixed')a-=.15;
+  if(v.borrowMethod==='pair')a+=.1;
   const assetRatio=v.assets/Math.max(1,v.gross); if(assetRatio>=1)a+=.4; else if(assetRatio>=.5)a+=.2; else if(assetRatio<.15)a-=.25;
   const livingRatio=(v.living*12)/Math.max(1,net); if(livingRatio>0.55)a-=.45; else if(livingRatio>0.45)a-=.2; else if(livingRatio<0.3)a+=.15;
-  return Math.max(-1.4,Math.min(.8,a));}
-function strategyMultipliers(v,net){const long=v.term>=40?1:0, adj=adjustments(v,net);return {safe:Math.max(4.5,6+long+adj),balance:Math.max(5.3,7+long+adj),housing:Math.max(6,8+long+adj)}}
-function scenario(price,v,net){const costs=price*COST_RATE,loan=Math.max(0,price-v.down),cash=v.assets-v.down-costs;const pay=payment(loan,v.rate,v.term)*12;const bal10=balance(loan,v.rate,v.term,10);const stressRate=v.rateType==='fixed'?v.rate:4;const remainYears=Math.max(1,v.term-10);const stressPay=payment(bal10,stressRate,remainYears)*12;const annualLeft=net-v.living*12-stressPay;const sale=price*.9*.965-bal10;return {price,costs,loan,pay,cash,bal10,annualLeft,sale,stressRate}}
-function classify(v,m){const mult=v.price/v.gross;const s=m.safe,b=m.balance,h=m.housing;if(mult<=s+.15)return 'safe';if(mult<=b+.2)return 'balance';if(mult<=h+.25)return 'housing';return 'over'}
-function render(){const v=inputs(),net=estimatedNet(v),m=strategyMultipliers(v,net);const refs={safe:Math.round(v.gross*m.safe/10)*10,balance:Math.round(v.gross*m.balance/10)*10,housing:Math.round(v.gross*m.housing/10)*10};const zone=classify(v,m);const meta={safe:{emoji:'🟢',title:'安心重視寄り',cls:'green',text:'住宅への配分を抑えめにし、現金や金融資産にも余白を残しやすい位置です。'},balance:{emoji:'🔵',title:'バランス寄り',cls:'blue',text:'東京で住宅条件と家計余力の両方を取りにいく比較ゾーンです。人生全体でもちょうどいいかを確認する価値があります。'},housing:{emoji:'🟣',title:'住宅優先寄り',cls:'purple',text:'住宅に多く配分し、立地・広さ・資産性を取りにいく選択です。教育・老後などを含めて本当に成立するか確認したい水準です。'},over:{emoji:'🔴',title:'住宅への配分がかなり大きい',cls:'red',text:'簡易比較では住宅への配分が大きめです。買えないという意味ではなく、詳細ライフプランで将来支出まで確認したい位置です。'}}[zone];
-  $('#resultHero').className='resultHero '+meta.cls;$('#zoneEmoji').textContent=meta.emoji;$('#zoneTitle').textContent=meta.title;$('#zoneText').textContent=meta.text;$('#currentPrice').textContent=money(v.price);$('#netText').textContent=money(net);$('#multipleText').textContent='年収の約 '+(v.price/v.gross).toFixed(1)+'倍';
-  const margin=Math.max(0,refs.housing-v.price);$('#marginText').textContent=margin>0?'＋'+money(margin):'追加余地は個別確認';$('#marginDesc').textContent=margin>0?`住宅優先の比較ラインまで約${money(margin)}。立地・広さ・土地価値などへ振り向ける選択肢も比較できます。ただし「使ってよい上限」という意味ではありません。`:'現在価格が住宅優先の比較ライン付近または超過しています。詳細ライフプランで将来支出まで確認するのがおすすめです。';
-  const data=[
-    {key:'safe',emoji:'🟢',name:'安心重視',price:refs.safe,desc:'住宅費を抑え、現金・運用・教育や老後にも余白を残す配分。',gain:'毎月返済を抑えやすく、家計の変化に対応しやすい',cost:'住宅条件を抑える代わりに、残した資金をどう運用するかが重要'},
-    {key:'balance',emoji:'🔵',name:'バランス',price:refs.balance,desc:'東京で住宅条件と家計余力の両方を取りにいく配分。',gain:'立地・広さと資金余力を両立しやすい',cost:'教育費やレジャー費まで入れると「ちょうどいい価格」は変わる'},
-    {key:'housing',emoji:'🟣',name:'住宅優先',price:refs.housing,desc:'住宅を資産形成の中心に置き、立地・希少性・流動性を取りにいく配分。',gain:'より良い立地・土地価値・住環境を狙える',cost:'住宅に資金が集中するため、教育・老後・運用余力の確認が必須'}
-  ];
-  const currentKey=zone==='over'?'housing':zone;$('#strategies').innerHTML=data.map(d=>{const sc=scenario(d.price,v,net);return `<article class="strategy ${d.key===currentKey?'current':''}"><div class="strategyHead"><div><div class="strategyName">${d.emoji} ${d.name}</div><div class="small">参考倍率 ${m[d.key].toFixed(1)}倍</div></div><div class="strategyPrice">${money(d.price)}</div></div><p class="strategyDesc">${d.desc}</p><div class="trade"><div class="gain"><b>得やすいもの</b>${d.gain}</div><div class="cost"><b>確認したいこと</b>${d.cost}</div></div><div class="strategyMeta"><span class="pill">月返済 約${money(sc.pay/12)}</span><span class="pill">購入後現金 ${money(sc.cash)}</span></div></article>`}).join('');
-  const cur=scenario(v.price,v,net);$('#detailCards').innerHTML=`<div class="detailCard"><b>金利が上がった場合、1年でいくら余る？</b><strong>${money(cur.annualLeft)}</strong><span>10年後に金利${cur.stressRate}%として、生活費と住宅ローン支払い後に残る年間の概算です。</span></div><div class="detailCard"><b>購入後に残る現金</b><strong>${money(cur.cash)}</strong><span>頭金と購入諸費用7%を支払った後の金融資産の概算です。</span></div><div class="detailCard"><b>10年後に残る住宅ローン</b><strong>${money(cur.bal10)}</strong><span>現在金利で返済した場合の10年後残高の概算です。</span></div><div class="detailCard"><b>10%値下がりして10年後に売ったら？</b><strong>${money(cur.sale)}</strong><span>価格が10%下落し、売却費用3.5%を見込んだ売却額から10年後ローンを返した差額です。</span></div>`;
-  last={v,net,m,refs,zone};updateCta(zone);
+  return Math.max(-1.4,Math.min(.8,a));
 }
-function updateCta(choice){const c=choice||last?.zone||'balance';const title=$('#ctaTitle'),text=$('#ctaText');if(c==='safe'){title.textContent='住宅を抑えた余白を、どう資産形成に回す？';text.textContent='現金を残すだけでなく、教育資金・保険・NISA等の運用まで含めて、余白の働かせ方を確認します。';}else if(c==='housing'||c==='over'){title.textContent='住宅に多く配分しても、人生全体で本当に大丈夫？';text.textContent='教育費・老後・旅行・車・保険まで入れても生活水準を維持できるか、詳細ライフプランでストレスをかけて確認します。';}else{title.textContent='今の住宅予算、本当に人生全体でも「ちょうどいい」？';text.textContent='教育費・レジャー・老後・運用まで入れると、簡易版のバランス価格は変わります。家族ごとの最適配分を確認します。';}}
-function show(n){step=n;$$('.screen').forEach(s=>s.classList.toggle('active',+s.dataset.step===n));$('#count').textContent=n+' / 3';$('#bar').style.width=(n/3*100)+'%';$('#back').style.visibility=n===1?'hidden':'visible';$('#next').style.display=n===3?'none':'block';$('#nav').style.display=n===3?'none':'flex';window.scrollTo({top:0,behavior:'instant'});if(n===3)render()}
-$('#start').onclick=()=>show(2);$('#back').onclick=()=>show(Math.max(1,step-1));$('#next').onclick=()=>{if(step===2){const v=inputs(),errs=validate(v);if(errs.length){$('#warn').innerHTML=errs.join('<br>');$('#warn').classList.add('show');return;}$('#warn').classList.remove('show');show(3)}};
-$('#children').addEventListener('input',()=>{if(+$('#children').value===0)$('#childStage').value='none'});
-$$('.strategyButtons button').forEach(b=>b.onclick=()=>{$$('.strategyButtons button').forEach(x=>x.classList.remove('on'));b.classList.add('on');selectedChoice=b.dataset.choice;updateCta(selectedChoice)});
-$('#ctaBtn').onclick=()=>$('#ctaMsg').classList.add('show');$('#again').onclick=()=>show(2);show(1);
+function strategyMultipliers(v,net){
+  const long=(v.term>=40&&v.age<=34)?1:0, adj=adjustments(v,net);
+  return {safe:Math.max(4.5,6+long+adj),balance:Math.max(5.3,7+long+adj),housing:Math.max(6,8+long+adj)};
+}
+function classify(v,m){
+  const mult=v.price/v.gross;
+  if(mult<=m.safe+.15)return 'safe';
+  if(mult<=m.balance+.2)return 'balance';
+  if(mult<=m.housing+.25)return 'housing';
+  return 'over';
+}
+
+function coreFinance(v){
+  const costs=v.price*COST_RATE;
+  const totalCost=v.price+costs;
+  const requiredEquity=totalCost-v.loanAmount;
+  const postPurchaseAssets=v.assets-requiredEquity;
+  const loanExceedsPrice=v.loanAmount>v.price;
+  const insufficientFunds=requiredEquity>v.assets;
+  const equityRatio=totalCost>0?Math.max(0,requiredEquity)/totalCost:0;
+  const heavyEquity=requiredEquity>0&&equityRatio>=HEAVY_EQUITY_RATIO;
+  return {costs,totalCost,requiredEquity,postPurchaseAssets,loanExceedsPrice,insufficientFunds,equityRatio,heavyEquity};
+}
+function acquisitionFor(price,equity){
+  const costs=price*COST_RATE;
+  const totalCost=price+costs;
+  const loan=Math.max(0,totalCost-equity);
+  const requiredEquity=totalCost-loan;
+  return {price,costs,totalCost,loan,requiredEquity};
+}
+function paymentMetrics(loan,v){
+  return {monthly:payment(loan,v.rate,v.term),bal10:balance(loan,v.rate,v.term,10)};
+}
+function stressMargin(loan,v,net,stressRatePct){
+  const bal10=balance(loan,v.rate,v.term,10);
+  const remainYears=Math.max(1,v.term-10);
+  const stressMonthly=v.rateType==='fixed'?payment(loan,v.rate,v.term):payment(bal10,stressRatePct,remainYears);
+  const annualLeft=net-v.living*12-stressMonthly*12;
+  return {bal10,stressMonthly,annualLeft};
+}
+function equityReduction(core,v){
+  if(core.requiredEquity<=0)return null;
+  const reduction=Math.min(EQUITY_STEP,core.requiredEquity);
+  const newLoan=v.loanAmount+reduction;
+  const curMonthly=payment(v.loanAmount,v.rate,v.term);
+  const newMonthly=payment(newLoan,v.rate,v.term);
+  const curInterest=curMonthly*v.term*12-v.loanAmount;
+  const newInterest=newMonthly*v.term*12-newLoan;
+  return {reduction,paymentIncrease:newMonthly-curMonthly,assetsIncrease:reduction,interestIncrease:newInterest-curInterest};
+}
+function netWorthScenarios(v){
+  const bal10=balance(v.loanAmount,v.rate,v.term,10);
+  return [-0.01,0,0.01,0.02].map(r=>{
+    const futurePrice=v.price*Math.pow(1+r,10);
+    const saleCost=futurePrice*SALE_COST_RATE;
+    const saleProceeds=futurePrice-saleCost;
+    const netWorth=saleProceeds-bal10;
+    return {rate:r,futurePrice,saleCost,saleProceeds,netWorth,bal10};
+  });
+}
+
+function ctaFor(zone,heavyEquity){
+  if(zone==='over')return {title:'今の価格は詳細確認を強くおすすめします',text:'教育費・私立や大学の学費・旅行やレジャー・車・保険・老後資金・昇給や退職金・資産運用まで含めて、詳細ライフプランで確認することをおすすめします。'};
+  if(heavyEquity)return {title:'自己資金の配分、それで最適？',text:'住宅に現金を入れすぎず、流動性・資産運用・教育資金とのバランスが取れているか、詳細ライフプランで確認します。'};
+  if(zone==='safe')return {title:'残した資金、どう活かす？',text:'住宅を抑えた分の資金を、運用・教育・老後資金にどう配分するか、詳細ライフプランで確認します。'};
+  if(zone==='housing')return {title:'住宅に集中しても、暮らしと将来資金は大丈夫？',text:'教育費・老後・旅行やレジャーまで含めて、生活水準と将来資金を維持できるか確認します。'};
+  return {title:'今の住宅予算、本当に人生全体でも「ちょうどいい」？',text:'教育費・レジャー・車・老後資金まで入れると、簡易版の比較ラインは変わります。家族ごとの最適な配分を確認します。'};
+}
+
+function syncChildStage(){
+  const n=+$('#children').value||0;
+  const isZero=n===0;
+  $('#childStageWrap').classList.toggle('hidden',isZero);
+  $('#childStage').disabled=isZero;
+  if(isZero)$('#childStage').value='none';
+}
+
+function liveCalc(){
+  const price=+$('#price').value||0, loanAmount=+$('#loanAmount').value||0, assets=+$('#assets').value||0;
+  const costs=price*COST_RATE, totalCost=price+costs, requiredEquity=totalCost-loanAmount, postAssets=assets-requiredEquity;
+  $('#liveTotalCost').textContent=price>0?money(totalCost):'—';
+  $('#liveEquity').textContent=price>0?money(requiredEquity):'—';
+  $('#livePostAssets').textContent=price>0?money(postAssets):'—';
+  $('#loanExceedsNote').classList.toggle('hidden',!(loanAmount>price&&price>0));
+  $('#insufficientNote').classList.toggle('show',price>0&&requiredEquity>assets);
+}
+
+function render(){
+  const v=inputs(),net=estimatedNet(v),m=strategyMultipliers(v,net);
+  const refs={safe:Math.round(v.gross*m.safe/10)*10,balance:Math.round(v.gross*m.balance/10)*10,housing:Math.round(v.gross*m.housing/10)*10};
+  const zone=classify(v,m);
+  const core=coreFinance(v);
+  const meta={
+    safe:{emoji:'🟢',title:'余白を厚く残す寄り',cls:'green',text:'住宅への配分を抑えめにし、現金や資産形成にも余白を残しやすい位置です。'},
+    balance:{emoji:'🔵',title:'住宅と余白を両立する水準',cls:'blue',text:'住宅条件と資金の余白の両方を取りにいく比較ゾーンです。人生全体でもちょうどいいかを確認する価値があります。'},
+    housing:{emoji:'🟣',title:'住宅への配分を高める水準',cls:'purple',text:'住宅に多く配分し、立地・広さ・資産性を取りにいく選択です。教育・老後などを含めて本当に成立するか確認したい水準です。'},
+    over:{emoji:'🔴',title:'比較ラインを超えている水準',cls:'red',text:'簡易比較の3案の目安を超えています。買えないという意味ではなく、詳細確認をおすすめしたい位置です。'}
+  }[zone];
+
+  $('#resultHero').className='resultHero '+meta.cls;
+  $('#zoneEmoji').textContent=meta.emoji;$('#zoneTitle').textContent=meta.title;$('#zoneText').textContent=meta.text;
+  $('#currentPrice').textContent=money(v.price);
+  $('#netText').textContent=money(net);
+  $('#multipleText').textContent='年収の約 '+(v.price/v.gross).toFixed(1)+'倍';
+  $('#equityText').textContent=money(core.requiredEquity);
+  $('#postAssetsText').textContent=money(core.postPurchaseAssets);
+  $('#insufficientNoteResult').classList.toggle('show',core.insufficientFunds);
+
+  const margin=Math.max(0,refs.housing-v.price);
+  $('#marginText').textContent=margin>0?'＋'+money(margin):'比較ライン付近・超過';
+  $('#marginDesc').textContent=margin>0?`住宅への配分を高める比較ラインまで約${money(margin)}。立地・広さ・土地価値などへ振り向ける選択肢も比較できます。ただし「使ってよい上限」という意味ではありません。`:'現在価格が住宅への配分を高める比較ライン付近または超過しています。詳細ライフプランで将来支出まで確認するのがおすすめです。';
+
+  const assumedEquity=Math.max(0,core.requiredEquity);
+  const data=[
+    {key:'safe',emoji:'🟢',name:'余白を厚く残す',price:refs.safe,desc:'住宅費を抑え、現金・運用・教育や老後にも余白を残す配分。',gain:'毎月返済を抑えやすく、家計の変化に対応しやすい',cost:'住宅条件を抑える代わりに、残した資金をどう運用するかが重要'},
+    {key:'balance',emoji:'🔵',name:'住宅と余白を両立する',price:refs.balance,desc:'住宅条件と資金の余白の両方を取りにいく配分。',gain:'立地・広さと資金余力を両立しやすい',cost:'教育費やレジャー費まで入れると「ちょうどいい価格」は変わる'},
+    {key:'housing',emoji:'🟣',name:'住宅への配分を高める',price:refs.housing,desc:'住宅を資産形成の中心に置き、立地・希少性・流動性を取りにいく配分。',gain:'より良い立地・土地価値・住環境を狙える',cost:'住宅に資金が集中するため、教育・老後・運用余力の確認が必須'}
+  ];
+  const currentKey=zone==='over'?'housing':zone;
+  $('#strategies').innerHTML=data.map(d=>{
+    const acq=acquisitionFor(d.price,assumedEquity);
+    const pm=paymentMetrics(acq.loan,v);
+    const postAssets=v.assets-acq.requiredEquity;
+    const isCurrent=d.key===currentKey;
+    const badge=zone==='over'&&d.key==='housing'?'今の検討価格はこれを超えています':'今の検討価格に近い';
+    return `<article class="strategy ${isCurrent?'current':''}" ${isCurrent?`data-badge="${badge}"`:''}>
+      <div class="strategyHead"><div><div class="strategyName">${d.emoji} ${d.name}</div><div class="small">参考倍率 ${m[d.key].toFixed(1)}倍</div></div><div class="strategyPrice">${money(d.price)}</div></div>
+      <p class="strategyDesc">${d.desc}</p>
+      <div class="trade"><div class="gain"><b>得やすいもの</b>${d.gain}</div><div class="cost"><b>確認したいこと</b>${d.cost}</div></div>
+      <div class="strategyMeta">
+        <span class="pill"><span>月返済</span><span>約${money(pm.monthly)}</span></span>
+        <span class="pill"><span>必要自己資金</span><span>${money(acq.requiredEquity)}</span></span>
+        <span class="pill"><span>購入後金融資産</span><span>${money(postAssets)}</span></span>
+      </div>
+    </article>`;
+  }).join('');
+
+  $('#overCard').classList.toggle('hidden',zone!=='over');
+
+  const curLoan=v.loanAmount;
+  const stdStress=stressMargin(curLoan,v,net,STRESS_STANDARD);
+  const strictStress=stressMargin(curLoan,v,net,STRESS_STRICT);
+  if(v.rateType==='fixed'){
+    $('#detailCards').innerHTML=`
+      <div class="detailCard"><b>固定金利なので、返済額はこのまま変わりません。1年でいくら余る？</b><strong>${money(stdStress.annualLeft)}</strong><span>月あたり 約${money(stdStress.annualLeft/12)}。生活費と住宅ローン支払い後に残る概算です。</span></div>
+      <div class="detailCard"><b>10年後に残る住宅ローン</b><strong>${money(stdStress.bal10)}</strong><span>現在金利で返済した場合の10年後残高の概算です。</span></div>`;
+  }else{
+    $('#detailCards').innerHTML=`
+      <div class="detailCard"><b>金利が3%まで上がった場合、1年でいくら余る？</b><strong>${money(stdStress.annualLeft)}</strong><span>月あたり 約${money(stdStress.annualLeft/12)}。10年後に金利3%になったと仮定した標準シナリオです。</span></div>
+      <div class="detailCard ref"><b>さらに厳しく、金利4%の場合（参考）</b><strong>${money(strictStress.annualLeft)}</strong><span>4%への上昇を予測するものではなく、より厳しい条件で確認したい方向けの参考値です。</span></div>
+      <div class="detailCard"><b>10年後に残る住宅ローン</b><strong>${money(stdStress.bal10)}</strong><span>現在金利で返済した場合の10年後残高の概算です。</span></div>`;
+  }
+
+  const eq=equityReduction(core,v);
+  $('#equityCard').classList.toggle('hidden',!eq);
+  if(eq){
+    $('#equityLead').textContent=`自己資金を${money(eq.reduction)}減らし、その分を借入に回した場合の比較です。`;
+    $('#eqPayment').textContent='+'+money(eq.paymentIncrease)+'/月';
+    $('#eqAssets').textContent='+'+money(eq.assetsIncrease);
+    $('#eqInterest').textContent='+'+money(eq.interestIncrease);
+  }
+
+  const nw=netWorthScenarios(v);
+  const nwLabel=[`年▲1%`,`横ばい`,`年＋1%`,`年＋2%`];
+  $('#netWorthList').innerHTML=nw.map((s,i)=>`
+    <div class="netWorthCard">
+      <b>${nwLabel[i]}で10年推移した場合</b>
+      <div class="nwGrid">
+        <span>想定売却価格：${money(s.futurePrice)}（売却費用 ${money(s.saleCost)} を差引後 ${money(s.saleProceeds)}）</span>
+        <span>10年後ローン残高：${money(s.bal10)}</span>
+      </div>
+      <div class="nwFinal">売却後に残る住宅純資産：${money(s.netWorth)}</div>
+    </div>`).join('');
+  $('#netWorthNote').textContent='売却費用は想定売却価格の3.5%と仮定しています。価格が下落するケースでも、ローンの元本が減っていくため住宅の純資産がプラスで残ることがあります。ただし、高い物件ほど資産価値が高いとは限りません。実際の資産性は、立地・土地の価値・希少性・流動性など物件ごとの評価によって変わります。';
+
+  last={v,net,m,refs,zone,core,heavyEquity:core.heavyEquity};
+  updateCta(null);
+}
+
+function updateCta(choiceKey){
+  const zoneForCta=last.zone==='over'?'over':(choiceKey||last.zone);
+  const c=ctaFor(zoneForCta,last.heavyEquity);
+  $('#ctaTitle').textContent=c.title;$('#ctaText').textContent=c.text;
+}
+
+function show(n){
+  step=n;
+  $$('.screen').forEach(s=>s.classList.toggle('active',+s.dataset.step===n));
+  $('#count').textContent=n+' / 3';
+  $('#bar').style.width=(n/3*100)+'%';
+  $('#back').style.visibility=n===1?'hidden':'visible';
+  $('#nav').classList.toggle('hidden',n!==2);
+  window.scrollTo({top:0,behavior:'instant'});
+  if(n===2)syncChildStage();
+  if(n===2)liveCalc();
+  if(n===3)render();
+}
+
+$('#start').onclick=()=>show(2);
+$('#back').onclick=()=>show(Math.max(1,step-1));
+$('#next').onclick=()=>{
+  if(step===2){
+    const v=inputs(),errs=validate(v);
+    if(errs.length){$('#warn').innerHTML=errs.join('<br>');$('#warn').classList.add('show');return;}
+    $('#warn').classList.remove('show');show(3);
+  }
+};
+$('#children').addEventListener('input',syncChildStage);
+['#price','#loanAmount','#assets'].forEach(sel=>$(sel).addEventListener('input',liveCalc));
+$$('.strategyButtons button').forEach(b=>b.onclick=()=>{
+  $$('.strategyButtons button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');selectedChoice=b.dataset.choice;updateCta(selectedChoice);
+});
+$('#ctaBtn').onclick=()=>$('#ctaMsg').classList.add('show');
+$('#again').onclick=()=>show(2);
+show(1);
 </script>
 </body>
 </html>
