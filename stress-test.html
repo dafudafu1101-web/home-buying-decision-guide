@@ -128,7 +128,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <div class="field"><label>現在金利 <span class="unit">（%）</span></label><input id="rate" type="number" step="0.1" value="1.3"></div>
           <div class="field"><label>返済期間 <span class="unit">（年）</span></label><input id="term" type="number" inputmode="numeric" min="1" max="50" step="1" value="35"></div>
         </div>
-        <p class="hint">利用できる返済期間は金融機関・完済年齢等の条件によって異なります。</p>
+        <p class="hint">借入期間は比較用の条件です。実際に選択できる期間は、年齢・金融機関・商品によって異なります。</p>
         <div class="field"><label>実際の年間手取り <span class="unit">（万円・任意）</span></label><input id="netOverride" type="number" inputmode="decimal" placeholder="空欄なら自動推計"></div>
         <div class="radioGrid">
           <label class="choice"><input type="radio" name="rateType" value="variable" checked>変動金利・期間固定</label>
@@ -161,6 +161,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <p class="lead">価格の高低ではなく、<b>住宅・現金・運用にどう配分するか</b>の違いです。どれが正解ということではありません。</p>
       <div class="strategyWrap" id="strategies"></div>
       <p class="hint">返済期間が長いほど、同じ月々の返済額でも借入総額は大きくなるため、結果として表示される参考年収倍率も変わります。<br>返済期間が長くなると総支払利息や完済年齢も変わるため、実際の適正額は詳細ライフプランで確認します。</p>
+      <p class="hint hidden" id="longTermNote"></p>
 
       <div class="overCard hidden" id="overCard">
         <div class="kicker">ONE MORE STEP</div>
@@ -178,6 +179,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <div class="marginRow highlight"><span>今の予算との差額</span><strong id="marginText">—</strong></div>
         </div>
         <p class="marginNote" id="marginDisclaimer"></p>
+        <p class="marginNote hidden" id="marginLongTermNote">借入期間を延ばすことで比較ラインが上がっている場合があります。差額＝自由に予算を増やせる金額ではありません。</p>
         <details class="whyAmount">
           <summary id="whyAmountSummary">なぜこの金額？</summary>
           <div id="whyTrace"></div>
@@ -196,8 +198,8 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="selectPrompt">
         <h3>今の感覚に一番近いのは？</h3>
         <div class="strategyButtons">
-          <button data-choice="safe">🟢 住宅は抑えめにして、余白を厚く残したい</button>
-          <button data-choice="balance">🔵 住宅と余白のバランスを取りたい</button>
+          <button data-choice="safe">🟢 住宅ローンの返済は抑えめにしたい</button>
+          <button data-choice="balance">🔵 住宅条件と月々の返済負担のバランスを取りたい</button>
           <button data-choice="housing">🟣 住宅への配分を高めて、資産性を取りにいきたい</button>
         </div>
       </div>
@@ -492,8 +494,8 @@ function render(){
   };
   const zone=classify(v.gross>0?v.price/v.gross:0,resultMultiples);
   const meta={
-    safe:{emoji:'🟢',title:'余白を厚く残す寄り',cls:'green',text:'住宅への配分を抑えめにし、現金や資産形成にも余白を残しやすい位置です。'},
-    balance:{emoji:'🔵',title:'住宅と余白を両立する水準',cls:'blue',text:'住宅条件と資金の余白の両方を取りにいく比較ゾーンです。人生全体でもちょうどいいかを確認する価値があります。'},
+    safe:{emoji:'🟢',title:'月々の返済を抑える配分',cls:'green',text:'月々の住宅ローン返済を抑えめにした配分です。ただし、借入期間を長くして月返済額を下げている場合は、人生全体の余白が増えたとは限りません。'},
+    balance:{emoji:'🔵',title:'住宅と月々の負担を両立する配分',cls:'blue',text:'住宅条件と月々の返済負担のバランスを取った比較ゾーンです。教育費・老後資金・完済年齢などを含めた人生全体の余白は、詳細ライフプランで確認します。'},
     housing:{emoji:'🟣',title:'住宅への配分を高める水準',cls:'purple',text:'住宅に多く配分し、立地・広さ・資産性を取りにいく選択です。教育・老後などを含めて本当に成立するか確認したい水準です。'},
     over:{emoji:'🔴',title:'比較ラインを超えている水準',cls:'red',text:'簡易比較の3案の目安を超えています。買えないという意味ではなく、詳細確認をおすすめしたい位置です。'}
   }[zone];
@@ -519,6 +521,12 @@ function render(){
     ?`これは「あと${money(margin)}まで買ってよい」という意味ではなく、住宅への配分を高めた場合の比較ラインとの差額です。`
     :'現在価格が住宅への配分を高めた場合の比較ライン付近、または超過しています。';
 
+  const isLongTerm=v.term>40;
+  const completionAge=v.age+v.term;
+  $('#longTermNote').classList.toggle('hidden',!isLongTerm);
+  if(isLongTerm)$('#longTermNote').textContent=`返済期間を長くすると、同じ月返済額でも比較できる住宅価格は上がります。ただし、これは家計の余白そのものが増えたという意味ではありません。参考完済年齢は約${completionAge}歳です。完済年齢や将来支出もあわせて確認する必要があります。`;
+  $('#marginLongTermNote').classList.toggle('hidden',!isLongTerm);
+
   const acqHousing=acquisitionFor(refs.housing,assumedEquity);
   const pmHousing=paymentMetrics(acqHousing.loan,v);
   const housingEquityLabel=assumedEquity<=0&&core.financedCosts>0?'0円':money(assumedEquity);
@@ -536,8 +544,8 @@ function render(){
     <p class="traceNote">「年収×${resultMultiples.housing.toFixed(1)}倍で価格を決めた」のではなく、返済条件から価格を逆算した結果、年収の約${resultMultiples.housing.toFixed(1)}倍になった、という順序です。</p>`;
 
   const data=[
-    {key:'safe',emoji:'🟢',name:'余白を厚く残す',price:refs.safe,desc:'住宅費を抑え、現金・運用・教育や老後にも余白を残す配分。',gain:'毎月返済を抑えやすく、家計の変化に対応しやすい',cost:'住宅条件を抑える代わりに、残した資金をどう運用するかが重要'},
-    {key:'balance',emoji:'🔵',name:'住宅と余白を両立する',price:refs.balance,desc:'住宅条件と資金の余白の両方を取りにいく配分。',gain:'立地・広さと資金余力を両立しやすい',cost:'教育費やレジャー費まで入れると「ちょうどいい価格」は変わる'},
+    {key:'safe',emoji:'🟢',name:'月々の返済を抑える',price:refs.safe,desc:'住宅費を抑え、月々の返済を軽くする配分。',gain:'毎月返済を抑えやすく、家計の変化に対応しやすい',cost:'住宅条件を抑える代わりに、残した資金をどう運用するかが重要'},
+    {key:'balance',emoji:'🔵',name:'住宅と月々の負担を両立する',price:refs.balance,desc:'住宅条件と月々の返済負担のバランスを取る配分。',gain:'立地・広さと資金余力を両立しやすい',cost:'教育費やレジャー費まで入れると「ちょうどいい価格」は変わる'},
     {key:'housing',emoji:'🟣',name:'住宅への配分を高める',price:refs.housing,desc:'住宅を資産形成の中心に置き、立地・希少性・流動性を取りにいく配分。',gain:'より良い立地・土地価値・住環境を狙える',cost:'住宅に資金が集中するため、教育・老後・運用余力の確認が必須'}
   ];
   const currentKey=zone==='over'?'housing':zone;
