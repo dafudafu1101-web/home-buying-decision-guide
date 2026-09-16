@@ -360,10 +360,10 @@ function paymentRatios(v,net){
   // signal (age/children/borrowMethod/assets/living cost) is preserved from
   // v16's adjustments(), translated from an additive multiplier-shift into a
   // proportional shift on these ratios. Favorable conditions (adj>0) are
-  // dampened to 40% effect so the tool doesn't push well-off households toward
+  // dampened to 20% effect so the tool doesn't push well-off households toward
   // ever-higher price lines; tough conditions (adj<0) still apply at full strength.
   const adj=adjustments(v,net);
-  const effectiveAdj=adj>0?adj*.4:adj;
+  const effectiveAdj=adj>0?adj*.2:adj;
   const factor=1+effectiveAdj/7;
   return {
     safe:Math.max(.10,PAYMENT_RATIO_BASE.safe*factor),
