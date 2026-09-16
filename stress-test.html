@@ -29,6 +29,11 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
 .summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.metric{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}.metric b{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.metric strong{font-family:Georgia,"Yu Mincho",serif;font-size:22px;display:block}.metric p{font-size:11px;line-height:1.5;color:var(--muted);margin:6px 0 0}
 .strategyWrap{display:grid;gap:13px;margin-top:12px}.strategy{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff;position:relative}.strategy.current{border:2px solid var(--gold);box-shadow:0 8px 28px rgba(184,138,46,.14)}.strategy.current:before{content:attr(data-badge);position:absolute;right:12px;top:-11px;background:var(--gold);color:#111;font-size:10px;font-weight:900;border-radius:999px;padding:5px 9px}.strategyHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.strategyName{font-weight:900;font-size:17px}.strategyPrice{font:700 24px/1.2 Georgia,"Yu Mincho",serif}.strategyDesc{font-size:13px;line-height:1.65;color:#3f3b35;margin:8px 0}.trade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.trade div{border-radius:10px;padding:10px;font-size:11px;line-height:1.5}.gain{background:#eef8f2}.cost{background:#fff4ee}.trade b{display:block;font-size:11px;margin-bottom:3px}.strategyMeta{display:grid;gap:6px;margin-top:10px}.pill{font-size:10.5px;font-weight:800;background:#f3f1ec;border-radius:10px;padding:7px 9px;display:flex;justify-content:space-between}
 .choiceMargin{background:#111;color:#fff;border-radius:18px;padding:18px;margin:17px 0}.choiceMargin .big{font:700 32px/1.2 Georgia,"Yu Mincho",serif;color:#e1bf6e}.choiceMargin p{font-size:12.5px;line-height:1.75;color:#e6e3dc;margin:9px 0 0}
+.marginFlow{margin:12px 0 6px}.marginRow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12.5px;color:#d8d5cd;padding:3px 0}.marginRow strong{font-family:Georgia,"Yu Mincho",serif;font-size:17px;color:#fff;font-weight:700}.marginRow.highlight{margin-top:2px}.marginRow.highlight strong{color:#e1bf6e;font-size:26px}.marginArrow{text-align:center;color:#8a8578;font-size:12px;line-height:1.4}
+.choiceMargin .marginNote{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.65;color:#f0eee8;margin:4px 0 14px}
+.choiceMargin details{background:transparent;border:1px solid rgba(255,255,255,.28);color:#fff;margin:10px 0 16px;padding:12px 14px}.choiceMargin summary{color:#e1bf6e;font-size:13px}
+.traceRow{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.14)}.traceRow:last-of-type{border-bottom:none}.traceRow strong{font-family:Georgia,"Yu Mincho",serif}
+.traceNote{font-size:11.5px;line-height:1.75;color:#d8d5cd;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.22)}
 .portfolioCard{border:1px solid var(--line);border-radius:16px;padding:17px;margin:16px 0;background:var(--soft)}.portfolioCard h3{font-size:16px;margin:0 0 8px}.portfolioCard p{font-size:12.5px;line-height:1.75;color:#3f3b35;margin:0 0 8px}.portfolioCard p:last-child{margin-bottom:0}
 .overCard{background:#fff8ea;border:1px solid #ecd19c;border-radius:16px;padding:17px;margin:16px 0}.overCard .kicker{color:#9a6b13}.overCard h3{font-size:16px;margin:6px 0 8px}.overCard p{font-size:12.5px;line-height:1.75;color:#4d4232;margin:0 0 6px}
 .moreWrap{margin-top:20px}.moreWrap>summary{font-size:14px}.moreBlock{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line)}.moreBlock:first-of-type{margin-top:16px;padding-top:0;border-top:none}.moreBlock h3{font-size:16px}
@@ -121,7 +126,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <summary>詳細設定（金利・返済期間・手取り）</summary>
         <div class="two">
           <div class="field"><label>現在金利 <span class="unit">（%）</span></label><input id="rate" type="number" step="0.1" value="1.3"></div>
-          <div class="field"><label>返済期間 <span class="unit">（年）</span></label><select id="term"><option>30</option><option selected>35</option><option>40</option><option>45</option><option>50</option></select></div>
+          <div class="field"><label>返済期間 <span class="unit">（年）</span></label><input id="term" type="number" inputmode="numeric" min="1" max="50" step="1" value="35"></div>
         </div>
         <p class="hint">利用できる返済期間は金融機関・完済年齢等の条件によって異なります。</p>
         <div class="field"><label>実際の年間手取り <span class="unit">（万円・任意）</span></label><input id="netOverride" type="number" inputmode="decimal" placeholder="空欄なら自動推計"></div>
@@ -155,6 +160,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <h2 style="font-size:22px;margin-top:26px">3つの資産配分戦略</h2>
       <p class="lead">価格の高低ではなく、<b>住宅・現金・運用にどう配分するか</b>の違いです。どれが正解ということではありません。</p>
       <div class="strategyWrap" id="strategies"></div>
+      <p class="hint">返済期間が長いほど、同じ月々の返済額でも借入総額は大きくなるため、結果として表示される参考年収倍率も変わります。<br>返済期間が長くなると総支払利息や完済年齢も変わるため、実際の適正額は詳細ライフプランで確認します。</p>
 
       <div class="overCard hidden" id="overCard">
         <div class="kicker">ONE MORE STEP</div>
@@ -164,7 +170,18 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
 
       <div class="choiceMargin">
         <div class="kicker">条件改善に使える選択余地</div>
-        <div class="big" id="marginText">—</div>
+        <div class="marginFlow">
+          <div class="marginRow"><span>現在検討している価格</span><strong id="marginCurrent">—</strong></div>
+          <div class="marginArrow">↓</div>
+          <div class="marginRow"><span>住宅への配分を高めた比較ライン</span><strong id="marginLine">—</strong></div>
+          <div class="marginArrow">↓</div>
+          <div class="marginRow highlight"><span>今の予算との差額</span><strong id="marginText">—</strong></div>
+        </div>
+        <p class="marginNote" id="marginDisclaimer"></p>
+        <details class="whyAmount">
+          <summary id="whyAmountSummary">なぜこの金額？</summary>
+          <div id="whyTrace"></div>
+        </details>
         <p>これは「この金額まで住宅に使ってよい」という上限ではありません。例えば通勤時間を10分短くする、駅距離を良くする、広さを増やす、土地価値の高いエリアに寄せることで、生活満足度や将来の売りやすさが上がるなら、住宅に配分する意味があります。</p>
         <p>一方で、この余白をすべて住宅に使う必要はありません。現金として残す、教育費に備える、資産運用に回すのも選択肢です。</p>
         <p>この余白を何に使うと、自分たちの満足度と資産形成が一番高まるかを考えるための数字です。</p>
@@ -267,6 +284,7 @@ const SALE_COST_RATE=.035;
 const EQUITY_STEP=500;
 const HEAVY_EQUITY_RATIO=.2;
 const GRADUAL_YEARS=10;
+const PAYMENT_RATIO_BASE={safe:.25,balance:.30,housing:.35};
 
 function money(v){const n=Math.round(v);return (n<0?'▲':'')+Math.abs(n).toLocaleString('ja-JP')+'万円'}
 function payment(principal,annualRate,years){if(principal<=0)return 0;const m=annualRate/100/12,n=years*12;if(m===0)return principal/n;return principal*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1)}
@@ -327,15 +345,33 @@ function adjustments(v,net){
   const livingRatio=(v.living*12)/Math.max(1,net); if(livingRatio>0.55)a-=.45; else if(livingRatio>0.45)a-=.2; else if(livingRatio<0.3)a+=.15;
   return Math.max(-1.4,Math.min(.8,a));
 }
-function strategyMultipliers(v,net){
-  const long=(v.term>=40&&v.age<=34)?1:0, adj=adjustments(v,net);
-  return {safe:Math.max(4.5,6+long+adj),balance:Math.max(5.3,7+long+adj),housing:Math.max(6,8+long+adj)};
+function paymentRatios(v,net){
+  // Strategies are defined by how much of monthly income goes to housing
+  // payment (item 4), not by an income multiple. The existing personalization
+  // signal (age/children/borrowMethod/assets/living cost) is preserved from
+  // v16's adjustments(), translated from an additive multiplier-shift into a
+  // proportional shift on these ratios.
+  const adj=adjustments(v,net);
+  const factor=1+adj/7;
+  return {
+    safe:Math.max(.10,PAYMENT_RATIO_BASE.safe*factor),
+    balance:Math.max(.15,PAYMENT_RATIO_BASE.balance*factor),
+    housing:Math.max(.20,PAYMENT_RATIO_BASE.housing*factor)
+  };
 }
-function classify(v,m){
-  const mult=v.price/v.gross;
-  if(mult<=m.safe+.15)return 'safe';
-  if(mult<=m.balance+.2)return 'balance';
-  if(mult<=m.housing+.25)return 'housing';
+function priceFromPaymentRatio(ratio,v,net,assumedEquity){
+  // Mandated order: 住宅費への配分 → 月返済額 → 金利・借入期間から借入額を逆算
+  // → 自己資金を加味して比較価格算出。年収倍率はこの結果を表示するだけ。
+  const monthlyBudget=ratio*(net/12);
+  const k=payment(1,v.rate,v.term);
+  const loan=k>0?monthlyBudget/k:0;
+  const rawPrice=(loan+assumedEquity)/(1+COST_RATE);
+  return Math.round(Math.max(0,rawPrice)/10)*10;
+}
+function classify(mult,resultMultiples){
+  if(mult<=resultMultiples.safe+.15)return 'safe';
+  if(mult<=resultMultiples.balance+.2)return 'balance';
+  if(mult<=resultMultiples.housing+.25)return 'housing';
   return 'over';
 }
 
@@ -440,10 +476,21 @@ function liveCalc(){
 }
 
 function render(){
-  const v=inputs(),net=estimatedNet(v),m=strategyMultipliers(v,net);
-  const refs={safe:Math.round(v.gross*m.safe/10)*10,balance:Math.round(v.gross*m.balance/10)*10,housing:Math.round(v.gross*m.housing/10)*10};
-  const zone=classify(v,m);
+  const v=inputs(),net=estimatedNet(v);
   const core=coreFinance(v);
+  const assumedEquity=core.requiredEquity;
+  const ratios=paymentRatios(v,net);
+  const refs={
+    safe:priceFromPaymentRatio(ratios.safe,v,net,assumedEquity),
+    balance:priceFromPaymentRatio(ratios.balance,v,net,assumedEquity),
+    housing:priceFromPaymentRatio(ratios.housing,v,net,assumedEquity)
+  };
+  const resultMultiples={
+    safe:v.gross>0?refs.safe/v.gross:0,
+    balance:v.gross>0?refs.balance/v.gross:0,
+    housing:v.gross>0?refs.housing/v.gross:0
+  };
+  const zone=classify(v.gross>0?v.price/v.gross:0,resultMultiples);
   const meta={
     safe:{emoji:'🟢',title:'余白を厚く残す寄り',cls:'green',text:'住宅への配分を抑えめにし、現金や資産形成にも余白を残しやすい位置です。'},
     balance:{emoji:'🔵',title:'住宅と余白を両立する水準',cls:'blue',text:'住宅条件と資金の余白の両方を取りにいく比較ゾーンです。人生全体でもちょうどいいかを確認する価値があります。'},
@@ -464,10 +511,30 @@ function render(){
   $('#investSaleNoteResult').classList.toggle('show',core.needsInvestmentSale);
   $('#insufficientNoteResult').classList.toggle('show',core.insufficientFunds);
 
-  const margin=Math.max(0,refs.housing-v.price);
+  const margin=refs.housing-v.price;
+  $('#marginCurrent').textContent=money(v.price);
+  $('#marginLine').textContent=money(refs.housing);
   $('#marginText').textContent=margin>0?'＋'+money(margin):'比較ライン付近・超過';
+  $('#marginDisclaimer').textContent=margin>0
+    ?`これは「あと${money(margin)}まで買ってよい」という意味ではなく、住宅への配分を高めた場合の比較ラインとの差額です。`
+    :'現在価格が住宅への配分を高めた場合の比較ライン付近、または超過しています。';
 
-  const assumedEquity=core.requiredEquity;
+  const acqHousing=acquisitionFor(refs.housing,assumedEquity);
+  const pmHousing=paymentMetrics(acqHousing.loan,v);
+  const housingEquityLabel=assumedEquity<=0&&core.financedCosts>0?'0円':money(assumedEquity);
+  $('#whyAmountSummary').textContent=`なぜ${money(refs.housing)}？`;
+  $('#whyTrace').innerHTML=`
+    <div class="traceRow"><span>① 世帯年収</span><strong>${money(v.gross)}</strong></div>
+    <div class="traceRow"><span>② 住宅費への配分</span><strong>月収の約${(ratios.housing*100).toFixed(1)}%</strong></div>
+    <div class="traceRow"><span>③ 月返済額</span><strong>約${money(pmHousing.monthly)}</strong></div>
+    <div class="traceRow"><span>④ 金利</span><strong>${v.rate}%</strong></div>
+    <div class="traceRow"><span>⑤ 借入期間</span><strong>${v.term}年</strong></div>
+    <div class="traceRow"><span>⑥ 借入額</span><strong>${money(acqHousing.loan)}</strong></div>
+    <div class="traceRow"><span>⑦ 自己資金</span><strong>${housingEquityLabel}</strong></div>
+    <div class="traceRow"><span>⑧ 比較価格</span><strong>${money(refs.housing)}</strong></div>
+    <div class="traceRow"><span>⑨ 結果としての参考年収倍率</span><strong>約${resultMultiples.housing.toFixed(1)}倍</strong></div>
+    <p class="traceNote">「年収×${resultMultiples.housing.toFixed(1)}倍で価格を決めた」のではなく、返済条件から価格を逆算した結果、年収の約${resultMultiples.housing.toFixed(1)}倍になった、という順序です。</p>`;
+
   const data=[
     {key:'safe',emoji:'🟢',name:'余白を厚く残す',price:refs.safe,desc:'住宅費を抑え、現金・運用・教育や老後にも余白を残す配分。',gain:'毎月返済を抑えやすく、家計の変化に対応しやすい',cost:'住宅条件を抑える代わりに、残した資金をどう運用するかが重要'},
     {key:'balance',emoji:'🔵',name:'住宅と余白を両立する',price:refs.balance,desc:'住宅条件と資金の余白の両方を取りにいく配分。',gain:'立地・広さと資金余力を両立しやすい',cost:'教育費やレジャー費まで入れると「ちょうどいい価格」は変わる'},
@@ -481,7 +548,7 @@ function render(){
     const isCurrent=d.key===currentKey;
     const badge=zone==='over'&&d.key==='housing'?'今の検討価格はこれを超えています':'今の検討価格に近い';
     return `<article class="strategy ${isCurrent?'current':''}" ${isCurrent?`data-badge="${badge}"`:''}>
-      <div class="strategyHead"><div><div class="strategyName">${d.emoji} ${d.name}</div><div class="small">参考倍率 ${m[d.key].toFixed(1)}倍</div></div><div class="strategyPrice">${money(d.price)}</div></div>
+      <div class="strategyHead"><div><div class="strategyName">${d.emoji} ${d.name}</div><div class="small">参考年収倍率 約${resultMultiples[d.key].toFixed(1)}倍（${v.term}年・金利${v.rate}%を前提に、月々の返済額から逆算した結果）</div></div><div class="strategyPrice">${money(d.price)}</div></div>
       <p class="strategyDesc">${d.desc}</p>
       <div class="trade"><div class="gain"><b>得やすいもの</b>${d.gain}</div><div class="cost"><b>確認したいこと</b>${d.cost}</div></div>
       <div class="strategyMeta">
@@ -532,7 +599,7 @@ function render(){
     </div>`).join('');
   $('#netWorthNote').textContent='売却費用は想定売却価格の3.5%と仮定しています。将来の価格や売却費用を予測・保証するものではありません。価格が下落するケースでも、ローンの元本が減っていくため住宅の純資産がプラスで残ることがあります。ただし、高い物件ほど資産価値が高いとは限りません。実際の資産性は、立地・土地の価値・希少性・流動性など物件ごとの評価によって変わります。';
 
-  last={v,net,m,refs,zone,core,heavyEquity:core.heavyEquity};
+  last={v,net,refs,resultMultiples,zone,core,heavyEquity:core.heavyEquity};
   updateCta(null);
 }
 
