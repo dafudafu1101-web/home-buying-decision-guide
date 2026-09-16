@@ -60,6 +60,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <div class="kicker">住宅予算の決め方チェック</div>
           <h1>今の予算、<br>本当にちょうどいい？</h1>
           <p class="lead">今の予算をそのまま使うか、現金を残すか、住宅条件を上げるか。<b>住宅・現金・資産運用への配分</b>を3分で比較します。</p>
+          <p class="small">このツールは、東京での住宅購入を家計全体の資産配分として考えるための比較ツールです。自宅も現金・金融資産と並ぶ大きな資産のひとつ。住宅への配分を増やすなら、立地・土地価値・希少性・流動性まで確認し、住宅費を抑えるなら、住環境を確保しながら金融資産への配分を厚くする考え方もあります。</p>
         </div>
         <div class="heroBottom">
           <div class="heroGrid">
@@ -286,7 +287,7 @@ const SALE_COST_RATE=.035;
 const EQUITY_STEP=500;
 const HEAVY_EQUITY_RATIO=.2;
 const GRADUAL_YEARS=10;
-const PAYMENT_RATIO_BASE={safe:.25,balance:.30,housing:.35};
+const PAYMENT_RATIO_BASE={safe:.326,balance:.381,housing:.435};
 
 function money(v){const n=Math.round(v);return (n<0?'▲':'')+Math.abs(n).toLocaleString('ja-JP')+'万円'}
 function payment(principal,annualRate,years){if(principal<=0)return 0;const m=annualRate/100/12,n=years*12;if(m===0)return principal/n;return principal*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1)}
