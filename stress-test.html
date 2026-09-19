@@ -330,7 +330,7 @@ function inputs(){return {
   term:+$('#term').value||35,
   netOverride:+$('#netOverride').value||0,
   rateType:$('input[name=rateType]:checked').value
-+}}
+}}
 function estimatedNet(v){return v.netOverride>0?v.netOverride:v.gross*netRate(v.gross)}
 
 function validate(v){
