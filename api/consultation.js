@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 
+const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwkOAbxi5o7m8CQfRFim_qCTS6UTSJHAi23mspmtYWHzLK-xpjZJhMn8p-okILukdkdWA/exec';
 const MAX_BODY_BYTES = 20_000;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX_REQUESTS = 8;
@@ -80,7 +81,7 @@ module.exports = async function handler(req, res) {
   if (contentLength > MAX_BODY_BYTES) return json(res, 413, { ok: false, error: 'payload_too_large' });
   if (rateLimited(req)) return json(res, 429, { ok: false, error: 'rate_limited' });
 
-  const appsScriptUrl = process.env.APPS_SCRIPT_WEB_APP_URL;
+  const appsScriptUrl = process.env.APPS_SCRIPT_WEB_APP_URL || APPS_SCRIPT_WEB_APP_URL;
   if (!validAppsScriptUrl(appsScriptUrl)) {
     console.error('consultation_service_not_configured');
     return json(res, 503, { ok: false, error: 'service_not_configured' });
