@@ -1,12 +1,21 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "buildCommand": "node scripts/prepare-stress-test.js",
   "functions": {
+    "api/stress-test.js": {
+      "includeFiles": "stress-test.html",
+      "maxDuration": 10
+    },
     "api/consultation.js": {
       "maxDuration": 10
     }
   },
+  "rewrites": [
+    {
+      "source": "/stress-test",
+      "destination": "/api/stress-test"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
