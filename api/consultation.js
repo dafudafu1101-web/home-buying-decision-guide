@@ -1,6 +1,11 @@
 const crypto = require('crypto');
 
 const TARGET_EMAIL = 'd.sakai@ad-cast.co.jp';
+const MAX_BODY_BYTES = 20_000;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX_REQUESTS = 8;
+const rateBuckets = globalThis.__consultationRateBuckets || new Map();
+globalThis.__consultationRateBuckets = rateBuckets;
 
 function json(res, status, payload) {
   res.statusCode = status;
@@ -16,7 +21,7 @@ function validEmail(value) {
 function sameOrigin(req) {
   const origin = req.headers.origin;
   const host = req.headers['x-forwarded-host'] || req.headers.host;
-  if (!origin || !host) return true;
+  if (!origin || !host) return false;
   try {
     return new URL(origin).host === host;
   } catch (_) {
@@ -24,12 +29,48 @@ function sameOrigin(req) {
   }
 }
 
+function clientIp(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return forwarded || req.socket?.remoteAddress || 'unknown';
+}
+
+function rateLimited(req) {
+  const now = Date.now();
+  const ip = clientIp(req);
+  const current = rateBuckets.get(ip);
+  if (!current || now - current.startedAt > RATE_WINDOW_MS) {
+    rateBuckets.set(ip, { startedAt: now, count: 1 });
+    return false;
+  }
+  current.count += 1;
+  if (rateBuckets.size > 500) {
+    for (const [key, value] of rateBuckets) {
+      if (now - value.startedAt > RATE_WINDOW_MS) rateBuckets.delete(key);
+    }
+  }
+  return current.count > RATE_MAX_REQUESTS;
+}
+
+function parseBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  if (typeof req.body === 'string') {
+    try { return JSON.parse(req.body); } catch (_) { return null; }
+  }
+  return null;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'method_not_allowed' });
   if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'origin_not_allowed' });
+  if (String(req.headers['sec-fetch-site'] || 'same-origin') === 'cross-site') {
+    return json(res, 403, { ok: false, error: 'origin_not_allowed' });
+  }
   if (!String(req.headers['content-type'] || '').toLowerCase().includes('application/json')) {
     return json(res, 415, { ok: false, error: 'unsupported_media_type' });
   }
+  const contentLength = Number(req.headers['content-length'] || 0);
+  if (contentLength > MAX_BODY_BYTES) return json(res, 413, { ok: false, error: 'payload_too_large' });
+  if (rateLimited(req)) return json(res, 429, { ok: false, error: 'rate_limited' });
 
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.RESEND_FROM_EMAIL;
@@ -38,7 +79,9 @@ module.exports = async function handler(req, res) {
     return json(res, 503, { ok: false, error: 'service_not_configured' });
   }
 
-  const body = req.body || {};
+  const body = parseBody(req);
+  if (!body) return json(res, 400, { ok: false, error: 'invalid_json' });
+
   const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : '';
   const name = String(body.name || '').trim().slice(0, 120);
   const email = String(body.email || '').trim().slice(0, 240);
@@ -80,7 +123,7 @@ module.exports = async function handler(req, res) {
       return json(res, 502, { ok: false, error: 'delivery_failed' });
     }
 
-    return json(res, 200, { ok: true, messageId: payload.id || null });
+    return json(res, 200, { ok: true });
   } catch (error) {
     console.error('consultation_submit_error', error);
     return json(res, 502, { ok: false, error: 'delivery_failed' });
