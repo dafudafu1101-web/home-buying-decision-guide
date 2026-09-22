@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 
-const TARGET_EMAIL = 'd.sakai@ad-cast.co.jp';
 const MAX_BODY_BYTES = 20_000;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX_REQUESTS = 8;
@@ -59,6 +58,15 @@ function parseBody(req) {
   return null;
 }
 
+function validAppsScriptUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.hostname === 'script.google.com' && /\/macros\/s\/[^/]+\/exec$/.test(url.pathname);
+  } catch (_) {
+    return false;
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'method_not_allowed' });
   if (!sameOrigin(req)) return json(res, 403, { ok: false, error: 'origin_not_allowed' });
@@ -72,9 +80,8 @@ module.exports = async function handler(req, res) {
   if (contentLength > MAX_BODY_BYTES) return json(res, 413, { ok: false, error: 'payload_too_large' });
   if (rateLimited(req)) return json(res, 429, { ok: false, error: 'rate_limited' });
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL;
-  if (!apiKey || !fromEmail) {
+  const appsScriptUrl = process.env.APPS_SCRIPT_WEB_APP_URL;
+  if (!validAppsScriptUrl(appsScriptUrl)) {
     console.error('consultation_service_not_configured');
     return json(res, 503, { ok: false, error: 'service_not_configured' });
   }
@@ -92,34 +99,23 @@ module.exports = async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'invalid_input' });
   }
 
-  const subject = mode === 'lifeplan'
-    ? '【住宅予算チェック】無料・詳細ライフプラン相談希望'
-    : '【住宅予算チェック】物件相談希望';
-
   const normalized = JSON.stringify({ mode, name, email, phone, summary });
-  const digest = crypto.createHash('sha256').update(normalized).digest('hex');
-  const idempotencyKey = `housing-consultation/${digest}`;
+  const requestId = crypto.createHash('sha256').update(normalized).digest('hex');
 
   try {
-    const upstream = await fetch('https://api.resend.com/emails', {
+    const upstream = await fetch(appsScriptUrl, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'Idempotency-Key': idempotencyKey
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [TARGET_EMAIL],
-        reply_to: email,
-        subject,
-        text: summary
-      })
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ mode, name, email, phone, summary, requestId })
     });
 
-    const payload = await upstream.json().catch(() => ({}));
-    if (!upstream.ok) {
-      console.error('resend_delivery_failed', upstream.status, payload);
+    const text = await upstream.text();
+    let payload = {};
+    try { payload = JSON.parse(text); } catch (_) {}
+
+    if (!upstream.ok || payload.ok !== true) {
+      console.error('apps_script_delivery_failed', upstream.status, text.slice(0, 500));
       return json(res, 502, { ok: false, error: 'delivery_failed' });
     }
 
