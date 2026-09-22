@@ -4,6 +4,9 @@
   "functions": {
     "api/stress-test.js": {
       "includeFiles": "stress-test.html"
+    },
+    "api/consultation.js": {
+      "maxDuration": 10
     }
   },
   "rewrites": [
