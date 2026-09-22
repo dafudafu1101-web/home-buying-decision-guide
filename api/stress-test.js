@@ -14,36 +14,41 @@ module.exports = function handler(req, res) {
     html = replaceOnce(
       html,
       '下のボタンでメールアプリを開くと、入力した連絡先と診断結果が本文に入った状態になります。内容をご確認のうえ送信してください。',
-      '下のボタンからGmailの作成画面を開きます。会社端末などで標準メールアプリが制限されている場合でも利用できます。内容をご確認のうえ送信してください。',
+      '下のボタンからブラウザ上でそのまま相談内容を送信できます。メールアプリやGmailは必要ありません。',
       'handoff_hint'
     );
 
     html = replaceOnce(
       html,
       'メールは送信前にご自身で内容を確認できます。入力内容・診断結果は、相談対応のために使用します。',
-      'Gmailの作成画面で送信前に内容をご確認いただけます。入力内容・診断結果は、相談対応のために使用します。',
+      '入力内容・診断結果は相談対応のために使用します。送信完了後、後日担当者よりメールでご連絡します。',
       'privacy_note'
     );
 
     html = replaceOnce(
       html,
       "$('#handoffGo').textContent=life?'無料相談メールを作成する →':'物件相談メールを作成する →';",
-      "$('#handoffGo').textContent=life?'Gmailで無料相談メールを作成する →':'Gmailで物件相談メールを作成する →';",
+      "$('#handoffGo').textContent=life?'無料相談を送信する →':'物件相談を送信する →';",
       'handoff_button_copy'
     );
 
     html = replaceOnce(
       html,
       "function openMailToSakai(){if(!handoffMode||!validateIntake())return;const subject=mailSubject(handoffMode),body=summaryText(handoffMode);$('#handoffSummary').textContent=body;window.location.href=`mailto:${SAKAI_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}",
-      "function openGmailCompose(){if(!handoffMode||!validateIntake())return;const subject=mailSubject(handoffMode),body=summaryText(handoffMode);$('#handoffSummary').textContent=body;const url=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(SAKAI_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;window.open(url,'_blank','noopener,noreferrer');$('#copyState').textContent='Gmailの作成画面を開きました。内容をご確認のうえ送信してください。';}",
-      'gmail_function'
+      "async function submitConsultation(){if(!handoffMode||!validateIntake())return;const c=contactValues(),body=summaryText(handoffMode),btn=$('#handoffGo');$('#handoffSummary').textContent=body;$('#copyState').textContent='送信中です…';btn.disabled=true;try{const r=await fetch('/api/consultation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:handoffMode,name:c.name,email:c.email,phone:c.phone,summary:body})});const data=await r.json().catch(()=>({}));if(!r.ok||!data.ok)throw new Error(data.error||'submit_failed');$('#copyState').textContent='送信しました。後日担当者よりメールでご連絡します。';btn.textContent='送信済み';btn.disabled=true;}catch(e){console.error(e);$('#copyState').textContent=e.message==='service_not_configured'?'現在、相談受付の送信設定を確認中です。恐れ入りますが、相談内容をコピーして担当者へお送りください。':'送信できませんでした。通信環境をご確認のうえ、もう一度お試しください。';btn.disabled=false;}}",
+      'submit_function'
     );
 
     html = replaceOnce(
       html,
       "$('#handoffGo').onclick=openMailToSakai;",
-      "$('#handoffGo').onclick=openGmailCompose;",
-      'gmail_binding'
+      "$('#handoffGo').onclick=submitConsultation;",
+      'submit_binding'
+    );
+
+    html = html.replace(
+      "function openHandoff(mode){handoffMode=mode;",
+      "function openHandoff(mode){handoffMode=mode;$('#handoffGo').disabled=false;"
     );
 
     res.statusCode = 200;
