@@ -10,6 +10,10 @@
       "includeFiles": "stress-test.html",
       "maxDuration": 10
     },
+    "api/stress-test-save-v2.js": {
+      "includeFiles": "stress-test.html",
+      "maxDuration": 10
+    },
     "api/consultation.js": {
       "maxDuration": 10
     }
@@ -17,7 +21,7 @@
   "rewrites": [
     {
       "source": "/stress-test",
-      "destination": "/api/stress-test-save"
+      "destination": "/api/stress-test-save-v2"
     }
   ],
   "headers": [
