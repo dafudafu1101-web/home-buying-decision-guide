@@ -30,7 +30,7 @@ function buildHtml() {
         <p class="lpLead">今回の簡易シミュレーションは、現在の年収・資産・物件価格・借入条件から、住宅への大枠の配分を比較するものです。</p>
         <div class="lpScope">
           <b>今回の簡易シミュレーションでは、まだ反映していないお金があります</b>
-          <p><strong>教育方針や習い事、車、旅行・帰省、住まいの維持費、働き方の変化、老後、資産運用など、家庭ごとの差が大きい支出はまだ入れていません。</strong> そのため、同じ年収でも「住宅にどこまで配分するのが自分たちらしいか」は変わります。</p>
+          <p><strong>教育方針や習い事、車、旅行・帰省、住まいの維持費、働き方の変化、保険、老後、資産運用など、家庭ごとの差が大きい支出はまだ入れていません。</strong> ここでいう「住宅への余白」は、他の希望を圧迫しにくい範囲で住宅に配分できる金額です。</p>
         </div>
         <div class="lpQuestions">
           <div class="lpQuestion"><b>01</b><strong>教育・習い事</strong><span>私立、塾、大学、留学など</span></div>
@@ -38,11 +38,11 @@ function buildHtml() {
           <div class="lpQuestion"><b>03</b><strong>旅行・帰省</strong><span>旅行、外食、趣味など</span></div>
           <div class="lpQuestion"><b>04</b><strong>住まいの維持</strong><span>税金、修繕、管理費など</span></div>
           <div class="lpQuestion"><b>05</b><strong>働き方</strong><span>育休、時短、転職、退職など</span></div>
-          <div class="lpQuestion"><b>06</b><strong>老後・資産形成</strong><span>現金、運用、老後資金など</span></div>
+          <div class="lpQuestion"><b>06</b><strong>保険・老後・資産</strong><span>保障、現金、運用、老後資金など</span></div>
         </div>
         <div class="lpChart" aria-label="詳細ライフプランで作成する金融資産推移グラフのイメージ">
           <div class="lpChartHead"><b>金融資産の推移｜ライフプラン例</b><span>グラフイメージ</span></div>
-          <svg viewBox="0 0 560 230" role="img" aria-label="年齢と金融資産の推移を表したサンプルグラフ"><defs><linearGradient id="lpArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8a450" stop-opacity=".28"/><stop offset="100%" stop-color="#c8a450" stop-opacity=".03"/></linearGradient></defs><rect x="0" y="0" width="560" height="230" rx="10" fill="#fff"/><g stroke="#ece7dc" stroke-width="1"><line x1="48" y1="34" x2="535" y2="34"/><line x1="48" y1="78" x2="535" y2="78"/><line x1="48" y1="122" x2="535" y2="122"/><line x1="48" y1="166" x2="535" y2="166"/></g><g fill="#8b8478" font-size="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"><text x="9" y="38">4,000</text><text x="9" y="82">3,000</text><text x="9" y="126">2,000</text><text x="9" y="170">1,000</text><text x="47" y="210">35歳</text><text x="154" y="210">45歳</text><text x="262" y="210">55歳</text><text x="370" y="210">65歳</text><text x="480" y="210">75歳</text></g><path d="M50 100 C90 88,120 79,158 88 C195 98,214 135,264 146 C309 155,338 126,372 104 C410 80,451 64,532 45 L532 184 L50 184 Z" fill="url(#lpArea)"/><path d="M50 100 C90 88,120 79,158 88 C195 98,214 135,264 146 C309 155,338 126,372 104 C410 80,451 64,532 45" fill="none" stroke="#b88a2e" stroke-width="4" stroke-linecap="round"/><g fill="#b88a2e"><circle cx="50" cy="100" r="4"/><circle cx="158" cy="88" r="4"/><circle cx="264" cy="146" r="4"/><circle cx="372" cy="104" r="4"/><circle cx="532" cy="45" r="4"/></g><g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10"><rect x="188" y="151" width="122" height="27" rx="7" fill="#fff7e4" stroke="#ead39e"/><text x="201" y="168" fill="#6f5823">教育費ピークなどを確認</text><line x1="246" y1="151" x2="264" y2="146" stroke="#c8a450"/></g></svg>
+          <svg viewBox="0 0 560 230" role="img" aria-label="年齢と金融資産の推移を表したサンプルグラフ"><defs><linearGradient id="lpArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8a450" stop-opacity=".28"/><stop offset="100%" stop-color="#c8a450" stop-opacity=".03"/></linearGradient></defs><rect x="0" y="0" width="560" height="230" rx="10" fill="#fff"/><g stroke="#ece7dc" stroke-width="1"><line x1="48" y1="34" x2="535" y2="34"/><line x1="48" y1="78" x2="535" y2="78"/><line x1="48" y1="122" x2="535" y2="122"/><line x1="48" y1="166" x2="535" y2="166"/></g><g fill="#8b8478" font-size="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"><text x="8" y="18">金融資産（万円）</text><text x="9" y="38">4,000</text><text x="9" y="82">3,000</text><text x="9" y="126">2,000</text><text x="9" y="170">1,000</text><text x="47" y="210">35歳</text><text x="154" y="210">45歳</text><text x="262" y="210">55歳</text><text x="370" y="210">65歳</text><text x="480" y="210">75歳</text></g><path d="M50 100 C90 88,120 79,158 88 C195 98,214 135,264 146 C309 155,338 126,372 104 C410 80,451 64,532 45 L532 184 L50 184 Z" fill="url(#lpArea)"/><path d="M50 100 C90 88,120 79,158 88 C195 98,214 135,264 146 C309 155,338 126,372 104 C410 80,451 64,532 45" fill="none" stroke="#b88a2e" stroke-width="4" stroke-linecap="round"/><g fill="#b88a2e"><circle cx="50" cy="100" r="4"/><circle cx="158" cy="88" r="4"/><circle cx="264" cy="146" r="4"/><circle cx="372" cy="104" r="4"/><circle cx="532" cy="45" r="4"/></g><g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="10"><rect x="188" y="151" width="122" height="27" rx="7" fill="#fff7e4" stroke="#ead39e"/><text x="201" y="168" fill="#6f5823">教育費ピークなどを確認</text><line x1="246" y1="151" x2="264" y2="146" stroke="#c8a450"/></g></svg>
           <p class="lpChartNote">※表示イメージです。詳細ライフプランでは、上記の未反映項目をご家庭の希望に合わせて反映し、金融資産の推移を確認します。</p>
         </div>
         <p class="lpBridge"><b>何にお金を使いたいかまで含めて、住宅に使う余白を決める。</b>それが自分たちに合った住宅予算につながります。</p>
@@ -50,8 +50,9 @@ function buildHtml() {
 `;
 
   html = replaceOnce(html,'      <div class="cta">\n        <div class="kicker">NEXT STEP｜無料 詳細ライフプラン相談</div>',`${lifeplanPreview}\n      <div class="cta">\n        <div class="kicker">NEXT STEP｜無料 詳細ライフプラン相談</div>`,'lifeplan_preview_block');
-  html = replaceOnce(html,"const title='この予算で将来まで無理がないか確認する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';","const title='自分に合った「住宅への余白」を見える化する';\n  const base='教育・車・旅行・働き方・老後など、簡易シミュレーションでは未反映の条件まで入れて、住宅購入後の金融資産の推移を確認します。';",'lifeplan_cta_copy');
-  html = replaceOnce(html,'教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。','教育・車・旅行・働き方・老後など、簡易シミュレーションでは未反映の条件まで入れて、住宅購入後の金融資産の推移を確認します。','lifeplan_initial_copy');
+  html = replaceOnce(html,"const title='この予算で将来まで無理がないか確認する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';","const title='自分に合った「住宅への余白」を見える化する';\n  const base='教育・車・旅行・保険・働き方・老後など、ご家庭ごとの希望まで反映し、住宅購入後の金融資産の推移を確認します。';",'lifeplan_cta_copy');
+  html = replaceOnce(html,'教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。','教育・車・旅行・保険・働き方・老後など、ご家庭ごとの希望まで反映し、住宅購入後の金融資産の推移を確認します。','lifeplan_initial_copy');
+  html = replaceOnce(html,'        <ul><li>教育費・私立・大学・習い事</li><li>旅行・レジャー・車・修繕</li><li>保険・資産運用・老後資金</li><li>昇給・退職金・買い替え計画</li></ul>\n','', 'lifeplan_cta_list');
 
   return html.replace("function openHandoff(mode){handoffMode=mode;","function openHandoff(mode){handoffMode=mode;$('#handoffGo').disabled=false;");
 }
