@@ -6,12 +6,12 @@ const LIFEPLAN_CSS = '.lifeplanPreview{border:1px solid #dfd3b7;border-radius:20
 
 const ALLOCATION_CHOICES_HTML = `
         <div class="lpAllocation" aria-label="住宅に使わなかった余白の使い方による違いのイメージ">
-          <h4>同じ「1,000万円の余白」でも、使い方で意味は変わります</h4>
+          <h4>例えば、同じ「1,000万円の余白」でも、使い方で意味は変わります</h4>
           <p class="lpAllocationLead">必要な現金を残したうえで、残りをどう配分するかまで考えます。</p>
           <div class="lpAllocationGrid">
-            <div class="lpAllocationCard"><b>現金で残す</b><strong>必要額を見極める</strong><p>急な支出への備えは必要です。一方、持ちすぎると資産形成の機会を逃し、物価や住宅価格が上がる局面では購買力が相対的に下がることがあります。</p></div>
-            <div class="lpAllocationCard"><b>金融資産で運用する</b><strong>知識と運用方針で差が出る</strong><p>長期の資産形成につながる可能性がありますが、金融・投資知識やリスクの取り方で結果に差が出ます。元本・運用成果は保証されません。</p></div>
-            <div class="lpAllocationCard"><b>住宅へ配分する</b><strong>暮らし＋住宅側の資産</strong><p>住み続ける間は、市場価格の上下が日々の暮らしに直接影響するわけではありません。ローン返済や物件の資産性で純資産が残る場合があり、売却時には価格が影響します。</p></div>
+            <div class="lpAllocationCard"><b>現金で残す</b><strong>必要額を見極める</strong><p>急な支出への備えは必要です。一方、持ちすぎると資産形成の機会を逃し、物価や住宅価格の上昇局面では購買力が下がることがあります。</p></div>
+            <div class="lpAllocationCard"><b>金融資産で運用する</b><strong>知識と運用方針で差が出る</strong><p>資産形成につながる可能性がありますが、金融・投資知識やリスクの取り方で結果は変わります。元本・運用成果は保証されません。</p></div>
+            <div class="lpAllocationCard"><b>住宅へ配分する</b><strong>暮らし＋住宅側の資産</strong><p>住み続ける間は価格変動が暮らしに直接影響するわけではありません。ローン返済や物件の資産性で純資産が残る場合があります。</p></div>
           </div>
           <p class="lpAllocationNote">※どれか1つが正解ではありません。必要な現金・運用余力・住宅への配分を、ご家庭ごとに確認します。</p>
         </div>
@@ -65,10 +65,11 @@ const REPLACEMENTS = [
   ['legacy_use_block','<div class="moreBlock">\n          <h3>余白を住宅以外に使うなら</h3>','<div class="moreBlock legacyUseBlock">\n          <h3>余白を住宅以外に使うなら</h3>'],
   ['lifeplan_preview_css',BASE_CTA_CSS,LIFEPLAN_CSS],
   ['lifeplan_preview_block','      <div class="cta">\n        <div class="kicker">NEXT STEP｜無料 詳細ライフプラン相談</div>',`${LIFEPLAN_PREVIEW_HTML}\n      <div class="cta">\n        <div class="kicker">NEXT STEP｜無料 詳細ライフプラン相談</div>`],
-  ['lifeplan_cta_copy',"const title='この予算で将来まで無理がないか確認する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';","const title='自分に合った「住宅への余白」を見える化する';\n  const base='教育・車・旅行・働き方・老後などの希望と、現金・金融資産・住宅への配分を反映し、購入後の資産推移を確認します。';"],
-  ['lifeplan_initial_copy','教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。','教育・車・旅行・働き方・老後などの希望と、現金・金融資産・住宅への配分を反映し、購入後の資産推移を確認します。'],
+  ['lifeplan_cta_copy',"const title='この予算で将来まで無理がないか確認する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';","const title='自分に合った「住宅への余白」を見える化する';\n  const base='必要な現金を残し、金融資産とのバランスも見ながら、住宅にどこまで配分できるか確認します。';"],
+  ['lifeplan_initial_copy','教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。','必要な現金を残し、金融資産とのバランスも見ながら、住宅にどこまで配分できるか確認します。'],
   ['lifeplan_cta_list','        <ul><li>教育費・私立・大学・習い事</li><li>旅行・レジャー・車・修繕</li><li>保険・資産運用・老後資金</li><li>昇給・退職金・買い替え計画</li></ul>\n',''],
-  ['lifeplan_cta_button','無料で詳細ライフプランを相談する →','自分の場合を無料で確認する →']
+  ['lifeplan_cta_button','無料で詳細ライフプランを相談する →','自分の場合を無料で確認する →'],
+  ['bottom_disclaimer','※本ツールは購入可否・借入可能額・将来の資産価値を保証するものではありません。年収倍率は住宅取得を検討する際の内部比較目安であり、銀行の審査基準・借入可能額ではありません。将来の物件価格・売却費用・金利上昇の経路も予測や保証ではなく、比較のための仮定です。実際の借入期間・団信・審査・金利条件は金融機関ごとに異なります。','※本ツールは購入可否・借入可能額・将来の資産価値を保証するものではありません。年収倍率・将来価格・金利シナリオは比較のための仮定です。実際の審査・借入期間・団信・金利条件は金融機関ごとに異なります。']
 ];
 
 function replaceOnce(source, from, to, label) {
