@@ -48,19 +48,30 @@ function buildHtml() {
   html = replaceOnce(
     html,
     '.cta{background:linear-gradient(135deg,#151515,#282828);color:#fff;border-radius:19px;padding:20px;margin:18px 0}',
-    '.lifeplanPreview{border:1px solid #dfd3b7;border-radius:20px;padding:18px;margin:24px 0 14px;background:linear-gradient(180deg,#fffdf8,#fbf6e9)}.lifeplanPreview .lpEyebrow{font-size:11px;font-weight:900;letter-spacing:.11em;color:#9b7426}.lifeplanPreview h3{font-size:20px;margin:7px 0 8px}.lifeplanPreview .lpLead{font-size:12.5px;line-height:1.75;color:#4c463d;margin:0 0 13px}.lpQuestions{display:grid;gap:7px;margin:12px 0}.lpQuestion{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #e7dfcf;border-radius:11px;padding:9px 10px;font-size:11.5px;line-height:1.55;color:#3e3932}.lpQuestion b{color:#9b7426}.lpChart{background:#fff;border:1px solid #e0d8ca;border-radius:14px;padding:11px;margin-top:13px}.lpChartHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}.lpChartHead b{font-size:12px}.lpChartHead span{font-size:9.5px;color:#7b7469;background:#f4f0e7;border-radius:999px;padding:4px 7px}.lpChart svg{display:block;width:100%;height:auto}.lpChartNote{font-size:10px;line-height:1.55;color:#797267;margin:8px 1px 0}.lpBridge{font-size:12px;line-height:1.75;color:#3f3a33;margin:12px 0 0;font-weight:700}.cta{background:linear-gradient(135deg,#151515,#282828);color:#fff;border-radius:19px;padding:20px;margin:14px 0 18px}',
+    '.lifeplanPreview{border:1px solid #dfd3b7;border-radius:20px;padding:18px;margin:24px 0 14px;background:linear-gradient(180deg,#fffdf8,#fbf6e9)}.lifeplanPreview .lpEyebrow{font-size:11px;font-weight:900;letter-spacing:.11em;color:#9b7426}.lifeplanPreview h3{font-size:20px;margin:7px 0 8px}.lifeplanPreview .lpLead{font-size:12.5px;line-height:1.75;color:#4c463d;margin:0 0 13px}.lpEmphasis{background:#111;color:#fff;border-radius:13px;padding:12px 13px;margin:12px 0;font-size:12px;line-height:1.7}.lpEmphasis strong{color:#e1bf6e}.lpSpendGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.lpSpend{background:#fff;border:1px solid #e7dfcf;border-radius:11px;padding:10px}.lpSpend b{display:block;font-size:11.5px;margin-bottom:4px;color:#2f2a23}.lpSpend span{display:block;font-size:10.5px;line-height:1.5;color:#71695f}.lpQuestions{display:grid;gap:7px;margin:12px 0}.lpQuestion{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #e7dfcf;border-radius:11px;padding:9px 10px;font-size:11.5px;line-height:1.55;color:#3e3932}.lpQuestion b{color:#9b7426}.lpChart{background:#fff;border:1px solid #e0d8ca;border-radius:14px;padding:11px;margin-top:13px}.lpChartHead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}.lpChartHead b{font-size:12px}.lpChartHead span{font-size:9.5px;color:#7b7469;background:#f4f0e7;border-radius:999px;padding:4px 7px}.lpChart svg{display:block;width:100%;height:auto}.lpChartNote{font-size:10px;line-height:1.55;color:#797267;margin:8px 1px 0}.lpBridge{font-size:12px;line-height:1.75;color:#3f3a33;margin:12px 0 0;font-weight:700}.cta{background:linear-gradient(135deg,#151515,#282828);color:#fff;border-radius:19px;padding:20px;margin:14px 0 18px}@media(max-width:480px){.lpSpendGrid{grid-template-columns:1fr}}',
     'lifeplan_preview_css'
   );
 
   const lifeplanPreview = `
       <div class="lifeplanPreview">
         <div class="lpEyebrow">簡易診断の、その先へ</div>
-        <h3>この予算で、将来のお金がどう動くかまで見える化できます</h3>
-        <p class="lpLead">ここまでの診断は、現在の家計・資産から見た「住宅への配分」の整理です。詳細ライフプランでは、住宅を購入した後の家計を時間軸で確認します。</p>
+        <h3>同じ年収でも、「住宅に使える余白」は家庭ごとに変わります</h3>
+        <p class="lpLead">ここまでの診断は、現在の家計・資産から見た住宅への大枠の配分です。詳細ライフプランでは、何にお金を使いたいかまで反映して、<b>自分に合った余白の使い方</b>を確認します。</p>
+        <div class="lpEmphasis"><strong>年収が同じでも結果は同じではありません。</strong><br>教育・車・旅行・住まいの維持費・働き方・老後などに、どこまでお金を使いたいかで住宅へ回せる余白は大きく変わります。</div>
+
+        <div class="lpSpendGrid">
+          <div class="lpSpend"><b>教育・習い事</b><span>公立／私立、中学受験、塾、習い事、大学、留学など</span></div>
+          <div class="lpSpend"><b>車・交通</b><span>車を持つか、車種、買い替え、駐車場、保険、ガソリンなど</span></div>
+          <div class="lpSpend"><b>旅行・帰省・レジャー</b><span>家族旅行、帰省、外食、趣味、イベントにどこまで使うか</span></div>
+          <div class="lpSpend"><b>住まいの維持費</b><span>固定資産税、修繕、管理費、家具家電、リフォームなど</span></div>
+          <div class="lpSpend"><b>働き方の変化</b><span>育休、時短、転職、独立、退職時期、収入の変化など</span></div>
+          <div class="lpSpend"><b>老後・資産形成</b><span>現金をどこまで残すか、NISA・運用、繰上返済、老後資金など</span></div>
+        </div>
+
         <div class="lpQuestions">
-          <div class="lpQuestion"><b>01</b><span>教育費が重なる時期にも、家計は無理なく続く？</span></div>
-          <div class="lpQuestion"><b>02</b><span>住宅購入後、老後まで金融資産はいくら残る？</span></div>
-          <div class="lpQuestion"><b>03</b><span>予算を上げる／自己資金を残すと、将来はどう変わる？</span></div>
+          <div class="lpQuestion"><b>01</b><span>教育や旅行を大切にしても、住宅予算はこのままで大丈夫？</span></div>
+          <div class="lpQuestion"><b>02</b><span>住宅購入後、教育費ピークや老後まで金融資産はいくら残る？</span></div>
+          <div class="lpQuestion"><b>03</b><span>予算を上げる／自己資金を残す／運用を続けると将来はどう変わる？</span></div>
         </div>
         <div class="lpChart" aria-label="詳細ライフプランで作成する金融資産推移グラフのイメージ">
           <div class="lpChartHead"><b>金融資産の推移｜ライフプラン例</b><span>グラフイメージ</span></div>
@@ -87,9 +98,9 @@ function buildHtml() {
               <line x1="246" y1="151" x2="264" y2="146" stroke="#c8a450"/>
             </g>
           </svg>
-          <p class="lpChartNote">※上のグラフは表示イメージです。実際はご家族の教育費・生活費・住宅費・資産運用・老後などを入力し、ご家庭ごとの推移を作成します。</p>
+          <p class="lpChartNote">※上のグラフは表示イメージです。実際は教育・習い事・車・旅行・住宅維持費・働き方・資産運用・老後など、ご家庭ごとの希望を反映して推移を作成します。</p>
         </div>
-        <p class="lpBridge">「今買えるか」だけでなく、<b>この家を買っても将来やりたいことを続けられるか</b>を確認するためのライフプランです。</p>
+        <p class="lpBridge">「今買えるか」だけでなく、<b>自分たちらしい暮らしを続けながら、住宅にどこまで配分するのが合っているか</b>を確認するためのライフプランです。</p>
       </div>
 `;
 
@@ -103,14 +114,14 @@ function buildHtml() {
   html = replaceOnce(
     html,
     "const title='この予算で将来まで無理がないか確認する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';",
-    "const title='この予算で、将来のお金がどう動くか見える化する';\n  const base='教育費・旅行・車・保険・資産運用・老後・収入変化まで含め、住宅購入後の金融資産の推移をグラフで確認します。';",
+    "const title='自分に合った「住宅への余白」を見える化する';\n  const base='教育・習い事・車・旅行・住宅維持費・働き方・資産運用・老後まで含め、同じ年収でも家庭ごとに変わる住宅への配分を確認します。';",
     'lifeplan_cta_copy'
   );
 
   html = replaceOnce(
     html,
     '教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。',
-    '教育費・旅行・車・保険・資産運用・老後・収入変化まで含め、住宅購入後の金融資産の推移をグラフで確認します。',
+    '教育・習い事・車・旅行・住宅維持費・働き方・資産運用・老後まで含め、同じ年収でも家庭ごとに変わる住宅への配分を確認します。',
     'lifeplan_initial_copy'
   );
 
