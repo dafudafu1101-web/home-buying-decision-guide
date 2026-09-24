@@ -18,6 +18,13 @@
       "includeFiles": "stress-test.html",
       "maxDuration": 10
     },
+    "api/stress-test-save-v4.js": {
+      "includeFiles": "stress-test.html",
+      "maxDuration": 10
+    },
+    "api/result-pdf.js": {
+      "maxDuration": 60
+    },
     "api/consultation.js": {
       "maxDuration": 10
     }
@@ -25,7 +32,7 @@
   "rewrites": [
     {
       "source": "/stress-test",
-      "destination": "/api/stress-test-save-v3"
+      "destination": "/api/stress-test-save-v4"
     }
   ],
   "headers": [
