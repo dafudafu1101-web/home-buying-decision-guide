@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
   }
 
   const token = typeof req.query?.token === 'string' ? req.query.token : '';
-  if (!token || token.length > 1200 || !/^[A-Za-z0-9._~-]+$/.test(token)) {
+  if (!token || token.length > 4000 || !/^[A-Za-z0-9._~-]+$/.test(token)) {
     res.statusCode = 400;
     return res.end('Invalid token');
   }
@@ -21,7 +21,8 @@ module.exports = async function handler(req, res) {
     return res.end('Missing host');
   }
 
-  const targetUrl = `${proto}://${host}/stress-test#r=${token}`;
+  const hashKey = String(req.query?.legacy || '') === '1' ? 'result' : 'r';
+  const targetUrl = `${proto}://${host}/stress-test#${hashKey}=${token}`;
   let browser;
   try {
     browser = await puppeteer.launch({
