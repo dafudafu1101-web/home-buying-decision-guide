@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
   }
 
   const token = typeof req.query?.token === 'string' ? req.query.token : '';
-  if (!token || token.length > 1200) {
+  if (!token || token.length > 1200 || !/^[A-Za-z0-9._~-]+$/.test(token)) {
     res.statusCode = 400;
     return res.end('Invalid token');
   }
@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
     return res.end('Missing host');
   }
 
-  const targetUrl = `${proto}://${host}/stress-test#s=${encodeURIComponent(token)}`;
+  const targetUrl = `${proto}://${host}/stress-test#r=${token}`;
   let browser;
   try {
     browser = await puppeteer.launch({
@@ -35,7 +35,7 @@ module.exports = async function handler(req, res) {
     await page.goto(targetUrl, { waitUntil: 'networkidle0', timeout: 25000 });
     await page.waitForFunction(() => {
       const result = document.querySelector('.screen[data-step="3"]');
-      return result && result.classList.contains('active') && document.querySelector('#strategies .strategy');
+      return result && result.classList.contains('active') && document.querySelector('#strategies .strategy') && document.querySelector('#currentPrice')?.textContent !== '—';
     }, { timeout: 12000 });
 
     await page.evaluate(() => {
