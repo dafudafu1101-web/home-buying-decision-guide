@@ -26,9 +26,6 @@
       "includeFiles": "stress-test.html",
       "maxDuration": 10
     },
-    "api/result-pdf.js": {
-      "maxDuration": 60
-    },
     "api/consultation.js": {
       "maxDuration": 10
     }
