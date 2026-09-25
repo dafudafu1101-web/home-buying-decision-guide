@@ -79,8 +79,8 @@ function buildHtml() {
   );
   html = replaceOnce(
     html,
-    "$('#handoffGo').textContent=life?'無料相談メールを作成する →':'物件相談メールを作成する →';",
-    "$('#handoffGo').textContent=life?'無料相談を送信する →':'物件相談を送信する →';",
+    "$('#handoffGo').textContent=life?'無料相談メールを作成する →':loan?'無料ローン相談を申し込む →':'物件相談メールを作成する →';",
+    "$('#handoffGo').textContent=life?'無料相談を送信する →':loan?'無料ローン相談を送信する →':'物件相談を送信する →';",
     'handoff_button_copy'
   );
   html = replaceOnce(
