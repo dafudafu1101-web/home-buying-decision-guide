@@ -16,14 +16,14 @@ jobs:
           set -euo pipefail
           URL="https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test"
           ok=0
-          for i in $(seq 1 18); do
+          for i in $(seq 1 6); do
             code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
             echo "attempt=$i status=$code"
             if [ "$code" = "200" ]; then
               ok=1
               break
             fi
-            sleep 10
+            sleep 5
           done
           test "$ok" = "1"
 
