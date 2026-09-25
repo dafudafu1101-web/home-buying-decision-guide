@@ -42,7 +42,7 @@
     set('#age',v.age);set('#children',v.children);set('#childStage',v.childStage);set('#grossIncome',v.gross);set('#cash',v.cash);set('#investments',v.investments);set('#price',v.price);set('#loanAmount',v.loanAmount);set('#living',v.living);set('#rate',v.rate);set('#term',v.term);set('#netOverride',v.netOverride);
     const bm=document.querySelector('input[name="borrowMethod"][value="'+v.borrowMethod+'"]');if(bm)bm.checked=true;
     const rt=document.querySelector('input[name="rateType"][value="'+v.rateType+'"]');if(rt)rt.checked=true;
-    try{window.syncChildStage&&window.syncChildStage();window.syncBorrowMethod&&window.syncBorrowMethod();window.liveCalc&&window.liveCalc()}catch(_){ }
+    try{window.syncChildStage&&window.syncChildStage();window.syncBorrowMethod&&window.syncBorrowMethod();window.normalizeTermForAge&&window.normalizeTermForAge();window.liveCalc&&window.liveCalc()}catch(_){ }
   }
   function restore(){
     if(!location.hash.startsWith('#s='))return;
@@ -62,6 +62,7 @@
     const line=$('#shareLine'),mail=$('#shareMail');
     if(line&&!line.dataset.shareBound){line.dataset.shareBound='1';line.addEventListener('touchstart',refreshLinks,{passive:true});line.addEventListener('click',refreshLinks,false)}
     if(mail&&!mail.dataset.shareBound){mail.dataset.shareBound='1';mail.addEventListener('touchstart',refreshLinks,{passive:true});mail.addEventListener('click',refreshLinks,false)}
+    const again=$('#again');if(again&&!again.dataset.shareResetBound){again.dataset.shareResetBound='1';again.addEventListener('click',()=>{if(location.hash.startsWith('#s='))history.replaceState(null,'',location.pathname+location.search)},true)}
     document.addEventListener('input',refreshLinks,{passive:true});
     document.addEventListener('change',refreshLinks,{passive:true});
     refreshLinks();
