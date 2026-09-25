@@ -3,7 +3,7 @@
   "trailingSlash": false,
   "functions": {
     "api/stress-test.js": {
-      "includeFiles": "stress-test.html",
+      "includeFiles": "{stress-test.html,lifeplan-bridge.css,lifeplan-bridge.html}",
       "maxDuration": 10
     },
     "api/consultation.js": {
