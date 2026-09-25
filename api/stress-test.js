@@ -1,8 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const missingMarkers = [];
 function replaceOnce(source, from, to, label) {
-  if (!source.includes(from)) throw new Error(`missing_marker:${label}`);
+  if (!source.includes(from)) {
+    missingMarkers.push(label);
+    console.warn('stress_test_missing_marker', label);
+    return source;
+  }
   return source.replace(from, to);
 }
 
@@ -125,6 +130,7 @@ module.exports = function handler(req, res) {
   }
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600');
+  res.setHeader('Cache-Control', 'no-store');
+  if (missingMarkers.length) res.setHeader('X-Stress-Test-Warnings', missingMarkers.join(',').slice(0, 900));
   res.end(renderedHtml);
 };
