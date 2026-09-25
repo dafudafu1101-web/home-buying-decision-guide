@@ -582,7 +582,7 @@ function summaryText(mode){
   [['第1希望',c.date1,c.time1],['第2希望',c.date2,c.time2],['第3希望',c.date3,c.time3]].forEach(([label,date,time])=>{if(date)rows.push(`${label}：${date} ${time||'時間帯は相談'}`)});
   if(!c.date1&&!c.date2&&!c.date3)rows.push('相談希望日時：未指定');
   rows.push('相談したいこと・気になる点：','');
-  if(last){
+  if(last&&mode!=='loan'){
     const {v,net,refs,resultMultiples,zone,core}=last;
     const choiceLabel={safe:'月々の返済を抑えたい',balance:'住宅条件と返済のバランスを取りたい',housing:'住宅条件を優先したい'}[selectedChoice]||'';
     const zoneLabel={safe:'月々の返済を抑える配分',balance:'住宅と月々の負担を両立する配分',housing:'住宅への配分を高める水準',over:'3つの簡易比較ラインより上'}[zone];
