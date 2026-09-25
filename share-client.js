@@ -2,6 +2,7 @@
   'use strict';
   const SHARE_DAYS=90;
   const $=s=>document.querySelector(s);
+  const status=msg=>{const el=$('#shareStatus');if(el)el.textContent=msg||''};
   function num(id){const el=$(id);return el?Number(el.value||0):0}
   function val(id){const el=$(id);return el?String(el.value||''):''}
   function radio(name,def){const el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:def}
@@ -18,28 +19,22 @@
     const result=$('#zoneTitle')?.textContent?.trim()||'住宅予算チェック結果';
     return ['ADCAST｜3分 住宅予算の決め方チェック','現在の検討価格：'+current,'診断結果：'+result,'同じ診断結果をリンクから確認できます（90日間有効）。'].join('\n');
   }
-  async function nativeShare(){
-    if(typeof navigator.share!=='function')return false;
-    try{await navigator.share({title:'ADCAST｜住宅予算チェック結果',text:summary(),url:shareUrl()});return true}
-    catch(e){if(e&&e.name==='AbortError')return true;return false}
-  }
-  async function lineShare(e){
+  function lineShare(e){
     if(e){e.preventDefault();e.stopImmediatePropagation()}
-    const ok=await nativeShare();
-    if(ok)return;
+    status('LINEを開いています…');
     const payload=summary()+'\n'+shareUrl();
     location.href='https://line.me/R/share?text='+encodeURIComponent(payload);
   }
-  async function mailShare(e){
+  function mailShare(e){
     if(e){e.preventDefault();e.stopImmediatePropagation()}
-    const ok=await nativeShare();
-    if(ok)return;
+    status('メール作成画面を開いています…');
     location.href='mailto:?subject='+encodeURIComponent('住宅予算チェックの診断結果')+'&body='+encodeURIComponent(summary()+'\n\n診断ページ：'+shareUrl());
   }
   function bind(){
     const line=$('#shareLine'),mail=$('#shareMail');
     if(line&&!line.dataset.shareBound){line.dataset.shareBound='1';line.addEventListener('click',lineShare,true)}
     if(mail&&!mail.dataset.shareBound){mail.dataset.shareBound='1';mail.addEventListener('click',mailShare,true)}
+    if(line||mail)status('共有ボタンは利用できます。');
   }
   function unpack(t){
     const p=String(t||'').split('~');
