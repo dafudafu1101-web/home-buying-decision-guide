@@ -107,6 +107,11 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <label>借入予定額 <span class="unit">（万円）</span></label>
         <input id="loanAmount" type="number" inputmode="decimal" placeholder="例）6500">
         <div class="hint">借入予定額から、購入時に必要な自己資金と購入後に残る金融資産を計算します。</div>
+        <div class="sectionNote" style="margin-top:12px">
+          <b>まだ借入予定額が分からない方へ</b><br>
+          具体的な物件が決まっていなくても、ローン専門スタッフに「自分たちはどのくらいまで借りられそうか」を無料で相談できます。銀行への事前審査より前の段階で、金利・団信・金融機関ごとの違いを知るための相談としても利用できます。
+          <div style="margin-top:10px"><button type="button" class="miniBtn" id="loanConsultBtn">ローン専門スタッフに無料相談する →</button></div>
+        </div>
         <div class="helperBtns">
           <button type="button" class="miniBtn" id="loanFromPrice">物件価格だけ借りる</button>
           <button type="button" class="miniBtn" id="loanFromTotal">諸費用まで借りる</button>
@@ -283,6 +288,13 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       </div>
 
       <div class="agentLinkCard">
+        <h3>まず「いくらまで借りられるか」を知りたい方へ</h3>
+        <p>具体的な物件が決まっていなくても大丈夫です。ローン専門スタッフが、年収・自己資金・お客様の状況・検討する物件種別などをもとに、25の金融機関の中から候補を整理。金利や団信、商品の違いもフラットに確認できます。</p>
+        <p><b>銀行から借りられる金額と、家計として無理なく支払っていける金額は同じではありません。</b>まず借入上限の目安を知り、そのうえで適切な住宅予算を検証したい場合は詳細ライフプランへ進めます。</p>
+        <button class="agentLinkBtn" id="loanResultBtn">ローン専門スタッフに無料相談する →</button>
+      </div>
+
+      <div class="agentLinkCard">
         <h3>この予算で、どんな物件が狙える？</h3>
         <p>この予算でどのエリア・広さ・駅距離まで狙えるか、実際の売出物件や相場を見ながら営業担当と整理できます。物件ごとの立地・土地価値・希少性・流動性なども確認します。</p>
         <button class="agentLinkBtn" id="agentBtn">この予算で狙える物件を相談する →</button>
@@ -308,6 +320,19 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="intakeField"><label for="intakeName">お名前 <span style="color:#b42318">必須</span></label><input id="intakeName" autocomplete="name" placeholder="例）山田 太郎"></div>
       <div class="intakeField"><label for="intakeEmail">このURLを受信したメールアドレス <span style="color:#b42318">必須</span></label><input id="intakeEmail" type="email" inputmode="email" autocomplete="email" placeholder="例）taro@example.com"><p class="intakeHelp">※別のメールアドレスを入力すると、ご案内履歴を確認できない場合があります。</p></div>
       <div class="intakeField"><label for="intakePhone">電話番号（任意）</label><input id="intakePhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="例）090-1234-5678"></div>
+      <div class="intakeFields hidden" id="loanTopics">
+        <div class="intakeField">
+          <label>ローン相談で知りたいこと（複数選択可・任意）</label>
+          <div class="radioGrid">
+            <label class="choice"><input type="checkbox" name="loanTopic" value="借入上限の目安">借入上限の目安</label>
+            <label class="choice"><input type="checkbox" name="loanTopic" value="自分に合う金融機関">自分に合う金融機関</label>
+            <label class="choice"><input type="checkbox" name="loanTopic" value="金利・商品の違い">金利・商品の違い</label>
+            <label class="choice"><input type="checkbox" name="loanTopic" value="団信の違い">団信の違い</label>
+            <label class="choice"><input type="checkbox" name="loanTopic" value="ペアローン・収入合算">ペアローン・収入合算</label>
+            <label class="choice"><input type="checkbox" name="loanTopic" value="既存借入・審査の相談">既存借入・審査の相談</label>
+          </div>
+        </div>
+      </div>
       <div class="intakeFields" id="consultSchedule">
         <div class="intakeField">
           <label for="consultMethod">相談方法（任意）</label>
@@ -546,26 +571,43 @@ function render(){
 }
 
 function updateCta(choiceKey){const zoneForCta=last.zone==='over'?'over':(choiceKey||last.zone),c=ctaFor(zoneForCta,last.heavyEquity);$('#ctaTitle').textContent=c.title;$('#ctaText').textContent=c.text}
-function contactValues(){return {name:$('#intakeName').value.trim(),email:$('#intakeEmail').value.trim(),phone:$('#intakePhone').value.trim(),consultMethod:$('#consultMethod')?$('#consultMethod').value:'',date1:$('#consultDate1')?$('#consultDate1').value:'',time1:$('#consultTime1')?$('#consultTime1').value:'',date2:$('#consultDate2')?$('#consultDate2').value:'',time2:$('#consultTime2')?$('#consultTime2').value:'',date3:$('#consultDate3')?$('#consultDate3').value:'',time3:$('#consultTime3')?$('#consultTime3').value:''}}
+function contactValues(){return {name:$('#intakeName').value.trim(),email:$('#intakeEmail').value.trim(),phone:$('#intakePhone').value.trim(),consultMethod:$('#consultMethod')?$('#consultMethod').value:'',date1:$('#consultDate1')?$('#consultDate1').value:'',time1:$('#consultTime1')?$('#consultTime1').value:'',date2:$('#consultDate2')?$('#consultDate2').value:'',time2:$('#consultTime2')?$('#consultTime2').value:'',date3:$('#consultDate3')?$('#consultDate3').value:'',time3:$('#consultTime3')?$('#consultTime3').value:'',loanTopics:$('input[name=loanTopic]:checked').map(x=>x.value)}}
 function validEmail(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
 function validateIntake(){const c=contactValues(),errs=[];if(!c.name)errs.push('お名前を入力してください。');if(!c.email)errs.push('このURLを受信したメールアドレスを入力してください。');else if(!validEmail(c.email))errs.push('メールアドレスの形式をご確認ください。');$('#intakeError').innerHTML=errs.join('<br>');$('#intakeError').classList.toggle('show',errs.length>0);return errs.length===0}
 function summaryText(mode){
-  if(!last)return '';
-  const {v,net,refs,resultMultiples,zone,core}=last,c=contactValues();
-  const choiceLabel={safe:'月々の返済を抑えたい',balance:'住宅条件と返済のバランスを取りたい',housing:'住宅条件を優先したい'}[selectedChoice]||'';
-  const zoneLabel={safe:'月々の返済を抑える配分',balance:'住宅と月々の負担を両立する配分',housing:'住宅への配分を高める水準',over:'3つの簡易比較ラインより上'}[zone];
-  const purpose=mode==='lifeplan'?'詳細ライフプラン相談':'物件・エリア相談';
-  const equityLine=core.requiredEquity<=0&&core.financedCosts>0?`自己資金：0万円（諸費用のうち約${money(core.financedCosts)}も借入予定）`:`自己資金：${money(core.requiredEquity)}`;
-  const rows=[`【住宅予算チェック結果｜${purpose}】`,`お名前：${c.name}`,`メールアドレス：${c.email}`,`お電話番号（任意）：${c.phone}`,`相談方法：${c.consultMethod||'未指定'}`];[['第1希望',c.date1,c.time1],['第2希望',c.date2,c.time2],['第3希望',c.date3,c.time3]].forEach(([label,date,time])=>{if(date)rows.push(`${label}：${date} ${time||'時間帯は相談'}`)});if(!c.date1&&!c.date2&&!c.date3)rows.push('相談希望日時：未指定');rows.push('相談したいこと・気になる点：','',`現在検討価格：${money(v.price)}`,`世帯年収：${money(v.gross)}`,`概算年間手取り：${money(net)}`,`借入予定額：${money(v.loanAmount)}`,`金利・返済期間：${v.rate}%・${v.term}年`,equityLine,`購入後に残る現金：${money(core.postCash)}`,`購入後に残る投資資産：${money(core.postInvestments)}`,`現在の位置：${zoneLabel}`,`比較ライン：返済抑えめ ${money(refs.safe)} / バランス ${money(refs.balance)} / 住宅優先 ${money(refs.housing)}`,`参考年収倍率：${resultMultiples.safe.toFixed(1)}倍 / ${resultMultiples.balance.toFixed(1)}倍 / ${resultMultiples.housing.toFixed(1)}倍`);
-  if(choiceLabel)rows.push(`今の感覚：${choiceLabel}`);if(REF_TOKEN)rows.push(`受付ID：${REF_TOKEN}`);rows.push('','※この結果は借入可能額・安全上限・将来の資産価値を保証するものではありません。');return rows.join('\n');
+  const c=contactValues();
+  const purpose=mode==='lifeplan'?'詳細ライフプラン相談':mode==='loan'?'ローン専門スタッフ無料相談':'物件・エリア相談';
+  const rows=[`【住宅予算チェック｜${purpose}】`,`お名前：${c.name}`,`メールアドレス：${c.email}`,`お電話番号（任意）：${c.phone}`,`相談方法：${c.consultMethod||'未指定'}`];
+  if(mode==='loan')rows.push(`ローン相談で知りたいこと：${c.loanTopics.length?c.loanTopics.join(' / '):'未指定'}`);
+  [['第1希望',c.date1,c.time1],['第2希望',c.date2,c.time2],['第3希望',c.date3,c.time3]].forEach(([label,date,time])=>{if(date)rows.push(`${label}：${date} ${time||'時間帯は相談'}`)});
+  if(!c.date1&&!c.date2&&!c.date3)rows.push('相談希望日時：未指定');
+  rows.push('相談したいこと・気になる点：','');
+  if(last){
+    const {v,net,refs,resultMultiples,zone,core}=last;
+    const choiceLabel={safe:'月々の返済を抑えたい',balance:'住宅条件と返済のバランスを取りたい',housing:'住宅条件を優先したい'}[selectedChoice]||'';
+    const zoneLabel={safe:'月々の返済を抑える配分',balance:'住宅と月々の負担を両立する配分',housing:'住宅への配分を高める水準',over:'3つの簡易比較ラインより上'}[zone];
+    const equityLine=core.requiredEquity<=0&&core.financedCosts>0?`自己資金：0万円（諸費用のうち約${money(core.financedCosts)}も借入予定）`:`自己資金：${money(core.requiredEquity)}`;
+    rows.push(`現在検討価格：${money(v.price)}`,`世帯年収：${money(v.gross)}`,`概算年間手取り：${money(net)}`,`借入予定額：${money(v.loanAmount)}`,`金利・返済期間：${v.rate}%・${v.term}年`,equityLine,`購入後に残る現金：${money(core.postCash)}`,`購入後に残る投資資産：${money(core.postInvestments)}`,`現在の位置：${zoneLabel}`,`比較ライン：返済抑えめ ${money(refs.safe)} / バランス ${money(refs.balance)} / 住宅優先 ${money(refs.housing)}`,`参考年収倍率：${resultMultiples.safe.toFixed(1)}倍 / ${resultMultiples.balance.toFixed(1)}倍 / ${resultMultiples.housing.toFixed(1)}倍`);
+    if(choiceLabel)rows.push(`今の感覚：${choiceLabel}`);
+  }else if(mode==='loan'){
+    const gross=+$('#grossIncome').value||0,cash=+$('#cash').value||0,investments=+$('#investments').value||0,price=+$('#price').value||0,loan=+$('#loanAmount').value||0;
+    if(gross)rows.push(`世帯年収：${money(gross)}`);
+    if(cash||investments)rows.push(`現金・預金：${money(cash)}`,`投資資産：${money(investments)}`);
+    if(price)rows.push(`検討中の物件価格：${money(price)}`);
+    if(loan)rows.push(`入力した借入予定額：${money(loan)}`);
+    if(!price)rows.push('具体的な物件価格：未定');
+  }
+  if(REF_TOKEN)rows.push(`受付ID：${REF_TOKEN}`);
+  rows.push('',mode==='loan'?'※ローン相談は事前審査そのものではありません。実際の借入可能額・金利・団信・審査条件は金融機関ごとに異なります。':'※この結果は借入可能額・安全上限・将来の資産価値を保証するものではありません。');
+  return rows.join('\n');
 }
-function mailSubject(mode){return mode==='lifeplan'?'【住宅予算チェック】無料・詳細ライフプラン相談希望':'【住宅予算チェック】物件相談希望'}
-function openHandoff(mode){handoffMode=mode;const life=mode==='lifeplan';const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());const minDate=today.toISOString().slice(0,10);['#consultDate1','#consultDate2','#consultDate3'].forEach(sel=>{const el=$(sel);if(el)el.min=minDate});$('#handoffKicker').textContent=life?'NEXT STEP｜無料 詳細ライフプラン相談':'NEXT STEP｜物件・予算相談';$('#handoffTitle').textContent=life?'無料の詳細ライフプラン相談':'物件・予算について相談する';$('#handoffDesc').textContent=life?'教育費・老後・資産運用などまで含め、診断結果をもとに詳しく確認できます。':'診断結果をもとに、物件・エリア・予算・資産性などを営業担当と整理できます。';$('#handoffProcess').innerHTML=life?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>受付の確認が取れ次第、FPとの日程調整を行います。直近の土日などはFPの予約が埋まりやすいため、少し余裕をもった日程、または翌週以降も含めて複数の候補日をいただけるとスムーズです。':'<b>お申し込み後、担当者より受付内容確認のご連絡をします。</b><br>希望日時を確認のうえ、物件・予算相談の日程を調整します。複数の候補日をいただけるとスムーズです。';$('#consultScheduleHelp').textContent=life?'第1〜第3希望まで入力できます。直近の土日だけでなく、翌週以降も含めて複数候補をいただくと調整がスムーズです。希望日時は予約確定ではなく、受付確認後にFPと日程を調整します。':'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、担当者からのご連絡をもって確定となります。複数候補をいただけると調整がスムーズです。';$('#handoffSummary').textContent=summaryText(mode);$('#handoffGo').textContent=life?'無料相談メールを作成する →':'物件相談メールを作成する →';$('#copyState').textContent='';$('#intakeError').classList.remove('show');$('#handoffOverlay').classList.add('show');$('#handoffOverlay').setAttribute('aria-hidden','false')}
+function mailSubject(mode){return mode==='lifeplan'?'【住宅予算チェック】無料・詳細ライフプラン相談希望':mode==='loan'?'【住宅予算チェック】ローン専門スタッフ無料相談希望':'【住宅予算チェック】物件相談希望'}
+function openHandoff(mode){handoffMode=mode;const life=mode==='lifeplan',loan=mode==='loan';const topics=$('#loanTopics');if(topics)topics.classList.toggle('hidden',!loan);const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());const minDate=today.toISOString().slice(0,10);['#consultDate1','#consultDate2','#consultDate3'].forEach(sel=>{const el=$(sel);if(el)el.min=minDate});$('#handoffKicker').textContent=life?'NEXT STEP｜無料 詳細ライフプラン相談':loan?'NEXT STEP｜無料 ローン相談':'NEXT STEP｜物件・予算相談';$('#handoffTitle').textContent=life?'無料の詳細ライフプラン相談':loan?'ローン専門スタッフへの無料相談':'物件・予算について相談する';$('#handoffDesc').textContent=life?'教育費・老後・資産運用などまで含め、診断結果をもとに詳しく確認できます。':loan?'物件がまだ決まっていなくても大丈夫です。借入上限の目安、金融機関、金利、団信などを事前審査の前段階から気軽に確認できます。':'診断結果をもとに、物件・エリア・予算・資産性などを営業担当と整理できます。';$('#handoffProcess').innerHTML=life?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>受付の確認が取れ次第、FPとの日程調整を行います。直近の土日などはFPの予約が埋まりやすいため、少し余裕をもった日程、または翌週以降も含めて複数の候補日をいただけるとスムーズです。':loan?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>内容を確認したうえでローン専門スタッフと調整します。ご状況や検討する物件種別などに合わせ、25の金融機関の中から候補を整理し、金利・団信・商品の違いもご案内します。':'<b>お申し込み後、担当者より受付内容確認のご連絡をします。</b><br>希望日時を確認のうえ、物件・予算相談の日程を調整します。複数の候補日をいただけるとスムーズです。';$('#consultScheduleHelp').textContent=life?'第1〜第3希望まで入力できます。直近の土日だけでなく、翌週以降も含めて複数候補をいただくと調整がスムーズです。希望日時は予約確定ではなく、受付確認後にFPと日程を調整します。':loan?'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、受付内容を確認後にローン専門スタッフと日程を調整します。複数候補をいただけるとスムーズです。':'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、担当者からのご連絡をもって確定となります。複数候補をいただけると調整がスムーズです。';$('#handoffSummary').textContent=summaryText(mode);$('#handoffGo').textContent=life?'無料相談メールを作成する →':loan?'無料ローン相談を申し込む →':'物件相談メールを作成する →';$('#copyState').textContent='';$('#intakeError').classList.remove('show');$('#handoffOverlay').classList.add('show');$('#handoffOverlay').setAttribute('aria-hidden','false')}
 function closeHandoff(){$('#handoffOverlay').classList.remove('show');$('#handoffOverlay').setAttribute('aria-hidden','true');handoffMode=null}
 async function copyHandoff(){if(!validateIntake())return false;const text=summaryText(handoffMode);$('#handoffSummary').textContent=text;try{await navigator.clipboard.writeText(text);$('#copyState').textContent='相談内容をコピーしました。';return true}catch(e){try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');document.body.removeChild(ta);$('#copyState').textContent=ok?'相談内容をコピーしました。':'コピーできませんでした。結果欄を長押し／選択してコピーしてください。';return ok}catch(_){$('#copyState').textContent='コピーできませんでした。結果欄を長押し／選択してコピーしてください。';return false}}}
 function openMailToSakai(){if(!handoffMode||!validateIntake())return;const subject=mailSubject(handoffMode),body=summaryText(handoffMode);$('#handoffSummary').textContent=body;window.location.href=`mailto:${SAKAI_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
 function show(n){step=n;$$('.screen').forEach(s=>s.classList.toggle('active',+s.dataset.step===n));$('#count').textContent=n+' / 3';$('#bar').style.width=(n/3*100)+'%';$('#back').style.visibility=n===1?'hidden':'visible';$('#nav').classList.toggle('hidden',n!==2);window.scrollTo({top:0,behavior:'instant'});if(n===2){syncChildStage();syncBorrowMethod();liveCalc()}if(n===3)render()}
-$('#start').onclick=()=>show(2);$('#back').onclick=()=>show(Math.max(1,step-1));$('#next').onclick=()=>{if(step===2){const v=inputs(),errs=validate(v);if(errs.length){$('#warn').innerHTML=errs.join('<br>');$('#warn').classList.add('show');return}$('#warn').classList.remove('show');show(3)}};$('#children').addEventListener('input',syncChildStage);$$('input[name=borrowMethod]').forEach(r=>r.addEventListener('change',syncBorrowMethod));['#price','#loanAmount','#cash','#investments'].forEach(sel=>$(sel).addEventListener('input',liveCalc));$('#loanFromPrice').onclick=()=>{$('#loanAmount').value=Math.round(+$('#price').value||0);liveCalc()};$('#loanFromTotal').onclick=()=>{$('#loanAmount').value=Math.round((+$('#price').value||0)*(1+COST_RATE));liveCalc()};$$('.strategyButtons button').forEach(b=>b.onclick=()=>{$$('.strategyButtons button').forEach(x=>x.classList.remove('on'));b.classList.add('on');selectedChoice=b.dataset.choice;updateCta(selectedChoice)});$('#ctaBtn').onclick=()=>openHandoff('lifeplan');$('#agentBtn').onclick=()=>openHandoff('property');$('#handoffClose').onclick=closeHandoff;$('#handoffOverlay').addEventListener('click',e=>{if(e.target===$('#handoffOverlay'))closeHandoff()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#handoffOverlay').classList.contains('show'))closeHandoff()});['#intakeName','#intakeEmail','#intakePhone','#consultMethod','#consultDate1','#consultTime1','#consultDate2','#consultTime2','#consultDate3','#consultTime3'].forEach(sel=>{const el=$(sel);if(el)el.addEventListener('input',()=>{if(handoffMode)$('#handoffSummary').textContent=summaryText(handoffMode)})});$('#handoffCopy').onclick=copyHandoff;$('#handoffGo').onclick=openMailToSakai;$('#again').onclick=()=>show(2);show(1);
+$('#start').onclick=()=>show(2);$('#back').onclick=()=>show(Math.max(1,step-1));$('#next').onclick=()=>{if(step===2){const v=inputs(),errs=validate(v);if(errs.length){$('#warn').innerHTML=errs.join('<br>');$('#warn').classList.add('show');return}$('#warn').classList.remove('show');show(3)}};$('#children').addEventListener('input',syncChildStage);$$('input[name=borrowMethod]').forEach(r=>r.addEventListener('change',syncBorrowMethod));['#price','#loanAmount','#cash','#investments'].forEach(sel=>$(sel).addEventListener('input',liveCalc));$('#loanFromPrice').onclick=()=>{$('#loanAmount').value=Math.round(+$('#price').value||0);liveCalc()};$('#loanFromTotal').onclick=()=>{$('#loanAmount').value=Math.round((+$('#price').value||0)*(1+COST_RATE));liveCalc()};$$('.strategyButtons button').forEach(b=>b.onclick=()=>{$$('.strategyButtons button').forEach(x=>x.classList.remove('on'));b.classList.add('on');selectedChoice=b.dataset.choice;updateCta(selectedChoice)});$('#ctaBtn').onclick=()=>openHandoff('lifeplan');$('#agentBtn').onclick=()=>openHandoff('property');$('#loanConsultBtn').onclick=()=>openHandoff('loan');$('#loanResultBtn').onclick=()=>openHandoff('loan');$('#handoffClose').onclick=closeHandoff;$('#handoffOverlay').addEventListener('click',e=>{if(e.target===$('#handoffOverlay'))closeHandoff()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#handoffOverlay').classList.contains('show'))closeHandoff()});['#intakeName','#intakeEmail','#intakePhone','#consultMethod','#consultDate1','#consultTime1','#consultDate2','#consultTime2','#consultDate3','#consultTime3'].forEach(sel=>{const el=$(sel);if(el)el.addEventListener('input',()=>{if(handoffMode)$('#handoffSummary').textContent=summaryText(handoffMode)})});$('input[name=loanTopic]').forEach(el=>el.addEventListener('change',()=>{if(handoffMode)$('#handoffSummary').textContent=summaryText(handoffMode)}));$('#handoffCopy').onclick=copyHandoff;$('#handoffGo').onclick=openMailToSakai;$('#again').onclick=()=>show(2);show(1);
 </script>
 </body>
 </html>
