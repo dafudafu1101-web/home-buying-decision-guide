@@ -42,19 +42,19 @@ function buildHtml() {
   html = replaceOnce(
     html,
     'function inputs(){return {',
-    "let termManuallyEdited=false;\nfunction suggestedTermByAge(age){return Math.min(50,Math.max(1,80-age))}\nfunction syncTermFromAge(){const age=+$('#age').value;if(termManuallyEdited||!(age>=20&&age<=75))return;$('#term').value=suggestedTermByAge(age)}\nfunction inputs(){return {",
+    "function maxLongTermByAge(age){return Math.max(35,Math.min(50,80-age))}\nfunction updateTermAgeNote(message){const note=$('#termAgeNote');if(!note)return;const age=+$('#age').value,term=+$('#term').value||35;if(message){note.textContent=message;return}if(!(age>=20&&age<=75)){note.textContent='35年を基準に試算します。35年超は年齢・金融機関・商品条件を確認して調整します。';return}const max=maxLongTermByAge(age);note.textContent=term>35?'現在'+age+'歳の場合、この簡易診断では完済80歳を目安に最長'+max+'年として試算します。':'35年を基準に試算中です。35年超を選ぶ場合、現在'+age+'歳では最長'+max+'年を目安に調整します。'}\nfunction normalizeTermForAge(){const age=+$('#age').value,el=$('#term');if(!el)return;let term=+el.value||35;term=Math.max(1,Math.min(50,Math.round(term)));if(term>35&&age>=20&&age<=75){const max=maxLongTermByAge(age);if(term>max){const requested=term;term=max;el.value=term;updateTermAgeNote('希望'+requested+'年に対し、現在'+age+'歳では完済80歳を目安に'+term+'年へ調整しました。');return}}el.value=term;updateTermAgeNote()}\nfunction inputs(){return {",
     'age_term_helpers'
   );
   html = replaceOnce(
     html,
     'if(n===2){syncChildStage();syncBorrowMethod();liveCalc()}',
-    'if(n===2){syncChildStage();syncBorrowMethod();syncTermFromAge();liveCalc()}',
+    'if(n===2){syncChildStage();syncBorrowMethod();updateTermAgeNote();liveCalc()}',
     'age_term_step_sync'
   );
   html = replaceOnce(
     html,
     "$('#children').addEventListener('input',syncChildStage);",
-    "$('#age').addEventListener('input',()=>{syncTermFromAge();liveCalc()});$('#term').addEventListener('input',()=>{termManuallyEdited=true});$('#children').addEventListener('input',syncChildStage);",
+    "$('#age').addEventListener('input',()=>{if((+$('#term').value||35)>35)normalizeTermForAge();else updateTermAgeNote();liveCalc()});$('#term').addEventListener('change',normalizeTermForAge);$('#children').addEventListener('input',syncChildStage);",
     'age_term_events'
   );
 
@@ -89,7 +89,7 @@ function applySharedInputs(v){
   set('#age',v.age);set('#children',v.children);set('#childStage',v.childStage);set('#grossIncome',v.gross);set('#cash',v.cash);set('#investments',v.investments);set('#price',v.price);set('#loanAmount',v.loanAmount);set('#living',v.living);set('#rate',v.rate);set('#term',v.term);set('#netOverride',v.netOverride);
   const bm=$('input[name=borrowMethod][value="'+v.borrowMethod+'"]');if(bm)bm.checked=true;
   const rt=$('input[name=rateType][value="'+v.rateType+'"]');if(rt)rt.checked=true;
-  try{syncChildStage();syncBorrowMethod();liveCalc()}catch(e){}
+  try{syncChildStage();syncBorrowMethod();normalizeTermForAge();liveCalc()}catch(e){}
 }
 function restoreSharedResult(){
   if(!location.hash.startsWith('#s=')){show(1);return}
@@ -132,6 +132,13 @@ $('#again').onclick=()=>{selectedChoice=null;history.replaceState(null,'',locati
     "$('#again').onclick=()=>{selectedChoice=null;show(1)};",
     shareCode,
     'share_bindings'
+  );
+
+  html = replaceOnce(
+    html,
+    "if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');",
+    "if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');if(!(v.term>=1&&v.term<=50))arr.push('返済期間は1〜50年の範囲で入力してください。');if(v.term>35&&v.age>=20&&v.age<=75&&v.term>maxLongTermByAge(v.age))arr.push('35年を超える返済期間は、完済80歳を目安にすると現在の年齢では'+maxLongTermByAge(v.age)+'年までです。');",
+    'term_validation'
   );
 
   html = replaceOnce(
