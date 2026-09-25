@@ -19,22 +19,14 @@
     const result=$('#zoneTitle')?.textContent?.trim()||'住宅予算チェック結果';
     return ['ADCAST｜3分 住宅予算の決め方チェック','現在の検討価格：'+current,'診断結果：'+result,'同じ診断結果をリンクから確認できます（90日間有効）。'].join('\n');
   }
-  function lineShare(e){
-    if(e){e.preventDefault();e.stopImmediatePropagation()}
-    status('LINEを開いています…');
-    const payload=summary()+'\n'+shareUrl();
-    location.href='https://line.me/R/share?text='+encodeURIComponent(payload);
-  }
-  function mailShare(e){
-    if(e){e.preventDefault();e.stopImmediatePropagation()}
-    status('メール作成画面を開いています…');
-    location.href='mailto:?subject='+encodeURIComponent('住宅予算チェックの診断結果')+'&body='+encodeURIComponent(summary()+'\n\n診断ページ：'+shareUrl());
-  }
-  function bind(){
+  function refreshLinks(){
     const line=$('#shareLine'),mail=$('#shareMail');
-    if(line&&!line.dataset.shareBound){line.dataset.shareBound='1';line.addEventListener('click',lineShare,true)}
-    if(mail&&!mail.dataset.shareBound){mail.dataset.shareBound='1';mail.addEventListener('click',mailShare,true)}
-    if(line||mail)status('共有ボタンは利用できます。');
+    if(!line&&!mail)return;
+    const url=shareUrl();
+    const text=summary();
+    if(line)line.href='https://line.me/R/share?text='+encodeURIComponent(text+'\n'+url);
+    if(mail)mail.href='mailto:?subject='+encodeURIComponent('住宅予算チェックの診断結果')+'&body='+encodeURIComponent(text+'\n\n診断ページ：'+url);
+    status('共有リンクの準備ができました。');
   }
   function unpack(t){
     const p=String(t||'').split('~');
@@ -58,8 +50,23 @@
     if(!v)return;
     if(v.expired){setTimeout(()=>alert('この共有結果は90日間の有効期限を過ぎています。新しく診断してください。'),50);return}
     apply(v);
-    try{if(typeof window.inputs==='function'&&typeof window.validate==='function'){const errs=window.validate(window.inputs());if(errs&&errs.length)return}if(typeof window.show==='function')window.show(3)}catch(_){ }
+    try{
+      if(typeof window.inputs==='function'&&typeof window.validate==='function'){
+        const errs=window.validate(window.inputs());if(errs&&errs.length)return;
+      }
+      if(typeof window.show==='function')window.show(3);
+    }catch(_){ }
+    setTimeout(refreshLinks,0);
+  }
+  function bind(){
+    const line=$('#shareLine'),mail=$('#shareMail');
+    if(line&&!line.dataset.shareBound){line.dataset.shareBound='1';line.addEventListener('touchstart',refreshLinks,{passive:true});line.addEventListener('click',refreshLinks,false)}
+    if(mail&&!mail.dataset.shareBound){mail.dataset.shareBound='1';mail.addEventListener('touchstart',refreshLinks,{passive:true});mail.addEventListener('click',refreshLinks,false)}
+    document.addEventListener('input',refreshLinks,{passive:true});
+    document.addEventListener('change',refreshLinks,{passive:true});
+    refreshLinks();
   }
   bind();
   document.addEventListener('DOMContentLoaded',function(){bind();restore()});
+  window.addEventListener('pageshow',refreshLinks);
 })();
