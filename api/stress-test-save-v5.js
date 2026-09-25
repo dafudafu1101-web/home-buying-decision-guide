@@ -1,6 +1,14 @@
 const baseHandler = require('./stress-test-save');
 
-const EXTRA_CSS = `.resumeResultCard{margin:14px 0 0;border:1px solid #d9c28d;border-radius:14px;padding:12px 13px;background:#fffaf0}.resumeResultCard b{display:block;font-size:13px;margin-bottom:6px}.resumeResultActions{display:flex;gap:8px}.resumeResultActions button{flex:1;border-radius:10px;padding:10px 8px;font-size:11px;font-weight:800;border:1px solid #b88a2e;background:#fff}.resumeResultActions .primary{background:linear-gradient(90deg,#a8781f,#d5b35e);color:#111;border:none}`;
+const EXTRA_CSS = `
+.resumeResultCard{margin:14px 0 0;border:1px solid #d9c28d;border-radius:14px;padding:12px 13px;background:#fffaf0}
+.resumeResultCard b{display:block;font-size:13px;margin-bottom:6px}
+.resumeResultActions{display:flex;gap:8px}
+.resumeResultActions button{flex:1;border-radius:10px;padding:10px 8px;font-size:11px;font-weight:800;border:1px solid #b88a2e;background:#fff}
+.resumeResultActions .primary{background:linear-gradient(90deg,#a8781f,#d5b35e);color:#111;border:none}
+.saveShareGrid{grid-template-columns:1fr!important}
+#resultPdfBtn{display:none!important}
+`;
 
 const SHARE_PATCH = String.raw`function encNum(v){const n=Number(v||0);return Math.round(n*100).toString(36)}
   function decNum(v){const n=parseInt(v||'0',36);return Number.isFinite(n)?String(n/100):'0'}
@@ -58,27 +66,14 @@ const RESTORE_PATCH = String.raw`if(shared){
       }
     }`;
 
-const PDF_PATCH = String.raw`async function savePdf(){
-    saveState(true);pdfBtn.disabled=true;updateStatus(Date.now(),'PDFを作成中…');
-    try{
-      const token=compactShareToken();
-      const response=await fetch('/api/result-pdf?token='+encodeURIComponent(token),{method:'GET',cache:'no-store'});
-      if(!response.ok)throw new Error('PDF '+response.status);
-      const blob=await response.blob();if(!blob||blob.size<1000)throw new Error('empty PDF');
-      const date=new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).replace(/\//g,'-');
-      const file=new File([blob],'ADCAST_住宅予算チェック結果_'+date+'.pdf',{type:'application/pdf'});
-      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({title:'ADCAST｜住宅予算チェック結果',files:[file]});updateStatus(Date.now());return}
-      const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},30000);updateStatus(Date.now(),'PDFを保存しました');
-    }catch(e){if(!(e&&e.name==='AbortError'))updateStatus(null,'PDFを作成できませんでした。もう一度お試しください')}
-    finally{pdfBtn.disabled=false}
-  }`;
-
 function patchHtml(html){
   if(typeof html!=='string')return html;
   let out=html.replace('</head>',`<style>${EXTRA_CSS}</style></head>`);
   out=out.replace(/async function makeShareUrl\(\)\{[\s\S]*?\n  \}\n  async function readSharedResult\(\)\{[\s\S]*?\n  \}/,SHARE_PATCH);
   out=out.replace(/const initial=shared\|\|readSaved\(\);[\s\S]*?\n    \}/,RESTORE_PATCH);
-  out=out.replace(/async function savePdf\(\)\{[\s\S]*?\n  \}/,PDF_PATCH);
+  out=out.replace('結果をあとで見直す・保存する','結果をあとで見直す・共有する');
+  out=out.replace('診断条件はこの端末に自動保存されます。PDFは印刷画面を経由せず、折りたたみをすべて開いた診断結果をファイルとして作成します。','診断結果はこの端末に保存されます。LINE・メールでは、同じ診断結果を90日間有効のリンクで共有できます。');
+  out=out.replace('※共有結果は90日間有効です。共有リンクには診断条件が含まれるため、送信先をご確認ください。PDFは作成後にiPhoneの共有シートから「ファイルに保存」・LINE・メール等へ送れます。','※共有リンクは90日間有効です。リンクには診断条件が含まれるため、送信先をご確認ください。');
   return out;
 }
 
