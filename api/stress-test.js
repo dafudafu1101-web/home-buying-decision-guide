@@ -58,82 +58,6 @@ function buildHtml() {
     'age_term_events'
   );
 
-  const shareCode = String.raw`
-const SHARE_DAYS=90;
-function shareSummary(){
-  if(!last)return 'ADCAST｜3分 住宅予算の決め方チェック';
-  const v=last.v;
-  const zoneName={safe:'月々の返済を抑える配分',balance:'住宅と返済のバランスを取る配分',housing:'住宅条件を優先する配分',over:'比較ラインより上'}[last.zone]||'住宅予算チェック';
-  return ['ADCAST｜3分 住宅予算の決め方チェック','現在の検討価格：'+money(v.price),'診断結果：'+zoneName,'同じ診断結果をリンクから確認できます（90日間有効）。'].join('\\n');
-}
-function encShareNum(v){const n=Number(v||0);return Math.round(n*100).toString(36)}
-function decShareNum(v){const n=parseInt(v||'0',36);return Number.isFinite(n)?n/100:0}
-function compactShareToken(){
-  const i=inputs();
-  const stageMap={none:'0',preschool:'1',primary:'2',teen:'3',college:'4',mixed:'5',future:'6'};
-  const expHour=Math.floor((Date.now()+SHARE_DAYS*86400000)/3600000).toString(36);
-  return ['3',expHour,encShareNum(i.age),encShareNum(i.children),stageMap[i.childStage]||'0',i.borrowMethod==='pair'?'1':'0',encShareNum(i.gross),encShareNum(i.cash),encShareNum(i.investments),encShareNum(i.price),encShareNum(i.loanAmount),encShareNum(i.living),encShareNum(i.rate),encShareNum(i.term),encShareNum(i.netOverride),i.rateType==='fixed'?'1':'0'].join('~');
-}
-function unpackCompactShare(token){
-  const p=String(token||'').split('~');
-  if(p.length<16||p[0]!=='3')return null;
-  const exp=parseInt(p[1],36)*3600000;
-  if(!Number.isFinite(exp))return null;
-  if(Date.now()>exp)return {expired:true};
-  const stages=['none','preschool','primary','teen','college','mixed','future'];
-  return {age:decShareNum(p[2]),children:decShareNum(p[3]),childStage:stages[parseInt(p[4],10)]||'none',borrowMethod:p[5]==='1'?'pair':'single',gross:decShareNum(p[6]),cash:decShareNum(p[7]),investments:decShareNum(p[8]),price:decShareNum(p[9]),loanAmount:decShareNum(p[10]),living:decShareNum(p[11]),rate:decShareNum(p[12]),term:decShareNum(p[13]),netOverride:decShareNum(p[14]),rateType:p[15]==='1'?'fixed':'variable'};
-}
-function makeShareUrl(){return location.origin+location.pathname+'#s='+compactShareToken()}
-function applySharedInputs(v){
-  const set=(id,val)=>{const el=$(id);if(el)el.value=val};
-  set('#age',v.age);set('#children',v.children);set('#childStage',v.childStage);set('#grossIncome',v.gross);set('#cash',v.cash);set('#investments',v.investments);set('#price',v.price);set('#loanAmount',v.loanAmount);set('#living',v.living);set('#rate',v.rate);set('#term',v.term);set('#netOverride',v.netOverride);
-  const bm=$('input[name=borrowMethod][value="'+v.borrowMethod+'"]');if(bm)bm.checked=true;
-  const rt=$('input[name=rateType][value="'+v.rateType+'"]');if(rt)rt.checked=true;
-  try{syncChildStage();syncBorrowMethod();normalizeTermForAge();liveCalc()}catch(e){}
-}
-function restoreSharedResult(){
-  if(!location.hash.startsWith('#s=')){show(1);return}
-  const shared=unpackCompactShare(location.hash.slice(3));
-  if(!shared){show(1);return}
-  if(shared.expired){show(1);setTimeout(()=>alert('この共有結果は90日間の有効期限を過ぎています。新しく診断してください。'),50);return}
-  applySharedInputs(shared);
-  const errs=validate(inputs());
-  if(errs.length){show(1);return}
-  show(3);
-}
-async function nativeShare(){
-  const text=shareSummary();
-  const url=makeShareUrl();
-  if(navigator.share){
-    try{await navigator.share({title:'ADCAST｜住宅予算チェック結果',text,url});return true}catch(e){if(e&&e.name==='AbortError')return true}
-  }
-  return false;
-}
-async function shareToLine(){
-  if(await nativeShare())return;
-  const payload=shareSummary()+'\\n'+makeShareUrl();
-  window.location.href='https://line.me/R/share?text='+encodeURIComponent(payload);
-}
-async function shareByMail(){
-  const text=shareSummary();
-  const url=makeShareUrl();
-  if(navigator.share){
-    try{await navigator.share({title:'ADCAST｜住宅予算チェック結果',text,url});return}catch(e){if(e&&e.name==='AbortError')return}
-  }
-  const subject='住宅予算チェックの診断結果';
-  const body=text+'\\n\\n診断ページ：'+url;
-  window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-}
-$('#shareLine').onclick=shareToLine;$('#shareMail').onclick=shareByMail;
-$('#again').onclick=()=>{selectedChoice=null;history.replaceState(null,'',location.pathname+location.search);show(1)};
-`;
-  html = replaceOnce(
-    html,
-    "$('#again').onclick=()=>{selectedChoice=null;show(1)};",
-    shareCode,
-    'share_bindings'
-  );
-
   html = replaceOnce(
     html,
     "if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');",
@@ -176,7 +100,6 @@ $('#again').onclick=()=>{selectedChoice=null;history.replaceState(null,'',locati
     'function openHandoff(mode){handoffMode=mode;',
     "function openHandoff(mode){handoffMode=mode;$('#handoffGo').disabled=false;"
   );
-  html = html.replace('show(1);\\n</script>', 'restoreSharedResult();\\n</script>');
   return html;
 }
 
