@@ -2,6 +2,10 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "functions": {
+    "api/app.js": {
+      "includeFiles": "index.html",
+      "maxDuration": 10
+    },
     "api/stress-test.js": {
       "includeFiles": "stress-test.html",
       "maxDuration": 10
@@ -11,6 +15,10 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/app"
+    },
     {
       "source": "/stress-test",
       "destination": "/api/stress-test"
