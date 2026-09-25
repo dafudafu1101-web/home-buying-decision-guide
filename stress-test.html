@@ -19,7 +19,7 @@ button,input,select{font:inherit}.app{max-width:620px;margin:0 auto;min-height:1
 .kicker{font-size:13px;font-weight:900;letter-spacing:.11em;color:var(--gold)}h1,h2,h3{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;line-height:1.25;margin:.35em 0 .55em}h1{font-size:37px;letter-spacing:-.035em}h2{font-size:27px}h3{font-size:19px}.lead{font-size:15px;line-height:1.85;color:#3f3b35}.small{font-size:12px;line-height:1.65;color:var(--muted)}
 .heroBottom{background:var(--black);color:#fff;margin:22px -20px -24px;padding:24px 20px calc(28px + env(safe-area-inset-bottom))}.heroGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.heroPoint{border:1px solid #6f6247;border-radius:15px;padding:14px 6px;text-align:center;font-size:12px}.heroPoint b{display:block;font-size:23px;margin-bottom:6px}
 .primary,.secondary,.ghost{width:100%;border:none;border-radius:14px;min-height:54px;padding:14px 16px;font-weight:900}.primary{background:linear-gradient(90deg,#a8781f,#d5b35e);color:#111}.secondary{background:#111;color:#fff}.ghost{background:#fff;color:#111;border:1px solid var(--line)}
-.stepLabel{display:inline-block;padding:5px 10px;background:#111;color:#fff;font-size:12px;font-weight:900;letter-spacing:.12em}.sectionNote{background:var(--goldsoft);border-left:4px solid var(--gold);padding:13px 14px;border-radius:10px;font-size:13px;line-height:1.65;margin:14px 0 18px}.groupTitle{font-weight:900;font-size:13px;margin:22px 0 8px;color:#2d2a26}.field{margin:14px 0}.field label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}.unit{font-weight:500;color:var(--muted);font-size:12px}.hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.55}input[type=number],select{width:100%;border:1px solid #d5d0c7;border-radius:12px;padding:13px 14px;background:#fff;min-height:50px;font-size:16px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.warn{display:none;color:var(--red);background:#fff1f0;border:1px solid #f0bbb5;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.55;margin-top:10px}.warn.show{display:block}
+.stepLabel{display:inline-block;padding:5px 10px;background:#111;color:#fff;font-size:12px;font-weight:900;letter-spacing:.12em}.sectionNote{background:var(--goldsoft);border-left:4px solid var(--gold);padding:13px 14px;border-radius:10px;font-size:13px;line-height:1.65;margin:14px 0 18px}.loanHelpCard{margin:14px 0 18px;padding:18px;border:1px solid #dfd3b8;border-radius:16px;background:linear-gradient(135deg,#fffdf8,#f8f1e2);box-shadow:0 8px 22px rgba(99,73,25,.06)}.loanHelpEyebrow{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.06em;color:#8a6117;background:#fff;border:1px solid #dfd3b8;border-radius:99px;padding:5px 9px}.loanHelpCard h3{font-family:inherit;font-size:19px;margin:10px 0 7px}.loanHelpCard>p{font-size:12.5px;line-height:1.7;margin:7px 0;color:#4a443a}.loanHelpBenefits{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0}.loanHelpBenefits span{background:#fff;border:1px solid #e5dcc9;border-radius:8px;padding:7px 9px;font-size:11.5px;font-weight:800}.loanHelpCard .loanHelpDetail{font-size:12px}.loanHelpBtn{width:100%;border:0;border-radius:11px;background:#111;color:#fff;min-height:48px;padding:12px 14px;font-size:13px;font-weight:900;margin-top:8px;cursor:pointer}.loanHelpBtn:active{opacity:.82}.loanHelpCard .loanHelpFoot{font-size:10.5px;color:var(--muted);margin:9px 0 0}.groupTitle{font-weight:900;font-size:13px;margin:22px 0 8px;color:#2d2a26}.field{margin:14px 0}.field label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}.unit{font-weight:500;color:var(--muted);font-size:12px}.hint{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.55}input[type=number],select{width:100%;border:1px solid #d5d0c7;border-radius:12px;padding:13px 14px;background:#fff;min-height:50px;font-size:16px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.warn{display:none;color:var(--red);background:#fff1f0;border:1px solid #f0bbb5;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.55;margin-top:10px}.warn.show{display:block}
 details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:18px}summary{font-weight:900;cursor:pointer}.radioGrid{display:grid;gap:9px;margin-top:12px}.choice{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px}.choice input{width:18px;height:18px;accent-color:var(--gold)}
 .hidden{display:none!important}
 .alertBox{display:none;background:#fff1f0;border:1px solid #eeb3ab;color:var(--red);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.6;margin-top:10px;font-weight:700}.alertBox.show{display:block}
@@ -85,9 +85,9 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="groupTitle">家族と時間</div>
       <div class="two">
         <div class="field"><label>主な借入予定者の年齢 <span class="unit">（歳）</span></label><input id="age" type="number" inputmode="numeric" placeholder="例）35"></div>
-        <div class="field"><label>お子さまの人数 <span class="unit">（人）</span></label><input id="children" type="number" inputmode="numeric" min="0" max="6" placeholder="例）2"></div>
+        <div class="field"><label>お子さまの人数 <span class="unit">（人・将来予定含む）</span></label><input id="children" type="number" inputmode="numeric" min="0" max="6" placeholder="例）2"></div>
       </div>
-      <div class="field" id="childStageWrap"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">子どもはいない</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">簡易版では年齢帯だけを使います。私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
+      <div class="field" id="childStageWrap"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">選択してください</option><option value="future">今はいない・今後を想定</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">これからお子さまを想定している場合は「今はいない・今後を想定」を選べます。簡易版では年齢帯だけを使い、私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
 
       <div class="groupTitle">借入方法</div>
       <div class="radioGrid" style="margin-top:0">
@@ -107,10 +107,16 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <label>借入予定額 <span class="unit">（万円）</span></label>
         <input id="loanAmount" type="number" inputmode="decimal" placeholder="例）6500">
         <div class="hint">借入予定額から、購入時に必要な自己資金と購入後に残る金融資産を計算します。</div>
-        <div class="sectionNote" style="margin-top:12px">
-          <b>まだ借入予定額が分からない方へ</b><br>
-          具体的な物件が決まっていなくても、ローン専門スタッフに「自分たちはどのくらいまで借りられそうか」を無料で相談できます。銀行への事前審査より前の段階で、金利・団信・金融機関ごとの違いを知るための相談としても利用できます。
-          <div style="margin-top:10px"><button type="button" class="miniBtn" id="loanConsultBtn">ローン専門スタッフに無料相談する →</button></div>
+        <div class="loanHelpCard">
+          <div class="loanHelpEyebrow">物件が決まる前でもOK｜無料</div>
+          <h3>住宅ローン、いくらまで借りられる？</h3>
+          <p>「予算を決めたいけれど、まず借入上限が分からない」という段階で使える相談です。</p>
+          <div class="loanHelpBenefits">
+            <span>✓ 借入上限の目安</span><span>✓ 自分に合う金融機関</span><span>✓ 金利・団信の違い</span>
+          </div>
+          <p class="loanHelpDetail"><b>25の金融機関から比較。</b>年収・自己資金・ご状況・検討する物件種別などに合わせて、ローン専門スタッフが候補を整理します。銀行へ事前審査を申し込む前に、まず知識を整理したい方にもおすすめです。</p>
+          <button type="button" class="loanHelpBtn" id="loanConsultBtn">借入上限の目安を無料で確認する →</button>
+          <p class="loanHelpFoot">※事前審査そのものではありません。「借りられる金額」と「無理なく支払える金額」は別なので、上限を確認した後は詳細ライフプランで適正予算も検証できます。</p>
         </div>
         <div class="helperBtns">
           <button type="button" class="miniBtn" id="loanFromPrice">物件価格だけ借りる</button>
@@ -288,10 +294,10 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       </div>
 
       <div class="agentLinkCard">
-        <h3>まず「いくらまで借りられるか」を知りたい方へ</h3>
-        <p>具体的な物件が決まっていなくても大丈夫です。ローン専門スタッフが、年収・自己資金・お客様の状況・検討する物件種別などをもとに、25の金融機関の中から候補を整理。金利や団信、商品の違いもフラットに確認できます。</p>
-        <p><b>銀行から借りられる金額と、家計として無理なく支払っていける金額は同じではありません。</b>まず借入上限の目安を知り、そのうえで適切な住宅予算を検証したい場合は詳細ライフプランへ進めます。</p>
-        <button class="agentLinkBtn" id="loanResultBtn">ローン専門スタッフに無料相談する →</button>
+        <h3>「いくらまで借りられる？」を先に確認したい</h3>
+        <p>物件がまだ決まっていなくても利用できます。25の金融機関から、ご状況や物件種別に合う候補を整理し、借入上限の目安・金利・団信の違いをローン専門スタッフと確認できます。</p>
+        <p><b>借りられる金額 ≠ 無理なく支払える金額。</b>借入上限を知ったうえで、適正予算は詳細ライフプランで検証できます。</p>
+        <button class="agentLinkBtn" id="loanResultBtn">借入上限の目安を無料で確認する →</button>
       </div>
 
       <div class="agentLinkCard">
@@ -418,7 +424,7 @@ function validate(v){
   if(v.gross<=0)arr.push('世帯年収を入力してください。');
   if(v.price<=0)arr.push('検討価格を入力してください。');
   if(v.cash<0||v.investments<0||v.loanAmount<0||v.living<0)arr.push('現金・投資資産・借入予定額・生活費は0以上で入力してください。');
-  if(v.children===0&&v.childStage!=='none')arr.push('お子さま0人の場合、年齢帯は「子どもはいない」にしてください。');
+  if(v.children===0&&v.childStage!=='none')arr.push('お子さま0人の場合、年齢帯の入力は不要です。');
   if(v.children>0&&v.childStage==='none')arr.push('お子さまがいる場合、年齢帯を選んでください。');
   if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');
   return arr;
