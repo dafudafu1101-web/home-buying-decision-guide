@@ -13,8 +13,8 @@ function buildHtml() {
   html = replaceOnce(
     html,
     '</style>',
-    `.lifeplanBridge{margin:22px 0;padding:20px 18px;border:1px solid #d8c9a6;border-radius:22px;background:#fbf7ec}.lifeplanBridge .bridgeKicker{font-size:12px;font-weight:900;letter-spacing:.12em;color:#9b741e;margin-bottom:8px}.lifeplanBridge h2{font-size:27px;margin:.2em 0 .55em}.lifeplanBridge>.lead{margin-bottom:14px}.bridgeIntro{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.bridgeIntro b{display:block;font-size:14px;margin-bottom:7px}.bridgeIntro p{font-size:12.5px;line-height:1.75;color:#4d4942;margin:0}.bridgeIntro strong{color:#9a6b13}.bridgeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 16px}.bridgeItem{border:1px solid #ddd4c3;border-radius:14px;background:#fff;padding:12px}.bridgeItem em{display:block;font-style:normal;font-size:11px;font-weight:900;color:#a8781f;margin-bottom:4px}.bridgeItem b{display:block;font-size:14px;margin-bottom:3px}.bridgeItem span{display:block;font-size:11.5px;line-height:1.5;color:#625d55}.assetChart{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:14px;margin:14px 0}.assetChartHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.assetChartHead b{font-size:14px}.chartBadge{font-size:10px;color:#766f63;background:#f1ede4;border-radius:999px;padding:5px 8px;white-space:nowrap}.assetChart p{font-size:11.5px;line-height:1.6;color:#625d55;margin:6px 0 10px}.chartLegend{display:grid;gap:5px;margin:8px 0 6px;font-size:10.5px;color:#625d55}.legendRow{display:flex;align-items:center;gap:7px}.legendLine{width:24px;height:4px;border-radius:99px;background:#b78a2d}.legendLine.dashed{height:0;border-top:3px dashed #777;background:none}.chartNote{font-size:10.5px!important;margin-top:8px!important}.allocationCard{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.allocationCard h3{font-family:inherit;font-size:15px;margin:0 0 7px}.allocationCard>p{font-size:11.5px;line-height:1.65;color:#625d55;margin:0 0 10px}.allocationChoices{display:grid;gap:9px}.allocationChoice{border:1px solid #ddd4c3;border-radius:13px;padding:11px;background:#fff}.allocationChoice b{display:block;font-size:13px;margin-bottom:3px}.allocationChoice strong{display:block;font-size:12px;color:#9a6b13;margin-bottom:3px}.allocationChoice span{font-size:11px;line-height:1.55;color:#625d55}.bridgeFoot{font-size:11.5px;line-height:1.65;color:#5b564e;margin:10px 2px 0}.bridgeQuestion{font-size:14px;font-weight:900;line-height:1.6;margin:16px 2px 0}.cta ul{display:none!important}
-@media(max-width:430px){.bridgeGrid{grid-template-columns:1fr 1fr}.lifeplanBridge{padding:18px 16px}.lifeplanBridge h2{font-size:26px}}
+    `.lifeplanBridge{margin:22px 0;padding:20px 18px;border:1px solid #d8c9a6;border-radius:22px;background:#fbf7ec}.lifeplanBridge .bridgeKicker{font-size:12px;font-weight:900;letter-spacing:.12em;color:#9b741e;margin-bottom:8px}.lifeplanBridge h2{font-size:27px;margin:.2em 0 .55em}.lifeplanBridge>.lead{margin-bottom:14px}.bridgeIntro{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.bridgeIntro b{display:block;font-size:14px;margin-bottom:7px}.bridgeIntro p{font-size:12.5px;line-height:1.75;color:#4d4942;margin:0}.bridgeIntro strong{color:#9a6b13}.bridgeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 16px}.bridgeItem{border:1px solid #ddd4c3;border-radius:14px;background:#fff;padding:12px}.bridgeItem em{display:block;font-style:normal;font-size:11px;font-weight:900;color:#a8781f;margin-bottom:4px}.bridgeItem b{display:block;font-size:14px;margin-bottom:3px}.bridgeItem span{display:block;font-size:11.5px;line-height:1.5;color:#625d55}.assetChart{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:14px;margin:14px 0}.assetChartHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.assetChartHead b{font-size:14px}.chartBadge{font-size:10px;color:#766f63;background:#f1ede4;border-radius:999px;padding:5px 8px;white-space:nowrap}.assetChart p{font-size:11.5px;line-height:1.6;color:#625d55;margin:6px 0 10px}.chartLegend{display:grid;gap:5px;margin:8px 0 6px;font-size:10.5px;color:#625d55}.legendRow{display:flex;align-items:center;gap:7px}.legendLine{width:24px;height:4px;border-radius:99px;background:#b78a2d}.legendLine.dashed{height:0;border-top:3px dashed #777;background:none}.chartNote{font-size:10.5px!important;margin-top:8px!important}.allocationCard{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.allocationCard h3{font-family:inherit;font-size:15px;margin:0 0 7px}.allocationCard>p{font-size:11.5px;line-height:1.65;color:#625d55;margin:0 0 10px}.allocationChoices{display:grid;gap:9px}.allocationChoice{border:1px solid #ddd4c3;border-radius:13px;padding:11px;background:#fff}.allocationChoice b{display:block;font-size:13px;margin-bottom:3px}.allocationChoice strong{display:block;font-size:12px;color:#9a6b13;margin-bottom:3px}.allocationChoice span{font-size:11px;line-height:1.55;color:#625d55}.bridgeFoot{font-size:11.5px;line-height:1.65;color:#5b564e;margin:10px 2px 0}.bridgeQuestion{font-size:14px;font-weight:900;line-height:1.6;margin:16px 2px 0}.cta ul{display:none!important}.shareBox{margin:18px 0 22px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff}.shareBox h3{font-family:inherit;font-size:15px;margin:0 0 6px}.shareBox p{font-size:11.5px;line-height:1.65;color:var(--muted);margin:0 0 11px}.shareBtns{display:grid;grid-template-columns:1fr 1fr;gap:9px}.shareBtn{min-height:48px;border-radius:12px;border:1px solid var(--line);font-weight:900;font-size:13px;padding:12px;background:#fff;color:#111}.shareBtn.line{background:#06c755;color:#fff;border-color:#06c755}.shareBtn.mail{background:#111;color:#fff;border-color:#111}
+@media(max-width:430px){.bridgeGrid{grid-template-columns:1fr 1fr}.lifeplanBridge{padding:18px 16px}.lifeplanBridge h2{font-size:26px}.shareBtns{grid-template-columns:1fr 1fr}}
 </style>`,
     'lifeplan_bridge_css'
   );
@@ -71,6 +71,15 @@ function buildHtml() {
         <p class="bridgeQuestion">「自分の場合は、どこまで住宅に使える？」 家庭ごとの希望と3つの配分を入れて確認します。</p>
       </section>
 
+      <div class="shareBox" aria-label="診断結果を共有">
+        <h3>診断結果を共有する</h3>
+        <p>ご家族との相談用に、この診断ページをLINEまたはメールで共有できます。</p>
+        <div class="shareBtns">
+          <button type="button" class="shareBtn line" id="shareLine">LINEで共有</button>
+          <button type="button" class="shareBtn mail" id="shareMail">メールで共有</button>
+        </div>
+      </div>
+
       <div class="cta">`,
     'lifeplan_bridge_markup'
   );
@@ -118,6 +127,23 @@ function inputs(){return {`,
     "$('#children').addEventListener('input',syncChildStage);",
     "$('#age').addEventListener('input',()=>{syncTermFromAge();liveCalc()});$('#term').addEventListener('input',()=>{termManuallyEdited=true});$('#children').addEventListener('input',syncChildStage);",
     'age_term_events'
+  );
+
+  html = replaceOnce(
+    html,
+    "$('#again').onclick=()=>{selectedChoice=null;show(1)};",
+    `function shareSummary(){
+  if(!last)return 'ADCAST｜3分 住宅予算の決め方チェック';
+  const v=last.v;
+  const zoneName={safe:'月々の返済を抑える配分',balance:'住宅と返済のバランスを取る配分',housing:'住宅条件を優先する配分',over:'比較ラインより上'}[last.zone]||'住宅予算チェック';
+  return ['ADCAST｜3分 住宅予算の決め方チェック',`現在の検討価格：${money(v.price)}`,`診断結果：${zoneName}`,'家族ごとの住宅・現金・資産運用の配分を比較する簡易診断です。'].join('\\n');
+}
+function cleanShareUrl(){const u=new URL(window.location.href);u.searchParams.delete('utm_source');u.searchParams.delete('utm_medium');u.searchParams.delete('utm_campaign');return u.toString()}
+function shareToLine(){const text=shareSummary()+'\\n'+cleanShareUrl();window.location.href='https://line.me/R/msg/text/?'+encodeURIComponent(text)}
+function shareByMail(){const subject='住宅予算チェックの診断結果';const body=shareSummary()+'\\n\\n診断ページ：'+cleanShareUrl();window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)}
+$('#shareLine').onclick=shareToLine;$('#shareMail').onclick=shareByMail;
+$('#again').onclick=()=>{selectedChoice=null;show(1)};`,
+    'share_bindings'
   );
 
   html = replaceOnce(
