@@ -13,50 +13,111 @@ function buildHtml() {
   html = replaceOnce(
     html,
     '</style>',
-    `.lifeplanPreview{margin:18px 0 16px;padding:16px;border:1px solid #6f6247;border-radius:16px;background:rgba(255,255,255,.06)}
-.lifeplanPreviewHead{font-size:13px;font-weight:900;color:#e1bf6e;margin-bottom:6px}.lifeplanPreviewLead{font-size:12px;line-height:1.7;color:#e6e3dc;margin:0 0 14px}.lifeplanGraph{display:grid;gap:9px;margin:12px 0}.lifeplanRow{display:grid;grid-template-columns:72px 1fr;gap:9px;align-items:center}.lifeplanRow span{font-size:10.5px;color:#cfc9bd}.lifeplanTrack{height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}.lifeplanBar{height:100%;border-radius:999px;background:linear-gradient(90deg,#a8781f,#e1bf6e)}.lifeplanBar.b2{width:72%}.lifeplanBar.b3{width:58%}.lifeplanBar.b4{width:84%}.lifeplanPreviewNote{font-size:10.5px;line-height:1.6;color:#aaa398;margin:11px 0 0}.lifeplanChecks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.lifeplanCheck{border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 10px;font-size:10.5px;line-height:1.45;color:#eee9dd;background:rgba(255,255,255,.035)}
-@media(max-width:430px){.lifeplanChecks{grid-template-columns:1fr}.lifeplanRow{grid-template-columns:64px 1fr}}
+    `.lifeplanBridge{margin:22px 0;padding:20px 18px;border:1px solid #d8c9a6;border-radius:22px;background:#fbf7ec}.lifeplanBridge .bridgeKicker{font-size:12px;font-weight:900;letter-spacing:.12em;color:#9b741e;margin-bottom:8px}.lifeplanBridge h2{font-size:27px;margin:.2em 0 .55em}.lifeplanBridge>.lead{margin-bottom:14px}.bridgeIntro{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.bridgeIntro b{display:block;font-size:14px;margin-bottom:7px}.bridgeIntro p{font-size:12.5px;line-height:1.75;color:#4d4942;margin:0}.bridgeIntro strong{color:#9a6b13}.bridgeGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 16px}.bridgeItem{border:1px solid #ddd4c3;border-radius:14px;background:#fff;padding:12px}.bridgeItem em{display:block;font-style:normal;font-size:11px;font-weight:900;color:#a8781f;margin-bottom:4px}.bridgeItem b{display:block;font-size:14px;margin-bottom:3px}.bridgeItem span{display:block;font-size:11.5px;line-height:1.5;color:#625d55}.assetChart{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:14px;margin:14px 0}.assetChartHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.assetChartHead b{font-size:14px}.chartBadge{font-size:10px;color:#766f63;background:#f1ede4;border-radius:999px;padding:5px 8px;white-space:nowrap}.assetChart p{font-size:11.5px;line-height:1.6;color:#625d55;margin:6px 0 10px}.chartLegend{display:grid;gap:5px;margin:8px 0 6px;font-size:10.5px;color:#625d55}.legendRow{display:flex;align-items:center;gap:7px}.legendLine{width:24px;height:4px;border-radius:99px;background:#b78a2d}.legendLine.dashed{height:0;border-top:3px dashed #777;background:none}.chartNote{font-size:10.5px!important;margin-top:8px!important}.allocationCard{border:1px solid #ddd4c3;border-radius:16px;background:#fff;padding:15px 14px;margin:14px 0}.allocationCard h3{font-family:inherit;font-size:15px;margin:0 0 7px}.allocationCard>p{font-size:11.5px;line-height:1.65;color:#625d55;margin:0 0 10px}.allocationChoices{display:grid;gap:9px}.allocationChoice{border:1px solid #ddd4c3;border-radius:13px;padding:11px;background:#fff}.allocationChoice b{display:block;font-size:13px;margin-bottom:3px}.allocationChoice strong{display:block;font-size:12px;color:#9a6b13;margin-bottom:3px}.allocationChoice span{font-size:11px;line-height:1.55;color:#625d55}.bridgeFoot{font-size:11.5px;line-height:1.65;color:#5b564e;margin:10px 2px 0}.bridgeQuestion{font-size:14px;font-weight:900;line-height:1.6;margin:16px 2px 0}.cta ul{display:none!important}
+@media(max-width:430px){.bridgeGrid{grid-template-columns:1fr 1fr}.lifeplanBridge{padding:18px 16px}.lifeplanBridge h2{font-size:26px}}
 </style>`,
-    'lifeplan_preview_css'
+    'lifeplan_bridge_css'
   );
 
   html = replaceOnce(
     html,
-    '<p id="ctaText">教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。</p>\n        <ul>',
-    `<p id="ctaText">教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。</p>
-        <div class="lifeplanPreview">
-          <div class="lifeplanPreviewHead">簡易診断の次に、ここまで確認できます</div>
-          <p class="lifeplanPreviewLead">住宅だけでなく、将来の支出と資産残高の動きを同じ時間軸で見て、「この住宅予算を選んだ場合に何が残るか」を確認します。</p>
-          <div class="lifeplanGraph" aria-label="詳細ライフプランの確認イメージ">
-            <div class="lifeplanRow"><span>住宅費</span><div class="lifeplanTrack"><div class="lifeplanBar" style="width:78%"></div></div></div>
-            <div class="lifeplanRow"><span>教育費</span><div class="lifeplanTrack"><div class="lifeplanBar b2"></div></div></div>
-            <div class="lifeplanRow"><span>老後資金</span><div class="lifeplanTrack"><div class="lifeplanBar b3"></div></div></div>
-            <div class="lifeplanRow"><span>資産残高</span><div class="lifeplanTrack"><div class="lifeplanBar b4"></div></div></div>
-          </div>
-          <div class="lifeplanChecks">
-            <div class="lifeplanCheck">教育費のピーク時も家計が回るか</div>
-            <div class="lifeplanCheck">旅行・車・修繕費を入れても余裕が残るか</div>
-            <div class="lifeplanCheck">現金と運用資産をどれだけ残すか</div>
-            <div class="lifeplanCheck">退職前後まで資産がどう推移するか</div>
-          </div>
-          <p class="lifeplanPreviewNote">※グラフは確認項目のイメージです。実際のライフプランはご家庭ごとの収入・支出条件を反映して作成します。</p>
+    '<div class="cta">',
+    `<section class="lifeplanBridge" aria-label="詳細ライフプランで確認する内容">
+        <div class="bridgeKicker">簡易診断の、その先へ</div>
+        <h2>同じ年収でも、住宅に使える余白は家庭ごとに変わります</h2>
+        <p class="lead">簡易シミュレーションでは、現在の年収・資産・物件価格・借入条件から住宅への大枠の配分を比較しています。</p>
+
+        <div class="bridgeIntro">
+          <b>まだ反映していない、家庭ごとの差があります</b>
+          <p><strong>教育、車、旅行、住まいの維持費、働き方、保険、老後、資産運用</strong>などは詳細ライフプランで反映します。「住宅への余白」は、他の希望を圧迫しにくい範囲で住宅に配分できる金額です。</p>
         </div>
-        <ul>`,
-    'lifeplan_preview_markup'
+
+        <div class="bridgeGrid">
+          <div class="bridgeItem"><em>01</em><b>教育・習い事</b><span>私立、塾、大学、留学など</span></div>
+          <div class="bridgeItem"><em>02</em><b>車・交通</b><span>保有、買い替え、駐車場など</span></div>
+          <div class="bridgeItem"><em>03</em><b>旅行・帰省</b><span>旅行、外食、趣味など</span></div>
+          <div class="bridgeItem"><em>04</em><b>住まいの維持</b><span>税金、修繕、管理費など</span></div>
+          <div class="bridgeItem"><em>05</em><b>働き方</b><span>育休、時短、転職、退職など</span></div>
+          <div class="bridgeItem"><em>06</em><b>保険・老後・資産</b><span>保障、現金、運用、老後資金など</span></div>
+        </div>
+
+        <div class="assetChart">
+          <div class="assetChartHead"><b>同じ年収でも、暮らし方で資産推移は変わります</b><span class="chartBadge">比較イメージ</span></div>
+          <p>同じ年収・住宅価格でも、教育・車・旅行などの使い方で将来の金融資産は変わります。</p>
+          <div class="chartLegend"><div class="legendRow"><i class="legendLine"></i>支出を抑えめに見た一例</div><div class="legendRow"><i class="legendLine dashed"></i>教育・車・旅行などを多めに見た一例</div></div>
+          <svg viewBox="0 0 520 230" role="img" aria-label="35歳から75歳までの金融資産推移の比較イメージ" style="width:100%;height:auto;display:block">
+            <g stroke="#e7e2d8" stroke-width="1"><line x1="58" y1="28" x2="500" y2="28"/><line x1="58" y1="68" x2="500" y2="68"/><line x1="58" y1="108" x2="500" y2="108"/><line x1="58" y1="148" x2="500" y2="148"/><line x1="58" y1="188" x2="500" y2="188"/></g>
+            <g fill="#8d877d" font-size="11"><text x="8" y="32">4,000</text><text x="8" y="72">3,000</text><text x="8" y="112">2,000</text><text x="8" y="152">1,000</text><text x="32" y="192">0</text><text x="18" y="216">35歳</text><text x="130" y="216">45歳</text><text x="242" y="216">55歳</text><text x="354" y="216">65歳</text><text x="466" y="216">75歳</text></g>
+            <line x1="58" y1="188" x2="500" y2="188" stroke="#a8a198" stroke-width="2"/>
+            <path d="M58 108 C110 92,150 96,170 100 S245 138,280 150 S350 130,390 105 S460 82,500 70" fill="none" stroke="#b78a2d" stroke-width="4" stroke-linecap="round"/>
+            <path d="M58 108 C115 114,150 124,170 132 S245 164,280 188 S350 205,390 208 S460 200,500 198" fill="none" stroke="#77736d" stroke-width="4" stroke-dasharray="8 7" stroke-linecap="round"/>
+            <g fill="#b78a2d"><circle cx="58" cy="108" r="4"/><circle cx="170" cy="100" r="4"/><circle cx="280" cy="150" r="4"/><circle cx="390" cy="105" r="4"/><circle cx="500" cy="70" r="4"/></g>
+            <rect x="290" y="177" rx="8" ry="8" width="124" height="28" fill="#f4efe4" stroke="#ded6c8"/><text x="302" y="195" font-size="10.5" fill="#625d55">資金不足になる時期も確認</text>
+          </svg>
+          <p class="chartNote">※参考イメージです。将来を予測するものではありません。実際は住宅予算・教育・働き方・運用などを入れて確認します。</p>
+        </div>
+
+        <div class="allocationCard">
+          <h3>同じ「1,000万円の余白」でも、使い方で意味は変わります</h3>
+          <p>必要な現金を残したうえで、残りをどう配分するかまで考えます。</p>
+          <div class="allocationChoices">
+            <div class="allocationChoice"><b>現金で残す</b><strong>必要額を見極める</strong><span>急な支出への備えは必要です。一方、持ちすぎると資産形成の機会を逃し、物価や住宅価格が上がる局面では購買力が相対的に下がることがあります。</span></div>
+            <div class="allocationChoice"><b>金融資産で運用する</b><strong>知識と運用方針で差が出る</strong><span>長期の資産形成につながる可能性がありますが、金融・投資知識やリスクの取り方で結果に差が出ます。元本・運用成果は保証されません。</span></div>
+            <div class="allocationChoice"><b>住宅へ配分する</b><strong>暮らし＋住宅側の資産</strong><span>住み続ける間は、市場価格の上下が日々の暮らしに直接影響するわけではありません。ローン返済や物件の資産性で純資産が残る場合があり、売却時には価格が影響します。</span></div>
+          </div>
+          <p class="bridgeFoot">※どれか1つが正解ではありません。必要な現金・運用余力・住宅への配分を、ご家庭ごとに確認します。</p>
+        </div>
+
+        <p class="bridgeQuestion">「自分の場合は、どこまで住宅に使える？」 家庭ごとの希望と3つの配分を入れて確認します。</p>
+      </section>
+
+      <div class="cta">`,
+    'lifeplan_bridge_markup'
+  );
+
+  html = replaceOnce(
+    html,
+    '<h2 id="ctaTitle">この予算で将来まで無理がないか確認する</h2>',
+    '<h2 id="ctaTitle">自分に合った「住宅への余白」を見える化する</h2>',
+    'lifeplan_cta_heading'
+  );
+
+  html = replaceOnce(
+    html,
+    '<button class="primary" id="ctaBtn">無料で詳細ライフプランを相談する →</button>',
+    '<button class="primary" id="ctaBtn">自分の場合を無料で確認する →</button>',
+    'lifeplan_cta_button'
   );
 
   html = replaceOnce(
     html,
     "const title='この予算で将来まで無理がないか確認する';",
-    "const title='今の住宅予算、本当に人生全体でも「ちょうどいい」？';",
-    'lifeplan_cta_title'
+    "const title='自分に合った「住宅への余白」を見える化する';",
+    'lifeplan_cta_dynamic_title'
   );
 
   html = replaceOnce(
     html,
-    "const base='教育費・旅行・車・保険・資産運用・老後・収入変化などまで含め、この住宅予算が人生全体でも成立するか確認します。';",
-    "const base='簡易診断では見えない教育費・レジャー費・老後・資産運用・収入変化まで重ね、この住宅予算を選んだ後も家計と資産がどう推移するか確認します。';",
-    'lifeplan_cta_base'
+    "function inputs(){return {",
+    `let termManuallyEdited=false;
+function suggestedTermByAge(age){return Math.min(50,Math.max(1,80-age))}
+function syncTermFromAge(){const age=+$('#age').value;if(termManuallyEdited||!(age>=20&&age<=75))return;$('#term').value=suggestedTermByAge(age)}
+function inputs(){return {`,
+    'age_term_helpers'
+  );
+
+  html = replaceOnce(
+    html,
+    "if(n===2){syncChildStage();syncBorrowMethod();liveCalc()}",
+    "if(n===2){syncChildStage();syncBorrowMethod();syncTermFromAge();liveCalc()}",
+    'age_term_step_sync'
+  );
+
+  html = replaceOnce(
+    html,
+    "$('#children').addEventListener('input',syncChildStage);",
+    "$('#age').addEventListener('input',()=>{syncTermFromAge();liveCalc()});$('#term').addEventListener('input',()=>{termManuallyEdited=true});$('#children').addEventListener('input',syncChildStage);",
+    'age_term_events'
   );
 
   html = replaceOnce(
