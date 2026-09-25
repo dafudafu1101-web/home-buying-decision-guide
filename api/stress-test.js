@@ -101,8 +101,29 @@ function restoreSharedResult(){
   if(errs.length){show(1);return}
   show(3);
 }
-function shareToLine(){const text=shareSummary()+'\\n'+makeShareUrl();window.location.href='https://line.me/R/msg/text/?'+encodeURIComponent(text)}
-function shareByMail(){const subject='住宅予算チェックの診断結果';const body=shareSummary()+'\\n\\n診断ページ：'+makeShareUrl();window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)}
+async function nativeShare(){
+  const text=shareSummary();
+  const url=makeShareUrl();
+  if(navigator.share){
+    try{await navigator.share({title:'ADCAST｜住宅予算チェック結果',text,url});return true}catch(e){if(e&&e.name==='AbortError')return true}
+  }
+  return false;
+}
+async function shareToLine(){
+  if(await nativeShare())return;
+  const payload=shareSummary()+'\\n'+makeShareUrl();
+  window.location.href='https://line.me/R/share?text='+encodeURIComponent(payload);
+}
+async function shareByMail(){
+  const text=shareSummary();
+  const url=makeShareUrl();
+  if(navigator.share){
+    try{await navigator.share({title:'ADCAST｜住宅予算チェック結果',text,url});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  const subject='住宅予算チェックの診断結果';
+  const body=text+'\\n\\n診断ページ：'+url;
+  window.location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
 $('#shareLine').onclick=shareToLine;$('#shareMail').onclick=shareByMail;
 $('#again').onclick=()=>{selectedChoice=null;history.replaceState(null,'',location.pathname+location.search);show(1)};
 `;
