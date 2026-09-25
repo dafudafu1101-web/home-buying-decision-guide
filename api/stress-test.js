@@ -14,7 +14,17 @@ function replaceOnce(source, from, to, label) {
 function buildHtml() {
   const root = process.cwd();
   let html = fs.readFileSync(path.join(root, 'stress-test.html'), 'utf8');
-  const bridgeCss = fs.readFileSync(path.join(root, 'lifeplan-bridge.css'), 'utf8');
+  const bridgeCss = fs.readFileSync(path.join(root, 'lifeplan-bridge.css'), 'utf8') + `
+.loanHelpFold{margin:14px 0 18px;border:1px solid #dfd3b8;border-radius:14px;background:#fffdf8;overflow:hidden}
+.loanHelpFold>summary{list-style:none;cursor:pointer;padding:14px 16px;display:block}
+.loanHelpFold>summary::-webkit-details-marker{display:none}
+.loanHelpFold>summary .loanFoldEyebrow{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.05em;color:#8a6117;margin-bottom:6px}
+.loanHelpFold>summary b{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:15px;line-height:1.45;color:#1f1c17}
+.loanHelpFold>summary b:after{content:'＋';font-size:18px;color:#8a6117;flex:none}
+.loanHelpFold[open]>summary b:after{content:'−'}
+.loanHelpFold>summary small{display:block;margin-top:5px;font-size:11px;line-height:1.55;color:#6b665f;font-weight:500}
+.loanHelpFold>.loanHelpCard{margin:0;border:0;border-top:1px solid #eadfc8;border-radius:0;box-shadow:none;background:linear-gradient(135deg,#fffdf8,#f8f1e2)}
+`;
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
   html = replaceOnce(html, '</style>', bridgeCss + '\n</style>', 'bridge_css');
@@ -26,6 +36,24 @@ function buildHtml() {
   } else {
     missingMarkers.push('loan_amount_controls_order');
     console.warn('stress_test_missing_marker', 'loan_amount_controls_order');
+  }
+
+  const loanFoldPattern = /(<div class="loanHelpCard">[\s\S]*?<p class="loanHelpFoot">[\s\S]*?<\/p>\s*<\/div>)/;
+  if (loanFoldPattern.test(html)) {
+    html = html.replace(
+      loanFoldPattern,
+      `<details class="loanHelpFold">
+        <summary>
+          <span class="loanFoldEyebrow">借入予定額がまだ分からない方へ</span>
+          <b>住宅ローン、いくらまで借りられる？</b>
+          <small>物件が決まる前でもOK。借入上限・金融機関・金利・団信を無料で確認できます。</small>
+        </summary>
+        $1
+      </details>`
+    );
+  } else {
+    missingMarkers.push('loan_help_fold');
+    console.warn('stress_test_missing_marker', 'loan_help_fold');
   }
 
   html = replaceOnce(
