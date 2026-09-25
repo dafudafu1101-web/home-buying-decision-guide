@@ -1,0 +1,22 @@
+name: Verify production URL
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel production deployment
+        run: sleep 60
+      - name: Verify canonical production URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://home-buying-decision-guide.vercel.app"
+          echo "Checking $URL"
+          body="$(curl --fail --silent --show-error --location --retry 6 --retry-delay 10 --max-time 20 "$URL")"
+          printf '%s' "$body" | grep -q '住宅購入 vs 賃貸'
+          echo "Production URL verified: $URL"
