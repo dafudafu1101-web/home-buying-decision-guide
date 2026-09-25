@@ -10,6 +10,29 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Render API locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const handler = require('./api/stress-test.js');
+          let body=''; let status=0; const headers={};
+          const res={
+            set statusCode(v){status=v}, get statusCode(){return status},
+            setHeader(k,v){headers[k]=v},
+            end(v){body=String(v||'')}
+          };
+          handler({},res);
+          console.log('local_status='+status);
+          console.log('warnings='+(headers['X-Stress-Test-Warnings']||'none'));
+          if(status!==200){console.error(body); process.exit(1)}
+          if(!body.includes('<details class="loanHelpFold">')) process.exit(2);
+          if(!body.includes('id="loanConsultBtn"')) process.exit(3);
+          require('fs').writeFileSync('local-page.html',body);
+          NODE
+
       - name: Wait for preview and fetch page
         shell: bash
         run: |
@@ -25,7 +48,11 @@ jobs:
             fi
             sleep 5
           done
-          test "$ok" = "1"
+          if [ "$ok" != "1" ]; then
+            echo '--- response body ---'
+            cat page.html || true
+            exit 1
+          fi
 
       - name: Validate rendered HTML
         shell: bash
