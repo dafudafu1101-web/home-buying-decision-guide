@@ -20,6 +20,14 @@ function buildHtml() {
   html = replaceOnce(html, '</style>', bridgeCss + '\n</style>', 'bridge_css');
   html = replaceOnce(html, '<div class="cta">', bridgeHtml + '\n<div class="cta">', 'bridge_markup');
 
+  const loanAmountOrderPattern = /(\s*<div class="loanHelpCard">[\s\S]*?<p class="loanHelpFoot">[\s\S]*?<\/p>\s*<\/div>)\s*(<div class="helperBtns">[\s\S]*?<\/div>\s*<div class="hint" id="loanRefHint">[\s\S]*?<\/div>)/;
+  if (loanAmountOrderPattern.test(html)) {
+    html = html.replace(loanAmountOrderPattern, '\n        $2\n        $1');
+  } else {
+    missingMarkers.push('loan_amount_controls_order');
+    console.warn('stress_test_missing_marker', 'loan_amount_controls_order');
+  }
+
   html = replaceOnce(
     html,
     '<h2 id="ctaTitle">この予算で将来まで無理がないか確認する</h2>',
