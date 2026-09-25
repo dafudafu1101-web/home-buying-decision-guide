@@ -24,7 +24,7 @@ function doPost(e) {
       return jsonResponse({ ok: false, error: 'invalid_json' });
     }
 
-    const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : '';
+    const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : body.mode === 'loan' ? 'loan' : '';
     const name = String(body.name || '').trim().slice(0, 120);
     const email = String(body.email || '').trim().slice(0, 240);
     const phone = String(body.phone || '').trim().slice(0, 80);
@@ -44,7 +44,9 @@ function doPost(e) {
 
       const subject = mode === 'lifeplan'
         ? '【住宅予算チェック】無料・詳細ライフプラン相談希望'
-        : '【住宅予算チェック】物件相談希望';
+        : mode === 'loan'
+          ? '【住宅予算チェック】ローン専門スタッフ無料相談希望'
+          : '【住宅予算チェック】物件相談希望';
 
       MailApp.sendEmail({
         to: TARGET_EMAIL,
