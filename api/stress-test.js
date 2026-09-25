@@ -14,15 +14,7 @@ function replaceOnce(source, from, to, label) {
 function buildHtml() {
   const root = process.cwd();
   let html = fs.readFileSync(path.join(root, 'stress-test.html'), 'utf8');
-  const bridgeCss = fs.readFileSync(path.join(root, 'lifeplan-bridge.css'), 'utf8') + `
-.loanHelpCard.loanHelpCollapsed{padding:14px 16px;background:#fffdf8;box-shadow:none}
-.loanHelpCard.loanHelpCollapsed .loanHelpBenefits,.loanHelpCard.loanHelpCollapsed .loanHelpDetail,.loanHelpCard.loanHelpCollapsed .loanHelpBtn,.loanHelpCard.loanHelpCollapsed .loanHelpFoot{display:none}
-.loanHelpCard.loanHelpCollapsed>p{margin:5px 0 0;font-size:11.5px;line-height:1.55;color:#6b665f}
-.loanHelpCard.loanHelpCollapsed h3{font-size:16px;margin:8px 0 3px}
-.loanHelpToggle{width:100%;margin-top:10px;border:1px solid #dfd3b8;background:#fff;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:900;color:#2d2a26;text-align:left;cursor:pointer}
-.loanHelpToggle:after{content:'＋';float:right;font-size:16px;line-height:1}
-.loanHelpCard:not(.loanHelpCollapsed) .loanHelpToggle:after{content:'−'}
-`;
+  const bridgeCss = fs.readFileSync(path.join(root, 'lifeplan-bridge.css'), 'utf8');
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
   html = replaceOnce(html, '</style>', bridgeCss + '\n</style>', 'bridge_css');
@@ -115,30 +107,6 @@ function buildHtml() {
   html = html.replace(
     'function openHandoff(mode){handoffMode=mode;',
     "function openHandoff(mode){handoffMode=mode;$('#handoffGo').disabled=false;"
-  );
-
-  html = replaceOnce(
-    html,
-    '</body>',
-    `<script>
-(function(){
-  const card=document.querySelector('.loanHelpCard');
-  if(!card)return;
-  card.classList.add('loanHelpCollapsed');
-  const toggle=document.createElement('button');
-  toggle.type='button';
-  toggle.className='loanHelpToggle';
-  toggle.textContent='住宅ローン相談を詳しく見る';
-  toggle.setAttribute('aria-expanded','false');
-  toggle.addEventListener('click',function(){
-    const collapsed=card.classList.toggle('loanHelpCollapsed');
-    toggle.textContent=collapsed?'住宅ローン相談を詳しく見る':'閉じる';
-    toggle.setAttribute('aria-expanded',collapsed?'false':'true');
-  });
-  card.appendChild(toggle);
-})();
-</script>\n</body>`,
-    'loan_help_fold'
   );
   return html;
 }
