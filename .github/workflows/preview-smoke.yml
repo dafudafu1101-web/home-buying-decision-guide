@@ -1,0 +1,54 @@
+name: Preview smoke test
+
+on:
+  push:
+    branches:
+      - feat/lifeplan-cta-20260925
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for preview and fetch page
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test"
+          ok=0
+          for i in $(seq 1 18); do
+            code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
+            echo "attempt=$i status=$code"
+            if [ "$code" = "200" ]; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          test "$ok" = "1"
+
+      - name: Validate rendered HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -q 'ページの読み込みに失敗しました。' page.html
+          grep -q '<title>3分 住宅予算の決め方チェック｜ADCAST</title>' page.html
+          grep -q 'loanHelpFold' page.html
+          grep -q '住宅ローン、いくらまで借りられる？' page.html
+          grep -q '物件価格だけ借りる' page.html
+          grep -q '諸費用まで借りる' page.html
+          grep -q 'id="loanConsultBtn"' page.html
+          grep -q 'id="ctaBtn"' page.html
+          grep -q 'id="agentBtn"' page.html
+
+      - name: Validate key ordering
+        shell: python
+        run: |
+          from pathlib import Path
+          html = Path('page.html').read_text(encoding='utf-8')
+          price = html.index('id="loanFromPrice"')
+          total = html.index('id="loanFromTotal"')
+          fold = html.index('class="loanHelpFold"')
+          assert price < fold and total < fold, 'loan amount choices must appear before loan consultation fold'
+          assert '<details class="loanHelpFold">' in html
+          print('preview smoke test passed')
