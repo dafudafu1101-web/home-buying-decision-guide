@@ -39,7 +39,7 @@ jobs:
           set -euo pipefail
           URL="https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test"
           ok=0
-          for i in $(seq 1 6); do
+          for i in $(seq 1 8); do
             code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
             echo "attempt=$i status=$code"
             if [ "$code" = "200" ]; then
@@ -79,3 +79,45 @@ jobs:
           assert price < fold and total < fold, 'loan amount choices must appear before loan consultation fold'
           assert '<details class="loanHelpFold">' in html
           print('preview smoke test passed')
+
+      - name: Install browser smoke dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+
+      - name: Validate live browser interactions
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:390,height:844}});
+            const response=await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});
+            if(!response || response.status()!==200) throw new Error('preview status '+(response&&response.status()));
+            if((await page.locator('body').innerText()).includes('ページの読み込みに失敗しました。')) throw new Error('error page rendered');
+            await page.locator('#start').click();
+            await page.locator('#loanFromPrice').waitFor({state:'visible'});
+            const fold=page.locator('details.loanHelpFold');
+            if(await fold.getAttribute('open')!==null) throw new Error('loan fold must start closed');
+            await fold.locator('summary').click();
+            if(await fold.getAttribute('open')===null) throw new Error('loan fold did not open');
+            await page.locator('#loanConsultBtn').click();
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            if(!(await page.locator('#handoffTitle').innerText()).includes('ローン')) throw new Error('loan modal did not open');
+            await page.locator('#handoffClose').click();
+            await page.evaluate(()=>document.querySelector('#ctaBtn').click());
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            if(!(await page.locator('#handoffTitle').innerText()).includes('ライフプラン')) throw new Error('lifeplan modal did not open');
+            await page.locator('#handoffClose').click();
+            await page.evaluate(()=>document.querySelector('#agentBtn').click());
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            if(!(await page.locator('#handoffTitle').innerText()).includes('物件')) throw new Error('property modal did not open');
+            console.log('live browser interaction smoke test passed');
+            await browser.close();
+          })().catch(err=>{console.error(err);process.exit(1)});
+          NODE
