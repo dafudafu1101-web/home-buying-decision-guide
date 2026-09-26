@@ -4,19 +4,19 @@ function rentInvestAt(p, annualRate) {
   const n = k => Number(p[k] || 0);
   const months = Math.round(n('years') * 12), tm = Math.round(n('term') * 12);
   const P=n('loan'), mr=n('rate')/1200, pay=!tm?0:!mr?P/tm:P*mr*(1+mr)**tm/((1+mr)**tm-1);
-  let asset=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost')), bal=P;
+  let cash=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost')), invested=0, bal=P;
   const ir=(1+annualRate/100)**(1/12)-1;
   for(let m=1;m<=months;m++){
-    asset*=1+ir;
+    invested*=1+ir;
     const yi=Math.floor((m-1)/12), rm=n('rent')*(1+n('rentGrowth')/100)**yi;
     const re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12, cy=Math.round(n('renewCycle')*12);
     const renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0, rh=rm+re+renew;
     let mp=0;
     if(m<=tm&&bal>1e-8){const int=bal*mr;let pr=Math.max(0,pay-int);if(pr>bal)pr=bal;mp=int+pr;bal=Math.max(0,bal-pr);}
     const oc=n('mgmt')+(n('taxAnnual')+n('ownerOther'))/12, cr=m<=Math.round(n('creditYears')*12)?n('creditAnnual')/12:0;
-    asset+=Math.max(0,mp+oc-cr-rh);
+    invested+=Math.max(0,mp+oc-cr-rh);
   }
-  return asset;
+  return cash+invested;
 }
 
 function balanceAt(p, years) {
@@ -88,7 +88,10 @@ for (const [name, patch] of cases) {
 const baseResult=run(base);
 assert(Math.abs(rentInvestAt(base,0)-baseResult.rFinal)<1e-5,'investment 0% must exactly match savings-only renter assets');
 const inv3=rentInvestAt(base,3);
-assert(inv3>baseResult.rFinal,'positive investment return should increase renter assets when investable assets exist');
+assert(inv3>baseResult.rFinal,'positive investment return should increase renter assets when monthly difference contributions exist');
+const noDifference={...base,rent:100,taxAnnual:0,mgmt:0,ownerOther:0};
+const noDiffResult=run(noDifference);
+assert(Math.abs(rentInvestAt(noDifference,5)-noDiffResult.rFinal)<1e-5,'retained initial capital must not be invested in difference-only mode');
 const fullTerm=balanceAt(base,35);
 assert(Math.abs(fullTerm)<1e-5,'loan balance must be zero at full term');
 for(const y of [5,10,20]) assert(balanceAt(base,y)>=balanceAt(base,Math.min(y+1,35))-1e-8, 'loan balance should not rise over time');
