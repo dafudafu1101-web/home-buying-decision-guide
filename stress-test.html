@@ -613,10 +613,25 @@ function clickNotify(mode,source){
   const key='housing_cta_notified_'+mode;
   try{if(sessionStorage.getItem(key)==='1'||clickNotifyPending.has(mode))return}catch(_){}
   clickNotifyPending.add(mode);
+  const childStageEl=$('#childStage');
+  const borrowMethodEl=document.querySelector('input[name="borrowMethod"]:checked');
+  const rateTypeEl=document.querySelector('input[name="rateType"]:checked');
   const payload={
     mode,source,
+    age:+$('#age').value||0,
+    children:+$('#children').value||0,
+    childStage:childStageEl&&childStageEl.value!=='none'?childStageEl.options[childStageEl.selectedIndex].text:'',
+    borrowMethod:borrowMethodEl?borrowMethodEl.parentElement.textContent.trim():'',
+    grossIncome:+$('#grossIncome').value||0,
+    cash:+$('#cash').value||0,
+    investments:+$('#investments').value||0,
     price:+$('#price').value||0,
     loanAmount:+$('#loanAmount').value||0,
+    living:+$('#living').value||0,
+    rate:+$('#rate').value||0,
+    term:+$('#term').value||0,
+    netOverride:+$('#netOverride').value||0,
+    rateType:rateTypeEl?rateTypeEl.parentElement.textContent.trim():'',
     zone:($('#zoneTitle')&&$('#zoneTitle').textContent)||'',
     margin:($('#marginText')&&$('#marginText').textContent)||'',
     ref:REF_TOKEN,
