@@ -306,6 +306,18 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <button class="agentLinkBtn" id="agentBtn">この予算で狙える物件を相談する →</button>
       </div>
 
+      <div class="shareBox resultEmailBox" aria-label="診断結果をメールで受け取る">
+        <div class="resultEmailKicker">SAVE YOUR RESULT</div>
+        <h3>診断結果をメールで受け取る</h3>
+        <p>今回の入力内容・診断結果・3つの資産配分戦略を、ご指定のメールアドレスへ送信します。</p>
+        <label class="resultEmailLabel" for="resultEmail">送信先メールアドレス</label>
+        <input class="resultEmailInput" id="resultEmail" type="email" autocomplete="email" inputmode="email" placeholder="example@email.com">
+        <button class="shareBtn mail resultEmailBtn" id="resultEmailSend" type="button">診断結果をメールで受け取る →</button>
+        <p class="resultEmailPrivacy">入力いただいたメールアドレスは、診断結果の送信とご相談時の確認・ご案内に使用します。</p>
+        <p id="shareStatus" class="resultEmailStatus" aria-live="polite"></p>
+      </div>
+      <script src="/result-email-client.js?v=20260926-2225"></script>
+
       <p class="disclaimer">※本ツールは購入可否・借入可能額・将来の資産価値を保証するものではありません。年収倍率は住宅取得を検討する際の内部比較目安であり、銀行の審査基準・借入可能額ではありません。将来の物件価格・売却費用・金利上昇の経路も予測や保証ではなく、比較のための仮定です。実際の借入期間・団信・審査・金利条件は金融機関ごとに異なります。</p>
       <button class="ghost" id="again">条件を変えてもう一度試す</button>
     </section>
@@ -608,46 +620,54 @@ function summaryText(mode){
   return rows.join('\n');
 }
 function mailSubject(mode){return mode==='lifeplan'?'【住宅予算チェック】無料・詳細ライフプラン相談希望':mode==='loan'?'【住宅予算チェック】ローン専門スタッフ無料相談希望':'【住宅予算チェック】物件相談希望'}
-const clickNotifyPending=new Set();
-function clickNotify(mode,source){
-  const key='housing_cta_notified_'+mode;
-  try{if(sessionStorage.getItem(key)==='1'||clickNotifyPending.has(mode))return}catch(_){}
-  clickNotifyPending.add(mode);
+const CTA_INTEREST_KEY='housing_cta_interests_v1';
+function recordCtaInterest(mode,source){
+  if(!['loan','lifeplan','property'].includes(mode))return;
+  let items=[];
+  try{items=JSON.parse(sessionStorage.getItem(CTA_INTEREST_KEY)||'[]');if(!Array.isArray(items))items=[]}catch(_){items=[]}
+  if(!items.some(x=>x&&x.mode===mode))items.push({mode,source:source||'result',at:new Date().toISOString()});
+  try{sessionStorage.setItem(CTA_INTEREST_KEY,JSON.stringify(items))}catch(_){}
+}
+function getCtaInterests(){
+  try{const items=JSON.parse(sessionStorage.getItem(CTA_INTEREST_KEY)||'[]');return Array.isArray(items)?items:[]}catch(_){return []}
+}
+window.getHousingResultSnapshot=function(){
+  if(!last)return null;
+  const v=last.v;
   const childStageEl=$('#childStage');
   const borrowMethodEl=document.querySelector('input[name="borrowMethod"]:checked');
   const rateTypeEl=document.querySelector('input[name="rateType"]:checked');
-  const payload={
-    mode,source,
-    age:+$('#age').value||0,
-    children:+$('#children').value||0,
-    childStage:childStageEl&&childStageEl.value!=='none'?childStageEl.options[childStageEl.selectedIndex].text:'',
-    borrowMethod:borrowMethodEl?borrowMethodEl.parentElement.textContent.trim():'',
-    grossIncome:+$('#grossIncome').value||0,
-    cash:+$('#cash').value||0,
-    investments:+$('#investments').value||0,
-    price:+$('#price').value||0,
-    loanAmount:+$('#loanAmount').value||0,
-    living:+$('#living').value||0,
-    rate:+$('#rate').value||0,
-    term:+$('#term').value||0,
-    netOverride:+$('#netOverride').value||0,
-    rateType:rateTypeEl?rateTypeEl.parentElement.textContent.trim():'',
-    zone:($('#zoneTitle')&&$('#zoneTitle').textContent)||'',
-    margin:($('#marginText')&&$('#marginText').textContent)||'',
-    ref:REF_TOKEN,
-    eventId:(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)
+  const strategyDefs=[
+    {key:'safe',name:'月々の返済を抑える配分',price:last.refs.safe},
+    {key:'balance',name:'住宅と月々の負担を両立する配分',price:last.refs.balance},
+    {key:'housing',name:'住宅への配分を高める水準',price:last.refs.housing}
+  ];
+  const strategies=strategyDefs.map(d=>{
+    const acq=acquisitionFor(d.price,last.core.requiredEquity);
+    const pm=paymentMetrics(acq.loan,v);
+    return {key:d.key,name:d.name,price:d.price,monthly:pm.monthly,equity:acq.requiredEquity,postAssets:last.core.totalAssets-acq.requiredEquity};
+  });
+  const selected=selectedChoice||((last.zone==='over')?'housing':last.zone);
+  return {
+    basic:{
+      age:v.age,children:v.children,
+      childStage:childStageEl&&childStageEl.value!=='none'?childStageEl.options[childStageEl.selectedIndex].text:'',
+      borrowMethod:borrowMethodEl?borrowMethodEl.parentElement.textContent.trim():'',
+      grossIncome:v.gross,cash:v.cash,investments:v.investments,price:v.price,loanAmount:v.loanAmount,living:v.living,
+      rate:v.rate,term:v.term,netOverride:v.netOverride,rateType:rateTypeEl?rateTypeEl.parentElement.textContent.trim():''
+    },
+    result:{
+      zone:($('#zoneTitle')&&$('#zoneTitle').textContent)||'',
+      margin:($('#marginText')&&$('#marginText').textContent)||'',
+      estimatedNet:last.net,
+      selectedStrategy:selected
+    },
+    strategies,
+    interests:getCtaInterests(),
+    ref:REF_TOKEN
   };
-  fetch('/api/click-notification',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload),
-    keepalive:true
-  }).then(r=>{
-    if(!r.ok)throw new Error('click notification failed');
-    try{sessionStorage.setItem(key,'1')}catch(_){}
-  }).catch(()=>{}).finally(()=>clickNotifyPending.delete(mode));
-}
-function openHandoff(mode,source){clickNotify(mode,source||'result');handoffMode=mode;const life=mode==='lifeplan',loan=mode==='loan';const topics=$('#loanTopics');if(topics)topics.classList.toggle('hidden',!loan);const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());const minDate=today.toISOString().slice(0,10);['#consultDate1','#consultDate2','#consultDate3'].forEach(sel=>{const el=$(sel);if(el)el.min=minDate});$('#handoffKicker').textContent=life?'NEXT STEP｜無料 詳細ライフプラン相談':loan?'NEXT STEP｜無料 ローン相談':'NEXT STEP｜物件・予算相談';$('#handoffTitle').textContent=life?'無料の詳細ライフプラン相談':loan?'ローン専門スタッフへの無料相談':'物件・予算について相談する';$('#handoffDesc').textContent=life?'教育費・老後・資産運用などまで含め、診断結果をもとに詳しく確認できます。':loan?'物件がまだ決まっていなくても大丈夫です。借入上限の目安、金融機関、金利、団信などを事前審査の前段階から気軽に確認できます。':'診断結果をもとに、物件・エリア・予算・資産性などを営業担当と整理できます。';$('#handoffProcess').innerHTML=life?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>受付の確認が取れ次第、FPとの日程調整を行います。直近の土日などはFPの予約が埋まりやすいため、少し余裕をもった日程、または翌週以降も含めて複数の候補日をいただけるとスムーズです。':loan?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>内容を確認したうえでローン専門スタッフと調整します。ご状況や検討する物件種別などに合わせ、25の金融機関の中から候補を整理し、金利・団信・商品の違いもご案内します。':'<b>お申し込み後、担当者より受付内容確認のご連絡をします。</b><br>希望日時を確認のうえ、物件・予算相談の日程を調整します。複数の候補日をいただけるとスムーズです。';$('#consultScheduleHelp').textContent=life?'第1〜第3希望まで入力できます。直近の土日だけでなく、翌週以降も含めて複数候補をいただくと調整がスムーズです。希望日時は予約確定ではなく、受付確認後にFPと日程を調整します。':loan?'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、受付内容を確認後にローン専門スタッフと日程を調整します。複数候補をいただけるとスムーズです。':'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、担当者からのご連絡をもって確定となります。複数候補をいただけると調整がスムーズです。';$('#handoffSummary').textContent=summaryText(mode);$('#handoffGo').textContent=life?'無料相談メールを作成する →':loan?'無料ローン相談を申し込む →':'物件相談メールを作成する →';$('#copyState').textContent='';$('#intakeError').classList.remove('show');$('#handoffOverlay').classList.add('show');$('#handoffOverlay').setAttribute('aria-hidden','false')}
+};
+function openHandoff(mode,source){recordCtaInterest(mode,source||'result');handoffMode=mode;const life=mode==='lifeplan',loan=mode==='loan';const topics=$('#loanTopics');if(topics)topics.classList.toggle('hidden',!loan);const today=new Date();today.setMinutes(today.getMinutes()-today.getTimezoneOffset());const minDate=today.toISOString().slice(0,10);['#consultDate1','#consultDate2','#consultDate3'].forEach(sel=>{const el=$(sel);if(el)el.min=minDate});$('#handoffKicker').textContent=life?'NEXT STEP｜無料 詳細ライフプラン相談':loan?'NEXT STEP｜無料 ローン相談':'NEXT STEP｜物件・予算相談';$('#handoffTitle').textContent=life?'無料の詳細ライフプラン相談':loan?'ローン専門スタッフへの無料相談':'物件・予算について相談する';$('#handoffDesc').textContent=life?'教育費・老後・資産運用などまで含め、診断結果をもとに詳しく確認できます。':loan?'物件がまだ決まっていなくても大丈夫です。借入上限の目安、金融機関、金利、団信などを事前審査の前段階から気軽に確認できます。':'診断結果をもとに、物件・エリア・予算・資産性などを営業担当と整理できます。';$('#handoffProcess').innerHTML=life?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>受付の確認が取れ次第、FPとの日程調整を行います。直近の土日などはFPの予約が埋まりやすいため、少し余裕をもった日程、または翌週以降も含めて複数の候補日をいただけるとスムーズです。':loan?'<b>お申し込み後、まず担当者より受付内容確認のご連絡をします。</b><br>内容を確認したうえでローン専門スタッフと調整します。ご状況や検討する物件種別などに合わせ、25の金融機関の中から候補を整理し、金利・団信・商品の違いもご案内します。':'<b>お申し込み後、担当者より受付内容確認のご連絡をします。</b><br>希望日時を確認のうえ、物件・予算相談の日程を調整します。複数の候補日をいただけるとスムーズです。';$('#consultScheduleHelp').textContent=life?'第1〜第3希望まで入力できます。直近の土日だけでなく、翌週以降も含めて複数候補をいただくと調整がスムーズです。希望日時は予約確定ではなく、受付確認後にFPと日程を調整します。':loan?'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、受付内容を確認後にローン専門スタッフと日程を調整します。複数候補をいただけるとスムーズです。':'第1〜第3希望まで入力できます。希望日時は予約確定ではなく、担当者からのご連絡をもって確定となります。複数候補をいただけると調整がスムーズです。';$('#handoffSummary').textContent=summaryText(mode);$('#handoffGo').textContent=life?'無料相談メールを作成する →':loan?'無料ローン相談を申し込む →':'物件相談メールを作成する →';$('#copyState').textContent='';$('#intakeError').classList.remove('show');$('#handoffOverlay').classList.add('show');$('#handoffOverlay').setAttribute('aria-hidden','false')}
 function closeHandoff(){$('#handoffOverlay').classList.remove('show');$('#handoffOverlay').setAttribute('aria-hidden','true');handoffMode=null}
 async function copyHandoff(){if(!validateIntake())return false;const text=summaryText(handoffMode);$('#handoffSummary').textContent=text;try{await navigator.clipboard.writeText(text);$('#copyState').textContent='相談内容をコピーしました。';return true}catch(e){try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');document.body.removeChild(ta);$('#copyState').textContent=ok?'相談内容をコピーしました。':'コピーできませんでした。結果欄を長押し／選択してコピーしてください。';return ok}catch(_){$('#copyState').textContent='コピーできませんでした。結果欄を長押し／選択してコピーしてください。';return false}}}
 function openMailToSakai(){if(!handoffMode||!validateIntake())return;const subject=mailSubject(handoffMode),body=summaryText(handoffMode);$('#handoffSummary').textContent=body;window.location.href=`mailto:${SAKAI_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
