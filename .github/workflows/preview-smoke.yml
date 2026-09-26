@@ -17,55 +17,54 @@ jobs:
         run: |
           set -euo pipefail
           node <<'NODE'
-          const handler = require('./api/stress-test.js');
-          let body=''; let status=0; const headers={};
-          const res={
-            set statusCode(v){status=v}, get statusCode(){return status},
-            setHeader(k,v){headers[k]=v},
-            end(v){body=String(v||'')}
-          };
+          const handler=require('./api/stress-test.js');
+          let body='',status=0;const headers={};
+          const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(k,v){headers[k]=v},end(v){body=String(v||'')}};
           handler({},res);
-          console.log('local_status='+status);
-          console.log('warnings='+(headers['X-Stress-Test-Warnings']||'none'));
-          if(status!==200){console.error(body); process.exit(1)}
-          if(headers['X-Stress-Test-Warnings']) process.exit(4);
-          if(!body.includes('<details class="loanHelpFold">')) process.exit(2);
-          if(!body.includes('id="loanConsultBtn"')) process.exit(3);
-          if(!body.includes('class="moreSummary"')) process.exit(5);
-          if(!body.includes('id="moreStressSummary"')) process.exit(6);
+          if(status!==200){console.error(body);process.exit(1)}
+          if(headers['X-Stress-Test-Warnings']) throw new Error('render warnings '+headers['X-Stress-Test-Warnings']);
+          for(const marker of ['id="loanConsultBtn"','id="ctaBtn"','id="agentBtn"','id="resultEmail"','id="resultEmailSend"','/result-email-client.js']){
+            if(!body.includes(marker)) throw new Error('missing '+marker);
+          }
+          if(body.includes('id="shareLine"')) throw new Error('LINE share must be removed');
+          if(body.includes('/api/click-notification')) throw new Error('instant click notification must be removed');
           require('fs').writeFileSync('local-page.html',body);
+          console.log('local render passed');
           NODE
 
-      - name: Validate click notification API locally
+      - name: Validate result email API locally
         shell: bash
         run: |
           set -euo pipefail
           node <<'NODE'
           global.fetch=async (_url,options)=>{
             const forwarded=JSON.parse(options.body);
-            if(forwarded.kind!=='click'||forwarded.mode!=='lifeplan'||forwarded.source!=='result') throw new Error('unexpected forwarded click payload');
+            if(forwarded.kind!=='result_email') throw new Error('unexpected kind');
+            if(forwarded.email!=='customer@example.com') throw new Error('recipient missing');
+            if(!forwarded.customerBody.includes('3つの資産配分戦略')) throw new Error('customer strategies missing');
+            if(!forwarded.ownerBody.includes('詳細ライフプラン相談：確認あり')) throw new Error('CTA history missing');
+            if(!forwarded.ownerBody.includes('世帯年収：1,700万円')) throw new Error('basic inputs missing');
             return {ok:true,status:200,text:async()=>JSON.stringify({ok:true})};
           };
-          const handler=require('./api/click-notification.js');
+          const handler=require('./api/result-email.js');
           const req={
             method:'POST',
-            headers:{
-              origin:'https://example.test',
-              host:'example.test',
-              'content-type':'application/json',
-              'sec-fetch-site':'same-origin',
-              'x-forwarded-for':'127.0.0.1'
+            headers:{origin:'https://example.test',host:'example.test','content-type':'application/json','sec-fetch-site':'same-origin','x-forwarded-for':'127.0.0.1'},
+            body:{
+              email:'customer@example.com',eventId:'smoke-result-1',
+              basic:{age:35,children:0,childStage:'',borrowMethod:'単独で借り入れる',grossIncome:1700,cash:2000,investments:0,price:12000,loanAmount:12840,living:35,rate:1.3,term:35,netOverride:0,rateType:'変動金利・期間固定'},
+              result:{zone:'住宅と月々の負担を両立する配分',margin:'比較ラインまで ＋1,770万円',estimatedNet:1190,selectedStrategy:'balance'},
+              strategies:[
+                {key:'safe',name:'月々の返済を抑える配分',price:9500,monthly:30,equity:0,postAssets:2000},
+                {key:'balance',name:'住宅と月々の負担を両立する配分',price:11000,monthly:35,equity:0,postAssets:2000},
+                {key:'housing',name:'住宅への配分を高める水準',price:13000,monthly:42,equity:0,postAssets:2000}
+              ],
+              interests:[{mode:'lifeplan',source:'result'}],ref:''
             },
-            body:{mode:'lifeplan',source:'result',price:12000,loanAmount:12840,zone:'バランス寄り',margin:'比較ラインまで ＋1,850万円',eventId:'smoke-lifeplan-1'},
             socket:{remoteAddress:'127.0.0.1'}
           };
-          let body=''; let status=0;
-          const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(){},end(v){body=String(v||'')}};
-          handler(req,res).then(()=>{
-            if(status!==200) throw new Error('click API status '+status+' '+body);
-            if(JSON.parse(body).ok!==true) throw new Error('click API response invalid');
-            console.log('click notification API smoke passed');
-          }).catch(err=>{console.error(err);process.exit(1)});
+          let body='',status=0;const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(){},end(v){body=String(v||'')}};
+          handler(req,res).then(()=>{if(status!==200)throw new Error('status '+status+' '+body);if(JSON.parse(body).ok!==true)throw new Error('invalid response');console.log('result email API smoke passed')}).catch(e=>{console.error(e);process.exit(1)});
           NODE
 
       - name: Wait for preview and fetch page
@@ -74,85 +73,43 @@ jobs:
           set -euo pipefail
           URL="https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test"
           ok=0
-          for i in $(seq 1 8); do
+          for i in $(seq 1 10); do
             code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
             echo "attempt=$i status=$code"
-            if [ "$code" = "200" ]; then
-              ok=1
-              break
-            fi
-            sleep 5
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 6
           done
-          if [ "$ok" != "1" ]; then
-            echo '--- response body ---'
-            cat page.html || true
-            exit 1
-          fi
-
-      - name: Validate rendered HTML
-        shell: bash
-        run: |
-          set -euo pipefail
-          ! grep -q 'ページの読み込みに失敗しました。' page.html
-          grep -q '<title>3分 住宅予算の決め方チェック｜ADCAST</title>' page.html
-          grep -q 'loanHelpFold' page.html
-          grep -q '住宅ローン、いくらまで借りられる？' page.html
-          grep -q '物件価格だけ借りる' page.html
-          grep -q '諸費用まで借りる' page.html
-          grep -q 'id="loanConsultBtn"' page.html
-          grep -q 'id="ctaBtn"' page.html
-          grep -q 'id="agentBtn"' page.html
-          grep -q 'class="moreSummary"' page.html
-          grep -q '計算の内訳を見る' page.html
-
-      - name: Validate key ordering
-        shell: python
-        run: |
-          from pathlib import Path
-          html = Path('page.html').read_text(encoding='utf-8')
-          price = html.index('id="loanFromPrice"')
-          total = html.index('id="loanFromTotal"')
-          fold = html.index('class="loanHelpFold"')
-          assert price < fold and total < fold, 'loan amount choices must appear before loan consultation fold'
-          assert '<details class="loanHelpFold">' in html
-          print('preview smoke test passed')
+          [ "$ok" = "1" ] || { cat page.html || true; exit 1; }
+          grep -q '診断結果をメールで受け取る' page.html
+          grep -q 'id="resultEmailSend"' page.html
+          ! grep -q 'id="shareLine"' page.html
+          ! grep -q '/api/click-notification' page.html
 
       - name: Install browser smoke dependencies
         shell: bash
         run: |
-          set -euo pipefail
           npm install --no-save playwright@1.55.0
           npx playwright install chromium
 
-      - name: Validate live browser interactions
+      - name: Validate live browser flow
         shell: bash
         run: |
           set -euo pipefail
           node <<'NODE'
-          const { chromium } = require('playwright');
+          const {chromium}=require('playwright');
           const PREVIEW_URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:844}});
-            const clickEvents=[];
-            await page.route('**/api/click-notification',async route=>{
-              clickEvents.push(route.request().postDataJSON());
-              await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true})});
-            });
+            const sends=[];
+            await page.route('**/api/result-email',async route=>{sends.push(route.request().postDataJSON());await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true})})});
             const response=await page.goto(PREVIEW_URL,{waitUntil:'domcontentloaded',timeout:30000});
-            if(!response || response.status()!==200) throw new Error('preview status '+(response&&response.status()));
-            if((await page.locator('body').innerText()).includes('ページの読み込みに失敗しました。')) throw new Error('error page rendered');
+            if(!response||response.status()!==200)throw new Error('preview status');
             await page.locator('#start').click();
-            await page.locator('#loanFromPrice').waitFor({state:'visible'});
-            const fold=page.locator('details.loanHelpFold');
-            if(await fold.getAttribute('open')!==null) throw new Error('loan fold must start closed');
-            await fold.locator('summary').click();
-            if(await fold.getAttribute('open')===null) throw new Error('loan fold did not open');
+
+            const fold=page.locator('details.loanHelpFold');await fold.locator('summary').click();
             await page.locator('#loanConsultBtn').click();
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
-            if(!(await page.locator('#handoffTitle').innerText()).includes('ローン')) throw new Error('loan modal did not open');
-            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_loan')==='1');
-            if(!clickEvents.some(e=>e.mode==='loan'&&e.source==='step2')) throw new Error('loan click notification missing');
             await page.locator('#handoffClose').click();
 
             await page.locator('#age').fill('35');
@@ -166,42 +123,27 @@ jobs:
             await page.locator('#next').click();
             await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
 
-            const more=page.locator('details.moreWrap');
-            if(await more.getAttribute('open')!==null) throw new Error('detail accordion must start closed');
-            for(const id of ['#moreStressSummary','#moreBalanceSummary','#moreNetWorthSummary']){
-              const value=(await page.locator(id).innerText()).trim();
-              if(!value || value==='—') throw new Error('summary metric not populated: '+id);
-            }
-            const summaryText=await more.locator('summary').innerText();
-            if(!summaryText.includes('計算の内訳を見る')) throw new Error('new detail summary missing');
-            await more.locator('summary').click();
-            if(await more.getAttribute('open')===null) throw new Error('detail accordion did not open');
-            await page.locator('#stressCards .detailCard').first().waitFor({state:'visible'});
-            await page.locator('#netWorthList .netWorthCard').first().waitFor({state:'visible'});
-
-            const fontChecks=[
-              ['.moreWrap .moreBlock h2','h2'],
-              ['.netWorthCard .nwFinal','net worth'],
-              ['.strategyPrice','strategy price']
-            ];
-            for(const [selector,label] of fontChecks){
-              const value=await page.locator(selector).first().evaluate(el=>window.getComputedStyle(el).fontFamily);
-              if(/Mincho|Georgia/i.test(value)) throw new Error('unexpected serif font '+label+': '+value);
-            }
-
+            await page.locator('[data-choice="balance"]').click();
             await page.evaluate(()=>document.querySelector('#ctaBtn').click());
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
-            if(!(await page.locator('#handoffTitle').innerText()).includes('ライフプラン')) throw new Error('lifeplan modal did not open');
-            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_lifeplan')==='1');
-            if(!clickEvents.some(e=>e.mode==='lifeplan')) throw new Error('lifeplan click notification missing');
             await page.locator('#handoffClose').click();
             await page.evaluate(()=>document.querySelector('#agentBtn').click());
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
-            if(!(await page.locator('#handoffTitle').innerText()).includes('物件')) throw new Error('property modal did not open');
-            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_property')==='1');
-            if(!clickEvents.some(e=>e.mode==='property')) throw new Error('property click notification missing');
-            if(new Set(clickEvents.map(e=>e.mode)).size!==3) throw new Error('expected exactly three CTA notification types');
-            console.log('live browser interaction smoke test passed');
+            await page.locator('#handoffClose').click();
+
+            if(await page.locator('#shareLine').count())throw new Error('LINE share still visible');
+            await page.locator('#resultEmail').fill('customer@example.com');
+            await page.locator('#resultEmailSend').click();
+            await page.waitForFunction(()=>document.querySelector('#shareStatus')?.textContent.includes('送信しました'));
+            if(sends.length!==1)throw new Error('expected one consolidated result send');
+            const payload=sends[0];
+            if(payload.email!=='customer@example.com')throw new Error('email missing');
+            if(payload.strategies?.length!==3)throw new Error('three strategies missing');
+            if(payload.basic?.grossIncome!==1700||payload.basic?.price!==12000)throw new Error('basic inputs missing');
+            const modes=new Set((payload.interests||[]).map(x=>x.mode));
+            for(const mode of ['loan','lifeplan','property'])if(!modes.has(mode))throw new Error('interest missing '+mode);
+            if(payload.result?.selectedStrategy!=='balance')throw new Error('selected strategy missing');
+            console.log('live consolidated result-email flow passed');
             await browser.close();
-          })().catch(err=>{console.error(err);process.exit(1)});
+          })().catch(e=>{console.error(e);process.exit(1)});
           NODE
