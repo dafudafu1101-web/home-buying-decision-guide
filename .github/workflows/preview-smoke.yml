@@ -140,12 +140,14 @@ jobs:
             await page.locator('#stressCards .detailCard').first().waitFor({state:'visible'});
             await page.locator('#netWorthList .netWorthCard').first().waitFor({state:'visible'});
 
-            const fonts=await page.evaluate(()=>{
-              const pick=s=>getComputedStyle(document.querySelector(s)).fontFamily;
-              return {h2:pick('.moreWrap .moreBlock h2'),num:pick('.netWorthCard .nwFinal'),strategy:pick('.strategyPrice')};
-            });
-            for(const [key,value] of Object.entries(fonts)){
-              if(/Mincho|Georgia/i.test(value)) throw new Error('unexpected serif font '+key+': '+value);
+            const fontChecks=[
+              ['.moreWrap .moreBlock h2','h2'],
+              ['.netWorthCard .nwFinal','net worth'],
+              ['.strategyPrice','strategy price']
+            ];
+            for(const [selector,label] of fontChecks){
+              const value=await page.locator(selector).first().evaluate(el=>window.getComputedStyle(el).fontFamily);
+              if(/Mincho|Georgia/i.test(value)) throw new Error('unexpected serif font '+label+': '+value);
             }
 
             await page.evaluate(()=>document.querySelector('#ctaBtn').click());
