@@ -28,8 +28,11 @@ jobs:
           console.log('local_status='+status);
           console.log('warnings='+(headers['X-Stress-Test-Warnings']||'none'));
           if(status!==200){console.error(body); process.exit(1)}
+          if(headers['X-Stress-Test-Warnings']) process.exit(4);
           if(!body.includes('<details class="loanHelpFold">')) process.exit(2);
           if(!body.includes('id="loanConsultBtn"')) process.exit(3);
+          if(!body.includes('class="moreSummary"')) process.exit(5);
+          if(!body.includes('id="moreStressSummary"')) process.exit(6);
           require('fs').writeFileSync('local-page.html',body);
           NODE
 
@@ -67,6 +70,8 @@ jobs:
           grep -q 'id="loanConsultBtn"' page.html
           grep -q 'id="ctaBtn"' page.html
           grep -q 'id="agentBtn"' page.html
+          grep -q 'class="moreSummary"' page.html
+          grep -q '計算の内訳を見る' page.html
 
       - name: Validate key ordering
         shell: python
@@ -110,6 +115,39 @@ jobs:
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
             if(!(await page.locator('#handoffTitle').innerText()).includes('ローン')) throw new Error('loan modal did not open');
             await page.locator('#handoffClose').click();
+
+            await page.locator('#age').fill('35');
+            await page.locator('#children').fill('0');
+            await page.locator('#grossIncome').fill('1700');
+            await page.locator('#cash').fill('2000');
+            await page.locator('#investments').fill('0');
+            await page.locator('#price').fill('12000');
+            await page.locator('#loanAmount').fill('12840');
+            await page.locator('#living').fill('35');
+            await page.locator('#next').click();
+            await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
+
+            const more=page.locator('details.moreWrap');
+            if(await more.getAttribute('open')!==null) throw new Error('detail accordion must start closed');
+            for(const id of ['#moreStressSummary','#moreBalanceSummary','#moreNetWorthSummary']){
+              const value=(await page.locator(id).innerText()).trim();
+              if(!value || value==='—') throw new Error('summary metric not populated: '+id);
+            }
+            const summaryText=await more.locator('summary').innerText();
+            if(!summaryText.includes('計算の内訳を見る')) throw new Error('new detail summary missing');
+            await more.locator('summary').click();
+            if(await more.getAttribute('open')===null) throw new Error('detail accordion did not open');
+            await page.locator('#stressCards .detailCard').first().waitFor({state:'visible'});
+            await page.locator('#netWorthList .netWorthCard').first().waitFor({state:'visible'});
+
+            const fonts=await page.evaluate(()=>{
+              const pick=s=>getComputedStyle(document.querySelector(s)).fontFamily;
+              return {h2:pick('.moreWrap .moreBlock h2'),num:pick('.netWorthCard .nwFinal'),strategy:pick('.strategyPrice')};
+            });
+            for(const [key,value] of Object.entries(fonts)){
+              if(/Mincho|Georgia/i.test(value)) throw new Error('unexpected serif font '+key+': '+value);
+            }
+
             await page.evaluate(()=>document.querySelector('#ctaBtn').click());
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
             if(!(await page.locator('#handoffTitle').innerText()).includes('ライフプラン')) throw new Error('lifeplan modal did not open');
