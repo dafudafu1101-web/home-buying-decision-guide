@@ -1,5 +1,31 @@
 const assert = (ok, msg) => { if (!ok) throw new Error(msg); };
 
+function rentInvestAt(p, annualRate) {
+  const n = k => Number(p[k] || 0);
+  const months = Math.round(n('years') * 12), tm = Math.round(n('term') * 12);
+  const P=n('loan'), mr=n('rate')/1200, pay=!tm?0:!mr?P/tm:P*mr*(1+mr)**tm/((1+mr)**tm-1);
+  let asset=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost')), bal=P;
+  const ir=(1+annualRate/100)**(1/12)-1;
+  for(let m=1;m<=months;m++){
+    asset*=1+ir;
+    const yi=Math.floor((m-1)/12), rm=n('rent')*(1+n('rentGrowth')/100)**yi;
+    const re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12, cy=Math.round(n('renewCycle')*12);
+    const renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0, rh=rm+re+renew;
+    let mp=0;
+    if(m<=tm&&bal>1e-8){const int=bal*mr;let pr=Math.max(0,pay-int);if(pr>bal)pr=bal;mp=int+pr;bal=Math.max(0,bal-pr);}
+    const oc=n('mgmt')+(n('taxAnnual')+n('ownerOther'))/12, cr=m<=Math.round(n('creditYears')*12)?n('creditAnnual')/12:0;
+    asset+=Math.max(0,mp+oc-cr-rh);
+  }
+  return asset;
+}
+
+function balanceAt(p, years) {
+  const n=k=>Number(p[k]||0), tm=Math.round(n('term')*12), months=Math.round(years*12), P=n('loan'), r=n('rate')/1200;
+  const pay=!tm?0:!r?P/tm:P*r*(1+r)**tm/((1+r)**tm-1); let bal=P;
+  for(let m=1;m<=months&&m<=tm&&bal>1e-8;m++){const int=bal*r;let pr=Math.max(0,pay-int);if(pr>bal)pr=bal;bal=Math.max(0,bal-pr);}
+  return bal;
+}
+
 function run(p) {
   const n = k => Number(p[k] || 0);
   const ms = Math.round(n('years') * 12), tm = Math.round(n('term') * 12);
@@ -58,4 +84,17 @@ for (const [name, patch] of cases) {
   assert(Math.abs(x.assetDiff + x.costDiff) < 1e-5, `${name}: asset/cost mirror identity mismatch`);
   if (name === 'rental initial cost') { const z=run({...base,rentInitialCost:0}); assert(Math.abs((z.rFinal-x.rFinal)-100)<1e-5, `${name}: final assets should fall exactly by initial cost`); assert(Math.abs((x.rentTot-z.rentTot)-100)<1e-5, `${name}: rent cost should rise exactly by initial cost`); }
 }
-console.log(`PASS: ${cases.length} calculation regression cases`);
+
+const baseResult=run(base);
+assert(Math.abs(rentInvestAt(base,0)-baseResult.rFinal)<1e-5,'investment 0% must exactly match savings-only renter assets');
+const inv3=rentInvestAt(base,3);
+assert(inv3>baseResult.rFinal,'positive investment return should increase renter assets when investable assets exist');
+const fullTerm=balanceAt(base,35);
+assert(Math.abs(fullTerm)<1e-5,'loan balance must be zero at full term');
+for(const y of [5,10,20]) assert(balanceAt(base,y)>=balanceAt(base,Math.min(y+1,35))-1e-8, 'loan balance should not rise over time');
+for(const pct of [-10,0,10]){
+  const x=run({...base,priceChange:pct});
+  const expected=base.price*(1+pct/100)-base.sellCost-x.bal+x.bSave;
+  assert(Math.abs(x.bFinal-expected)<1e-5,`price scenario ${pct}% mismatch`);
+}
+console.log(`PASS: ${cases.length} regression cases + investment/timeline/scenario invariants`);
