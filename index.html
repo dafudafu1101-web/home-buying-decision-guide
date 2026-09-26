@@ -25,7 +25,7 @@
 <div class="card">
 <h2>1. 現在の賃貸</h2>
 <p class="note">今の住まいをそのまま続けた場合の費用を入力します。</p>
-<div class="fields"><F l="月額賃料（管理費等込み）" i="rent" v="25" u="万円/月"></F><F l="賃料上昇率" i="rentGrowth" v="0" u="%/年"></F></div>
+<div class="fields"><F l="月額賃料（管理費等込み）" i="rent" v="25" u="万円/月"></F><F l="賃料上昇率" i="rentGrowth" v="0" u="%/年"></F><F l="賃貸契約時の初期諸費用" i="rentInitialCost" v="0" u="万円"></F></div><p class="note">敷金・礼金・仲介手数料・保証会社初回費用・鍵交換等のうち、比較に含めたい初期費用を入力します。返還される敷金は原則として費用に含めません。</p>
 <details class="details"><summary>その他の賃貸条件（更新料・保険など）</summary><div class="fields"><F l="更新料" i="renewMonths" v="1" u="か月分"></F><F l="更新周期" i="renewCycle" v="2" u="年ごと"></F><F l="火災・家財保険" i="rentInsurance" v="1.5" u="万円/年"></F><F l="保証会社更新料等" i="guarantee" v="1" u="万円/年"></F><F l="その他定期費用" i="rentOther" v="0" u="万円/年"></F></div></details>
 </div>
 
@@ -62,7 +62,7 @@
 <div class="explain"><h3>なぜこの差になったか</h3><p class="note">同じ初期資金と月々の家計負担を前提に、最後に残る資産を比較しています。</p><div class="pathGrid"><div class="path"><h4>賃貸</h4><div class="pathLine"><span>購入に使わなかった初期資金</span><b id="flowInit"></b><span class="arrow">＋</span><span>住居費差分の貯蓄</span><b id="flowRSave"></b><span class="arrow">＝</span><span>最終資産</span><b id="flowRFinal"></b></div></div><div class="path"><h4>購入</h4><div class="pathLine"><span>住宅純資産</span><b id="flowNet"></b><span class="arrow">＋</span><span>住居費差分の貯蓄</span><b id="flowBSave"></b><span class="arrow">＝</span><span>最終資産</span><b id="flowBFinal"></b></div></div></div></div>
 
 <details class="resultDetails"><summary>詳細な計算結果を見る</summary><div class="results">
-<div class="card"><h3>賃貸</h3><M l="初月の月額住居費" i="rMonth"></M><M l="初月の住居費差分の貯蓄" i="rSaveM"></M><M l="期間中の総住居費" i="rHousing"></M><M l="期間中の住居費差分の貯蓄" i="rSave"></M><M l="購入に使わなかった初期資金" i="rInit"></M><M l="期間終了時の金融資産" i="rFinal" b="1"></M></div>
+<div class="card"><h3>賃貸</h3><M l="初月の月額住居費" i="rMonth"></M><M l="初月の住居費差分の貯蓄" i="rSaveM"></M><M l="賃貸契約時の初期諸費用" i="rInitialCost"></M><M l="期間中の総住居費（初期諸費用含む）" i="rHousing"></M><M l="期間中の住居費差分の貯蓄" i="rSave"></M><M l="購入に使わなかった初期資金" i="rInit"></M><M l="期間終了時の金融資産" i="rFinal" b="1"></M></div>
 <div class="card"><h3>購入</h3><M l="初月のローン返済額" i="bMortgage"></M><M l="初月のその他費用（控除反映後）" i="bOther"></M><M l="初月の住居費差分の貯蓄" i="bSaveM"></M><M l="期間中キャッシュアウト" i="bOut"></M><M l="期間中ローン返済累計" i="bMortgageTotal"></M><M l="うち元本返済累計" i="bPrincipal"></M><M l="うち利息累計" i="bInterest"></M><M l="期間終了時ローン残高" i="bBalance"></M><M l="想定不動産価格" i="bSale"></M><M l="住宅純資産" i="bHomeEquity"></M><M l="住宅ローン控除累計" i="bCreditTotal"></M><M l="期間中の住居費差分の貯蓄" i="bSave"></M><M l="期間終了時の総資産" i="bFinal" b="1"></M></div>
 </div></details>
 
@@ -80,17 +80,17 @@
 <script>
 document.querySelectorAll('F').forEach(x=>{let c=x.className?`field ${x.className}`:'field';x.outerHTML=`<div class="${c}"><label>${x.getAttribute('l')}</label><div class="inp"><input id="${x.getAttribute('i')}" type="number" inputmode="decimal" step="any" value="${x.getAttribute('v')}"><span class="u">${x.getAttribute('u')}</span></div></div>`});
 document.querySelectorAll('M').forEach(x=>{x.outerHTML=`<div class="metric"><span>${x.getAttribute('l')}</span><strong id="${x.getAttribute('i')}" class="${x.getAttribute('b')?'big':''}"></strong></div>`});
-const I=['years','investRate','rent','renewMonths','renewCycle','rentInsurance','guarantee','rentOther','rentGrowth','price','down','loan','rate','term','priceChange','buyCost','taxAnnual','mgmt','ownerOther','creditAnnual','creditYears','sellCost'],D={};
+const I=['years','investRate','rentInitialCost','rent','renewMonths','renewCycle','rentInsurance','guarantee','rentOther','rentGrowth','price','down','loan','rate','term','priceChange','buyCost','taxAnnual','mgmt','ownerOther','creditAnnual','creditYears','sellCost'],D={};
 I.forEach(i=>D[i]=document.getElementById(i).value);
 const n=i=>Number(document.getElementById(i).value||0),fmt=(v,d=1)=>(v>=0?'':'−')+Math.abs(v).toLocaleString('ja-JP',{maximumFractionDigits:d})+'万円';
 const pay=(P,a,y)=>{let N=Math.round(y*12),r=a/1200;if(!P||!N)return 0;if(!r)return P/N;return P*r*(1+r)**N/((1+r)**N-1)};
 const balanceAt=(months)=>{let bal=n('loan'),p=pay(n('loan'),n('rate'),n('term')),mr=n('rate')/1200,tm=Math.round(n('term')*12);for(let m=1;m<=months&&m<=tm&&bal>1e-8;m++){let int=bal*mr,pr=Math.max(0,p-int);if(pr>bal)pr=bal;bal=Math.max(0,bal-pr)}return bal};
-const rentInvestAt=(months,annualRate)=>{let asset=n('down')+n('buyCost'),bal=n('loan'),p=pay(n('loan'),n('rate'),n('term')),mr=n('rate')/1200,tm=Math.round(n('term')*12),ir=annualRate/1200;for(let m=1;m<=months;m++){asset*=1+ir;const yi=Math.floor((m-1)/12),rm=n('rent')*(1+n('rentGrowth')/100)**yi,re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12,cy=Math.round(n('renewCycle')*12),renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0,rh=rm+re+renew;let mp=0;if(m<=tm&&bal>1e-8){let int=bal*mr,pr=Math.max(0,p-int);if(pr>bal)pr=bal;mp=int+pr;bal=Math.max(0,bal-pr)}const oc=n('mgmt')+(n('taxAnnual')+n('ownerOther'))/12,cr=m<=Math.round(n('creditYears')*12)?n('creditAnnual')/12:0,diff=mp+oc-cr-rh;asset+=Math.max(0,diff)}return asset};
+const rentInvestAt=(months,annualRate)=>{let asset=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost')),bal=n('loan'),p=pay(n('loan'),n('rate'),n('term')),mr=n('rate')/1200,tm=Math.round(n('term')*12),ir=annualRate/1200;for(let m=1;m<=months;m++){asset*=1+ir;const yi=Math.floor((m-1)/12),rm=n('rent')*(1+n('rentGrowth')/100)**yi,re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12,cy=Math.round(n('renewCycle')*12),renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0,rh=rm+re+renew;let mp=0;if(m<=tm&&bal>1e-8){let int=bal*mr,pr=Math.max(0,p-int);if(pr>bal)pr=bal;mp=int+pr;bal=Math.max(0,bal-pr)}const oc=n('mgmt')+(n('taxAnnual')+n('ownerOther'))/12,cr=m<=Math.round(n('creditYears')*12)?n('creditAnnual')/12:0,diff=mp+oc-cr-rh;asset+=Math.max(0,diff)}return asset};
 const savingsAt=(months)=>{let bal=n('loan'),p=pay(n('loan'),n('rate'),n('term')),mr=n('rate')/1200,tm=Math.round(n('term')*12),rs=0,bs=0;for(let m=1;m<=months;m++){const yi=Math.floor((m-1)/12),rm=n('rent')*(1+n('rentGrowth')/100)**yi,re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12,cy=Math.round(n('renewCycle')*12),renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0,rh=rm+re+renew;let mp=0;if(m<=tm&&bal>1e-8){let int=bal*mr,pr=Math.max(0,p-int);if(pr>bal)pr=bal;mp=int+pr;bal=Math.max(0,bal-pr)}const oc=n('mgmt')+(n('taxAnnual')+n('ownerOther'))/12,cr=m<=Math.round(n('creditYears')*12)?n('creditAnnual')/12:0,diff=mp+oc-cr-rh;rs+=Math.max(0,diff);bs+=Math.max(0,-diff)}return {rs,bs}};
 function setScenarioActive(){const v=n('priceChange');document.querySelectorAll('.scenarioBtn').forEach(b=>b.classList.toggle('active',Number(b.dataset.v)===v));}
 function calc(shouldScroll=false){
   let e=[];
-  const nonNeg=['investRate','rent','renewMonths','renewCycle','rentInsurance','guarantee','rentOther','price','down','loan','rate','buyCost','taxAnnual','mgmt','ownerOther','creditAnnual','creditYears','sellCost'];
+  const nonNeg=['investRate','rentInitialCost','rent','renewMonths','renewCycle','rentInsurance','guarantee','rentOther','price','down','loan','rate','buyCost','taxAnnual','mgmt','ownerOther','creditAnnual','creditYears','sellCost'];
   if(n('years')<1)e.push('比較期間は1年以上にしてください。');
   if(n('price')<=0)e.push('物件価格は0より大きい金額を入力してください。');
   if(n('loan')>0&&n('term')<1)e.push('借入がある場合、返済期間は1年以上にしてください。');
@@ -104,7 +104,7 @@ function calc(shouldScroll=false){
   if(e.length){er.style.display='block';er.textContent=e.join(' ');document.getElementById('out').style.display='none';return}
   er.style.display='none';
   const ms=Math.round(n('years')*12),tm=Math.round(n('term')*12),p=pay(n('loan'),n('rate'),n('term')),mr=n('rate')/1200;
-  let bal=n('loan'),mort=0,own=0,cred=0,rentTot=0,rSaveTot=0,bSaveTot=0,fRH=0,fRS=0,fBS=0,fBO=0;
+  let bal=n('loan'),mort=0,own=0,cred=0,rentTot=n('rentInitialCost'),rSaveTot=0,bSaveTot=0,fRH=0,fRS=0,fBS=0,fBO=0;
   for(let m=1;m<=ms;m++){
     const yi=Math.floor((m-1)/12),rm=n('rent')*(1+n('rentGrowth')/100)**yi,re=(n('rentInsurance')+n('guarantee')+n('rentOther'))/12,cy=Math.round(n('renewCycle')*12),renew=n('renewMonths')>0&&cy>0&&m>1&&(m-1)%cy===0?rm*n('renewMonths'):0,rh=rm+re+renew;
     let mp=0;
@@ -113,9 +113,10 @@ function calc(shouldScroll=false){
     mort+=mp;own+=oc;cred+=cr;rentTot+=rh;rSaveTot+=rsv;bSaveTot+=bsv;
     if(m===1){fRH=rh;fRS=rsv;fBS=bsv;fBO=oc-cr}
   }
-  const future=n('price')*(1+n('priceChange')/100),homeEquity=future-n('sellCost')-bal,bOut=n('down')+n('buyCost')+mort+own-cred,rInit=n('down')+n('buyCost'),rFinal=rInit+rSaveTot,bFinal=homeEquity+bSaveTot;
+  rSaveTot=Math.max(0,rSaveTot-n('rentInitialCost'));
+  const future=n('price')*(1+n('priceChange')/100),homeEquity=future-n('sellCost')-bal,bOut=n('down')+n('buyCost')+mort+own-cred,rInit=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost')),rFinal=rInit+rSaveTot,bFinal=homeEquity+bSaveTot;
   const principalPaid=n('loan')-bal,interest=mort-principalPaid,priceImpact=n('price')-future,bEff=n('buyCost')+interest+own-cred+n('sellCost')+priceImpact,rEff=rentTot,ad=bFinal-rFinal,bMonth=p+fBO;
-  const A={rMonth:fRH,rSaveM:fRS,rHousing:rentTot,rSave:rSaveTot,rInit,bMortgage:p,bOther:fBO,bSaveM:fBS,bOut,bMortgageTotal:mort,bPrincipal:principalPaid,bInterest:interest,bBalance:bal,bSale:future,bHomeEquity:homeEquity,bCreditTotal:cred,bSave:bSaveTot,rFinal,bFinal,rentEff:rEff,buyEff:bEff,costBuy:n('buyCost'),costInterest:interest,costOwner:own,costCredit:-cred,costSell:n('sellCost'),costPrice:priceImpact,costTotal:bEff};
+  const A={rMonth:fRH,rSaveM:fRS,rInitialCost:n('rentInitialCost'),rHousing:rentTot,rSave:rSaveTot,rInit,bMortgage:p,bOther:fBO,bSaveM:fBS,bOut,bMortgageTotal:mort,bPrincipal:principalPaid,bInterest:interest,bBalance:bal,bSale:future,bHomeEquity:homeEquity,bCreditTotal:cred,bSave:bSaveTot,rFinal,bFinal,rentEff:rEff,buyEff:bEff,costBuy:n('buyCost'),costInterest:interest,costOwner:own,costCredit:-cred,costSell:n('sellCost'),costPrice:priceImpact,costTotal:bEff};
   Object.entries(A).forEach(([k,v])=>document.getElementById(k).textContent=fmt(v));
   document.getElementById('heroRFinal').textContent=fmt(rFinal);document.getElementById('heroBFinal').textContent=fmt(bFinal);document.getElementById('headlinePeriod').textContent=`${n('years')}年後に残る資産`;document.getElementById('keyRMonth').textContent=fmt(fRH);document.getElementById('keyBMonth').textContent=fmt(bMonth);document.getElementById('keyREff').textContent=fmt(rEff);document.getElementById('keyBEff').textContent=fmt(bEff);document.getElementById('keyPrincipal').textContent=fmt(principalPaid);document.getElementById('keyHomeEquity').textContent=fmt(homeEquity);
   document.getElementById('conceptCash').textContent=fmt(bOut);document.getElementById('conceptConsumed').textContent=fmt(bEff);document.getElementById('conceptPrincipal').textContent=fmt(principalPaid);document.getElementById('conceptEquity').textContent=fmt(homeEquity);
@@ -125,7 +126,7 @@ function calc(shouldScroll=false){
   document.getElementById('rentSavedOnly').textContent=fmt(rFinal);document.getElementById('rentInvested').textContent=fmt(rInvested);document.getElementById('rentInvestGain').textContent=fmt(rInvestGain);document.getElementById('rentInvestLabel').textContent='運用ケース｜年'+n('investRate')+'%';
   document.getElementById('scenarioDown').textContent=fmt(scenarioFinal(-10));document.getElementById('scenarioFlat').textContent=fmt(scenarioFinal(0));document.getElementById('scenarioUp').textContent=fmt(scenarioFinal(10));
   const totalYears=n('years'),milestones=[5,10,20].filter(y=>y<=totalYears);if(!milestones.includes(totalYears))milestones.push(totalYears);milestones.sort((a,b)=>a-b);
-  const impliedAnnual=(1+n('priceChange')/100)**(1/totalYears)-1,rInitTimeline=n('down')+n('buyCost');
+  const impliedAnnual=(1+n('priceChange')/100)**(1/totalYears)-1,rInitTimeline=Math.max(0,n('down')+n('buyCost')-n('rentInitialCost'));
   document.getElementById('timelineGrid').innerHTML=milestones.map(y=>{const months=Math.round(y*12),b=balanceAt(months),sv=savingsAt(months),fp=n('price')*(1+impliedAnnual)**y,equity=fp-n('sellCost')-b,rAsset=rInitTimeline+sv.rs,bAsset=equity+sv.bs;return '<div class="timelineCard"><small>'+y+'年後</small><div class="miniLine"><span>賃貸｜金融資産</span><strong>'+fmt(rAsset)+'</strong></div><div class="miniLine"><span>購入｜住宅純資産</span><strong>'+fmt(equity)+'</strong></div><div class="miniLine"><span>購入｜総資産</span><strong>'+fmt(bAsset)+'</strong></div></div>'}).join('');
   document.getElementById('headlineText').textContent=`この前提条件での資産残高を並べています。差額は ${(ad>=0?'+':'')+fmt(ad)}（購入 − 賃貸）です。購入・賃貸のどちらかを推奨する表示ではありません。`;
   document.getElementById('scenario').textContent=`将来価格シナリオ：${n('priceChange')>0?'価格上昇':n('priceChange')<0?'価格下落':'価格維持'}（期間全体 ${n('priceChange')>=0?'+':''}${n('priceChange')}%）。将来価格を保証するものではありません。`;
