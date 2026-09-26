@@ -1,0 +1,149 @@
+name: Preview smoke test
+
+on:
+  push:
+    branches:
+      - feat/lifeplan-cta-20260925
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render API locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const handler=require('./api/stress-test.js');
+          let body='',status=0;const headers={};
+          const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(k,v){headers[k]=v},end(v){body=String(v||'')}};
+          handler({},res);
+          if(status!==200){console.error(body);process.exit(1)}
+          if(headers['X-Stress-Test-Warnings']) throw new Error('render warnings '+headers['X-Stress-Test-Warnings']);
+          for(const marker of ['id="loanConsultBtn"','id="ctaBtn"','id="agentBtn"','id="resultEmail"','id="resultEmailSend"','/result-email-client.js']){
+            if(!body.includes(marker)) throw new Error('missing '+marker);
+          }
+          if(body.includes('id="shareLine"')) throw new Error('LINE share must be removed');
+          if(body.includes('/api/click-notification')) throw new Error('instant click notification must be removed');
+          require('fs').writeFileSync('local-page.html',body);
+          console.log('local render passed');
+          NODE
+
+      - name: Validate result email API locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          global.fetch=async (_url,options)=>{
+            const forwarded=JSON.parse(options.body);
+            if(forwarded.kind!=='result_email') throw new Error('unexpected kind');
+            if(forwarded.email!=='customer@example.com') throw new Error('recipient missing');
+            if(!forwarded.customerBody.includes('3つの資産配分戦略')) throw new Error('customer strategies missing');
+            if(!forwarded.ownerBody.includes('詳細ライフプラン相談：確認あり')) throw new Error('CTA history missing');
+            if(!forwarded.ownerBody.includes('世帯年収：1,700万円')) throw new Error('basic inputs missing');
+            return {ok:true,status:200,text:async()=>JSON.stringify({ok:true})};
+          };
+          const handler=require('./api/result-email.js');
+          const req={
+            method:'POST',
+            headers:{origin:'https://example.test',host:'example.test','content-type':'application/json','sec-fetch-site':'same-origin','x-forwarded-for':'127.0.0.1'},
+            body:{
+              email:'customer@example.com',eventId:'smoke-result-1',
+              basic:{age:35,children:0,childStage:'',borrowMethod:'単独で借り入れる',grossIncome:1700,cash:2000,investments:0,price:12000,loanAmount:12840,living:35,rate:1.3,term:35,netOverride:0,rateType:'変動金利・期間固定'},
+              result:{zone:'住宅と月々の負担を両立する配分',margin:'比較ラインまで ＋1,770万円',estimatedNet:1190,selectedStrategy:'balance'},
+              strategies:[
+                {key:'safe',name:'月々の返済を抑える配分',price:9500,monthly:30,equity:0,postAssets:2000},
+                {key:'balance',name:'住宅と月々の負担を両立する配分',price:11000,monthly:35,equity:0,postAssets:2000},
+                {key:'housing',name:'住宅への配分を高める水準',price:13000,monthly:42,equity:0,postAssets:2000}
+              ],
+              interests:[{mode:'lifeplan',source:'result'}],ref:''
+            },
+            socket:{remoteAddress:'127.0.0.1'}
+          };
+          let body='',status=0;const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(){},end(v){body=String(v||'')}};
+          handler(req,res).then(()=>{if(status!==200)throw new Error('status '+status+' '+body);if(JSON.parse(body).ok!==true)throw new Error('invalid response');console.log('result email API smoke passed')}).catch(e=>{console.error(e);process.exit(1)});
+          NODE
+
+      - name: Wait for preview and fetch page
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test"
+          ok=0
+          for i in $(seq 1 10); do
+            code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
+            echo "attempt=$i status=$code"
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 6
+          done
+          [ "$ok" = "1" ] || { cat page.html || true; exit 1; }
+          grep -q '診断結果をメールで受け取る' page.html
+          grep -q 'id="resultEmailSend"' page.html
+          ! grep -q 'id="shareLine"' page.html
+          ! grep -q '/api/click-notification' page.html
+
+      - name: Install browser smoke dependencies
+        shell: bash
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium
+
+      - name: Validate live browser flow
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const {chromium}=require('playwright');
+          const PREVIEW_URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:390,height:844}});
+            const sends=[];
+            await page.route('**/api/result-email',async route=>{sends.push(route.request().postDataJSON());await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true})})});
+            const response=await page.goto(PREVIEW_URL,{waitUntil:'domcontentloaded',timeout:30000});
+            if(!response||response.status()!==200)throw new Error('preview status');
+            await page.locator('#start').click();
+
+            const fold=page.locator('details.loanHelpFold');await fold.locator('summary').click();
+            await page.locator('#loanConsultBtn').click();
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            await page.locator('#handoffClose').click();
+
+            await page.locator('#age').fill('35');
+            await page.locator('#children').fill('0');
+            await page.locator('#grossIncome').fill('1700');
+            await page.locator('#cash').fill('2000');
+            await page.locator('#investments').fill('0');
+            await page.locator('#price').fill('12000');
+            await page.locator('#loanAmount').fill('12840');
+            await page.locator('#living').fill('35');
+            await page.locator('#next').click();
+            await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
+
+            await page.locator('[data-choice="balance"]').click();
+            await page.evaluate(()=>document.querySelector('#ctaBtn').click());
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            await page.locator('#handoffClose').click();
+            await page.evaluate(()=>document.querySelector('#agentBtn').click());
+            await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
+            await page.locator('#handoffClose').click();
+
+            if(await page.locator('#shareLine').count())throw new Error('LINE share still visible');
+            await page.locator('#resultEmail').fill('customer@example.com');
+            await page.locator('#resultEmailSend').click();
+            await page.waitForFunction(()=>document.querySelector('#shareStatus')?.textContent.includes('送信しました'));
+            if(sends.length!==1)throw new Error('expected one consolidated result send');
+            const payload=sends[0];
+            if(payload.email!=='customer@example.com')throw new Error('email missing');
+            if(payload.strategies?.length!==3)throw new Error('three strategies missing');
+            if(payload.basic?.grossIncome!==1700||payload.basic?.price!==12000)throw new Error('basic inputs missing');
+            const modes=new Set((payload.interests||[]).map(x=>x.mode));
+            for(const mode of ['loan','lifeplan','property'])if(!modes.has(mode))throw new Error('interest missing '+mode);
+            if(payload.result?.selectedStrategy!=='balance')throw new Error('selected strategy missing');
+            console.log('live consolidated result-email flow passed');
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
