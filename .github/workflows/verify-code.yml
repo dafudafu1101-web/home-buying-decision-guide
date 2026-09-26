@@ -1,0 +1,27 @@
+name: Verify code
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check embedded JavaScript syntax
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html','utf8');
+          const m = html.match(/<script>([\s\S]*)<\/script>/);
+          if (!m) throw new Error('script block not found');
+          fs.writeFileSync('/tmp/index-script.js', m[1]);
+          NODE
+          node --check /tmp/index-script.js
+      - name: Run calculation regression tests
+        run: node calculation-tests.js
