@@ -36,6 +36,38 @@ jobs:
           require('fs').writeFileSync('local-page.html',body);
           NODE
 
+      - name: Validate click notification API locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          global.fetch=async (_url,options)=>{
+            const forwarded=JSON.parse(options.body);
+            if(forwarded.kind!=='click'||forwarded.mode!=='lifeplan'||forwarded.source!=='result') throw new Error('unexpected forwarded click payload');
+            return {ok:true,status:200,text:async()=>JSON.stringify({ok:true})};
+          };
+          const handler=require('./api/click-notification.js');
+          const req={
+            method:'POST',
+            headers:{
+              origin:'https://example.test',
+              host:'example.test',
+              'content-type':'application/json',
+              'sec-fetch-site':'same-origin',
+              'x-forwarded-for':'127.0.0.1'
+            },
+            body:{mode:'lifeplan',source:'result',price:12000,loanAmount:12840,zone:'バランス寄り',margin:'比較ラインまで ＋1,850万円',eventId:'smoke-lifeplan-1'},
+            socket:{remoteAddress:'127.0.0.1'}
+          };
+          let body=''; let status=0;
+          const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(){},end(v){body=String(v||'')}};
+          handler(req,res).then(()=>{
+            if(status!==200) throw new Error('click API status '+status+' '+body);
+            if(JSON.parse(body).ok!==true) throw new Error('click API response invalid');
+            console.log('click notification API smoke passed');
+          }).catch(err=>{console.error(err);process.exit(1)});
+          NODE
+
       - name: Wait for preview and fetch page
         shell: bash
         run: |
@@ -102,6 +134,11 @@ jobs:
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:844}});
+            const clickEvents=[];
+            await page.route('**/api/click-notification',async route=>{
+              clickEvents.push(route.request().postDataJSON());
+              await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true})});
+            });
             const response=await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});
             if(!response || response.status()!==200) throw new Error('preview status '+(response&&response.status()));
             if((await page.locator('body').innerText()).includes('ページの読み込みに失敗しました。')) throw new Error('error page rendered');
@@ -114,6 +151,8 @@ jobs:
             await page.locator('#loanConsultBtn').click();
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
             if(!(await page.locator('#handoffTitle').innerText()).includes('ローン')) throw new Error('loan modal did not open');
+            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_loan')==='1');
+            if(!clickEvents.some(e=>e.mode==='loan'&&e.source==='step2')) throw new Error('loan click notification missing');
             await page.locator('#handoffClose').click();
 
             await page.locator('#age').fill('35');
@@ -153,10 +192,15 @@ jobs:
             await page.evaluate(()=>document.querySelector('#ctaBtn').click());
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
             if(!(await page.locator('#handoffTitle').innerText()).includes('ライフプラン')) throw new Error('lifeplan modal did not open');
+            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_lifeplan')==='1');
+            if(!clickEvents.some(e=>e.mode==='lifeplan')) throw new Error('lifeplan click notification missing');
             await page.locator('#handoffClose').click();
             await page.evaluate(()=>document.querySelector('#agentBtn').click());
             await page.locator('#handoffOverlay.show').waitFor({state:'visible'});
             if(!(await page.locator('#handoffTitle').innerText()).includes('物件')) throw new Error('property modal did not open');
+            await page.waitForFunction(()=>sessionStorage.getItem('housing_cta_notified_property')==='1');
+            if(!clickEvents.some(e=>e.mode==='property')) throw new Error('property click notification missing');
+            if(new Set(clickEvents.map(e=>e.mode)).size!==3) throw new Error('expected exactly three CTA notification types');
             console.log('live browser interaction smoke test passed');
             await browser.close();
           })().catch(err=>{console.error(err);process.exit(1)});
