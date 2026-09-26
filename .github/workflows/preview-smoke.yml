@@ -130,7 +130,7 @@ jobs:
           set -euo pipefail
           node <<'NODE'
           const { chromium } = require('playwright');
-          const URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
+          const PREVIEW_URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:844}});
@@ -139,7 +139,7 @@ jobs:
               clickEvents.push(route.request().postDataJSON());
               await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true})});
             });
-            const response=await page.goto(URL,{waitUntil:'domcontentloaded',timeout:30000});
+            const response=await page.goto(PREVIEW_URL,{waitUntil:'domcontentloaded',timeout:30000});
             if(!response || response.status()!==200) throw new Error('preview status '+(response&&response.status()));
             if((await page.locator('body').innerText()).includes('ページの読み込みに失敗しました。')) throw new Error('error page rendered');
             await page.locator('#start').click();
