@@ -25,3 +25,38 @@ jobs:
           node --check /tmp/index-script.js
       - name: Run calculation regression tests
         run: node calculation-tests.js
+      - name: Install browser smoke-test dependency
+        run: npm install --no-save playwright@1.55.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser rendering smoke test
+        run: |
+          python3 -m http.server 4173 >/tmp/home-tool-http.log 2>&1 &
+          node - <<'NODE'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:390,height:844}});
+            const errors=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            await page.click('#calcBtn');
+            await page.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
+            for(const id of ['heroRFinal','heroBFinal','keyRMonth','keyBMonth','keyPrincipal','scenarioDown','scenarioFlat','scenarioUp']){
+              const value=(await page.locator('#'+id).textContent()||'').trim();
+              if(!value) throw new Error(id+' did not render');
+            }
+            const timeline=await page.locator('#timelineGrid .timelineCard').count();
+            if(timeline<1) throw new Error('timeline did not render');
+            if(errors.length) throw new Error('page errors: '+errors.join(' | '));
+            await page.fill('#rentInitialCost','100');
+            await page.fill('#investRate','3');
+            await page.click('#calcBtn');
+            const invested=(await page.locator('#rentInvested').textContent()||'').trim();
+            if(!invested) throw new Error('investment result did not render');
+            await page.click('#resetBtn');
+            if(await page.inputValue('#rentInitialCost')!=='0') throw new Error('reset failed');
+            await browser.close();
+            console.log('PASS: browser render/click/mobile smoke test');
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
