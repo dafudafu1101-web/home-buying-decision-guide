@@ -40,8 +40,12 @@ jobs:
             const errors=[];
             page.on('pageerror',e=>errors.push(String(e)));
             await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            if(await page.locator('#out').isVisible()) throw new Error('results should be hidden before calculation');
+            const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);
+            if(overflow) throw new Error('mobile page has horizontal overflow');
             await page.click('#calcBtn');
             await page.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
+            if(await page.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='static') throw new Error('mobile actions should stop being sticky after results render');
             for(const id of ['heroRFinal','heroBFinal','keyRMonth','keyBMonth','keyPrincipal','scenarioDown','scenarioFlat','scenarioUp']){
               const value=(await page.locator('#'+id).textContent()||'').trim();
               if(!value) throw new Error(id+' did not render');
@@ -50,13 +54,16 @@ jobs:
             if(timeline<1) throw new Error('timeline did not render');
             if(errors.length) throw new Error('page errors: '+errors.join(' | '));
             await page.fill('#rentInitialCost','100');
+            await page.locator('summary').filter({hasText:'その他の賃貸条件'}).click();
             await page.fill('#investRate','3');
             await page.click('#calcBtn');
             const invested=(await page.locator('#rentInvested').textContent()||'').trim();
             if(!invested) throw new Error('investment result did not render');
             await page.click('#resetBtn');
             if(await page.inputValue('#rentInitialCost')!=='0') throw new Error('reset failed');
+            if(await page.locator('#out').isVisible()) throw new Error('reset should hide results');
+            if(await page.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='sticky') throw new Error('mobile actions should become sticky again after reset');
             await browser.close();
-            console.log('PASS: browser render/click/mobile smoke test');
+            console.log('PASS: browser render/click/mobile/reset smoke test');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
