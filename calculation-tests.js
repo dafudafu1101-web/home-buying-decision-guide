@@ -5,7 +5,7 @@ function run(p) {
   const ms = Math.round(n('years') * 12), tm = Math.round(n('term') * 12);
   const P = n('loan'), r = n('rate') / 1200;
   const pay = !tm ? 0 : !r ? P / tm : P * r * (1 + r) ** tm / ((1 + r) ** tm - 1);
-  let bal = P, mort = 0, own = 0, cred = 0, rentTot = 0, rSave = 0, bSave = 0;
+  let bal = P, mort = 0, own = 0, cred = 0, rentTot = n('rentInitialCost'), rSave = 0, bSave = 0;
   let principal = 0, interest = 0;
   for (let m = 1; m <= ms; m++) {
     const yi = Math.floor((m - 1) / 12);
@@ -36,18 +36,18 @@ function run(p) {
   const net = future - n('sellCost') - bal;
   const bOut = n('down') + n('buyCost') + mort + own - cred;
   const bEff = bOut - net;
-  const rInit = n('down') + n('buyCost');
+  const rInit = Math.max(0, n('down') + n('buyCost') - n('rentInitialCost'));
   const rFinal = rInit + rSave;
   const bFinal = net + bSave;
   return { bal, mort, principal, interest, rSave, bSave, rentTot, bEff, rFinal, bFinal, assetDiff: bFinal-rFinal, costDiff:bEff-rentTot };
 }
 
-const base = {rent:25,years:10,renewMonths:1,renewCycle:2,rentInsurance:1.5,guarantee:1,rentOther:0,rentGrowth:0,price:10000,down:1000,loan:9000,rate:1,term:35,buyCost:700,taxAnnual:25,mgmt:0,ownerOther:0,creditAnnual:0,creditYears:0,sellCost:350,priceChange:0};
+const base = {rentInitialCost:0,rent:25,years:10,renewMonths:1,renewCycle:2,rentInsurance:1.5,guarantee:1,rentOther:0,rentGrowth:0,price:10000,down:1000,loan:9000,rate:1,term:35,buyCost:700,taxAnnual:25,mgmt:0,ownerOther:0,creditAnnual:0,creditYears:0,sellCost:350,priceChange:0};
 const cases = [
   ['default', {}], ['zero interest', {rate:0}], ['cash purchase',{down:10000,loan:0}], ['zero down',{down:0,loan:10000}],
   ['price -10%',{priceChange:-10}], ['price +10%',{priceChange:10}], ['period longer than loan',{years:40}],
   ['rent cheaper',{rent:10}], ['rent more expensive',{rent:60}], ['tax credit',{creditAnnual:40,creditYears:10}],
-  ['positive rent growth',{rentGrowth:2}], ['negative rent growth',{rentGrowth:-2}]
+  ['positive rent growth',{rentGrowth:2}], ['negative rent growth',{rentGrowth:-2}], ['rental initial cost',{rentInitialCost:100}]
 ];
 for (const [name, patch] of cases) {
   const input = {...base, ...patch};
@@ -56,5 +56,6 @@ for (const [name, patch] of cases) {
   assert(Math.abs(x.principal + x.bal - input.loan) < 1e-5, `${name}: principal + balance mismatch`);
   assert(Math.abs(x.mort - x.principal - x.interest) < 1e-5, `${name}: mortgage identity mismatch`);
   assert(Math.abs(x.assetDiff + x.costDiff) < 1e-5, `${name}: asset/cost mirror identity mismatch`);
+  if (name === 'rental initial cost') { const z=run({...base,rentInitialCost:0}); assert(Math.abs((z.rFinal-x.rFinal)-100)<1e-5, `${name}: final assets should fall exactly by initial cost`); assert(Math.abs((x.rentTot-z.rentTot)-100)<1e-5, `${name}: rent cost should rise exactly by initial cost`); }
 }
 console.log(`PASS: ${cases.length} calculation regression cases`);
