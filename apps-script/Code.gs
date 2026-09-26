@@ -25,7 +25,44 @@ function doPost(e) {
     }
 
     const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : body.mode === 'loan' ? 'loan' : '';
-    const kind = body.kind === 'click' ? 'click' : 'consultation';
+    const kind = body.kind === 'result_email' ? 'result_email' : body.kind === 'click' ? 'click' : 'consultation';
+
+    if (kind === 'result_email') {
+      const email = String(body.email || '').trim().slice(0, 240);
+      const customerBody = String(body.customerBody || '').trim().slice(0, MAX_SUMMARY_LENGTH);
+      const ownerBody = String(body.ownerBody || '').trim().slice(0, MAX_SUMMARY_LENGTH);
+      const requestId = String(body.requestId || '').trim().slice(0, 128);
+      if (!validEmail(email) || !customerBody || !ownerBody || !requestId) {
+        return jsonResponse({ ok: false, error: 'invalid_input' });
+      }
+
+      const lock = LockService.getScriptLock();
+      lock.waitLock(5000);
+      try {
+        const cache = CacheService.getScriptCache();
+        const cacheKey = 'result_email_' + requestId;
+        if (cache.get(cacheKey)) return jsonResponse({ ok: true, duplicate: true });
+
+        MailApp.sendEmail({
+          to: email,
+          subject: '【ADCAST】住宅予算チェックの診断結果',
+          body: customerBody,
+          name: 'ADCAST 住宅予算チェック'
+        });
+        MailApp.sendEmail({
+          to: TARGET_EMAIL,
+          subject: '【住宅予算チェック｜結果送信通知】' + email,
+          body: ownerBody,
+          replyTo: email,
+          name: '住宅予算チェック'
+        });
+
+        cache.put(cacheKey, 'sent', DEDUPE_TTL_SECONDS);
+        return jsonResponse({ ok: true });
+      } finally {
+        lock.releaseLock();
+      }
+    }
 
     if (kind === 'click') {
       const source = String(body.source || '').trim().slice(0, 80);
