@@ -66,8 +66,20 @@ module.exports = async function handler(req, res) {
 
   const mode = ['loan','lifeplan','property'].includes(body.mode) ? body.mode : '';
   const source = String(body.source || '').trim().slice(0, 80);
+  const age = Math.max(0, Math.min(100, Number(body.age) || 0));
+  const children = Math.max(0, Math.min(20, Number(body.children) || 0));
+  const childStage = String(body.childStage || '').trim().slice(0, 80);
+  const borrowMethod = String(body.borrowMethod || '').trim().slice(0, 120);
+  const grossIncome = Math.max(0, Math.min(100000, Number(body.grossIncome) || 0));
+  const cash = Math.max(0, Math.min(100000, Number(body.cash) || 0));
+  const investments = Math.max(0, Math.min(100000, Number(body.investments) || 0));
   const price = Math.max(0, Math.min(100000, Number(body.price) || 0));
   const loanAmount = Math.max(0, Math.min(100000, Number(body.loanAmount) || 0));
+  const living = Math.max(0, Math.min(10000, Number(body.living) || 0));
+  const rate = Math.max(0, Math.min(20, Number(body.rate) || 0));
+  const term = Math.max(0, Math.min(50, Number(body.term) || 0));
+  const netOverride = Math.max(0, Math.min(100000, Number(body.netOverride) || 0));
+  const rateType = String(body.rateType || '').trim().slice(0, 80);
   const zone = String(body.zone || '').trim().slice(0, 120);
   const margin = String(body.margin || '').trim().slice(0, 160);
   const ref = String(body.ref || '').trim().slice(0, 160);
@@ -87,8 +99,20 @@ module.exports = async function handler(req, res) {
         kind: 'click',
         mode,
         source,
+        age,
+        children,
+        childStage,
+        borrowMethod,
+        grossIncome,
+        cash,
+        investments,
         price,
         loanAmount,
+        living,
+        rate,
+        term,
+        netOverride,
+        rateType,
         zone,
         margin,
         ref,
