@@ -620,7 +620,7 @@ function clickNotify(mode,source){
     zone:($('#zoneTitle')&&$('#zoneTitle').textContent)||'',
     margin:($('#marginText')&&$('#marginText').textContent)||'',
     ref:REF_TOKEN,
-    eventId:(crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)
+    eventId:(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)
   };
   fetch('/api/click-notification',{
     method:'POST',
