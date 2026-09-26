@@ -34,36 +34,63 @@ jobs:
           python3 -m http.server 4173 >/tmp/home-tool-http.log 2>&1 &
           node - <<'NODE'
           const { chromium } = require('playwright');
+          const fs = require('fs');
           (async()=>{
+            fs.mkdirSync('artifacts',{recursive:true});
             const browser=await chromium.launch({headless:true});
-            const page=await browser.newPage({viewport:{width:390,height:844}});
-            const errors=[];
-            page.on('pageerror',e=>errors.push(String(e)));
-            await page.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
-            if(await page.locator('#out').isVisible()) throw new Error('results should be hidden before calculation');
-            const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1);
-            if(overflow) throw new Error('mobile page has horizontal overflow');
-            await page.click('#calcBtn');
-            await page.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
-            if(await page.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='static') throw new Error('mobile actions should stop being sticky after results render');
-            for(const id of ['heroRFinal','heroBFinal','keyRMonth','keyBMonth','keyPrincipal','scenarioDown','scenarioFlat','scenarioUp']){
-              const value=(await page.locator('#'+id).textContent()||'').trim();
+
+            const mobile=await browser.newPage({viewport:{width:390,height:844}});
+            const mobileErrors=[];
+            mobile.on('pageerror',e=>mobileErrors.push(String(e)));
+            await mobile.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            if(await mobile.locator('#out').isVisible()) throw new Error('results should be hidden before calculation');
+            if(await mobile.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1)) throw new Error('mobile page has horizontal overflow');
+            await mobile.click('#calcBtn');
+            await mobile.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
+            if(await mobile.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='static') throw new Error('mobile actions should stop being sticky after results render');
+            for(const id of ['heroRFinal','heroBFinal','keyRMonth','keyBMonth','keyPrincipal','keyHomeEquity','scenarioDown','scenarioFlat','scenarioUp','equityFinal']){
+              const value=(await mobile.locator('#'+id).textContent()||'').trim();
               if(!value) throw new Error(id+' did not render');
             }
-            const timeline=await page.locator('#timelineGrid .timelineCard').count();
+            const timeline=await mobile.locator('#timelineGrid .timelineCard').count();
             if(timeline<1) throw new Error('timeline did not render');
-            if(errors.length) throw new Error('page errors: '+errors.join(' | '));
-            await page.fill('#rentInitialCost','100');
-            await page.locator('summary').filter({hasText:'その他の賃貸条件'}).click();
-            await page.fill('#investRate','3');
-            await page.click('#calcBtn');
-            const invested=(await page.locator('#rentInvested').textContent()||'').trim();
+            for(const text of ['賃貸側の差額を運用した場合を見る','不動産価格の3シナリオを見る','詳細な計算結果を見る']){
+              const d=mobile.locator('details').filter({hasText:text}).first();
+              if(await d.getAttribute('open')!==null) throw new Error(text+' should be collapsed by default');
+            }
+            if(mobileErrors.length) throw new Error('mobile page errors: '+mobileErrors.join(' | '));
+            await mobile.screenshot({path:'artifacts/mobile-result.png',fullPage:true});
+            await mobile.fill('#rentInitialCost','100');
+            await mobile.locator('summary').filter({hasText:'その他の賃貸条件'}).click();
+            await mobile.fill('#investRate','3');
+            await mobile.click('#calcBtn');
+            const invested=(await mobile.locator('#rentInvested').textContent()||'').trim();
             if(!invested) throw new Error('investment result did not render');
-            await page.click('#resetBtn');
-            if(await page.inputValue('#rentInitialCost')!=='0') throw new Error('reset failed');
-            if(await page.locator('#out').isVisible()) throw new Error('reset should hide results');
-            if(await page.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='sticky') throw new Error('mobile actions should become sticky again after reset');
+            await mobile.click('#resetBtn');
+            if(await mobile.inputValue('#rentInitialCost')!=='0') throw new Error('reset failed');
+            if(await mobile.locator('#out').isVisible()) throw new Error('reset should hide results');
+            if(await mobile.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='sticky') throw new Error('mobile actions should become sticky again after reset');
+
+            const desktop=await browser.newPage({viewport:{width:1280,height:900}});
+            const desktopErrors=[];
+            desktop.on('pageerror',e=>desktopErrors.push(String(e)));
+            await desktop.goto('http://127.0.0.1:4173/index.html',{waitUntil:'networkidle'});
+            if(await desktop.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1)) throw new Error('desktop page has horizontal overflow');
+            await desktop.click('#calcBtn');
+            await desktop.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
+            const heroBox=await desktop.locator('#resultTop').boundingBox();
+            if(!heroBox||heroBox.width<800) throw new Error('desktop result headline is unexpectedly narrow');
+            if(desktopErrors.length) throw new Error('desktop page errors: '+desktopErrors.join(' | '));
+            await desktop.screenshot({path:'artifacts/desktop-result.png',fullPage:true});
+
             await browser.close();
-            console.log('PASS: browser render/click/mobile/reset smoke test');
+            console.log('PASS: browser render/click/mobile/desktop/reset UX smoke test');
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
+      - name: Upload UX screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ux-screenshots
+          path: artifacts/*.png
+          if-no-files-found: ignore
