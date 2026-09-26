@@ -25,8 +25,8 @@
 <div class="card">
 <h2>1. 現在の賃貸</h2>
 <p class="note">今の住まいをそのまま続けた場合の費用を入力します。</p>
-<div class="fields"><F l="月額賃料（管理費等込み）" i="rent" v="25" u="万円/月"></F></div>
-<details class="details"><summary>賃貸の詳細条件（必要な場合のみ）</summary><div class="fields"><F l="更新料" i="renewMonths" v="1" u="か月分"></F><F l="更新周期" i="renewCycle" v="2" u="年ごと"></F><F l="火災・家財保険" i="rentInsurance" v="1.5" u="万円/年"></F><F l="保証会社更新料等" i="guarantee" v="1" u="万円/年"></F><F l="その他定期費用" i="rentOther" v="0" u="万円/年"></F><F l="賃料上昇率" i="rentGrowth" v="0" u="%/年"></F></div></details>
+<div class="fields"><F l="月額賃料（管理費等込み）" i="rent" v="25" u="万円/月"></F><F l="賃料上昇率" i="rentGrowth" v="0" u="%/年"></F></div>
+<details class="details"><summary>その他の賃貸条件（更新料・保険など）</summary><div class="fields"><F l="更新料" i="renewMonths" v="1" u="か月分"></F><F l="更新周期" i="renewCycle" v="2" u="年ごと"></F><F l="火災・家財保険" i="rentInsurance" v="1.5" u="万円/年"></F><F l="保証会社更新料等" i="guarantee" v="1" u="万円/年"></F><F l="その他定期費用" i="rentOther" v="0" u="万円/年"></F></div></details>
 </div>
 
 <div class="card">
@@ -35,7 +35,7 @@
 <div class="fields"><F l="物件価格" i="price" v="10000" u="万円"></F><F l="自己資金" i="down" v="1000" u="万円"></F><F l="住宅ローン借入額" i="loan" v="9000" u="万円"></F><F l="金利" i="rate" v="1" u="%/年"></F><F l="返済期間" i="term" v="35" u="年"></F><F class="full" l="将来の物件価格（購入時からの変動率）" i="priceChange" v="0" u="%（期間全体）"></F></div>
 <div class="helperRow"><button type="button" class="mini" id="loanAutoBtn">借入額を自動計算</button></div>
 <div class="scenarioBtns" aria-label="物件価格変動率の入力補助"><button type="button" class="mini scenarioBtn" data-v="-10">価格 −10%</button><button type="button" class="mini scenarioBtn" data-v="0">価格維持</button><button type="button" class="mini scenarioBtn" data-v="10">価格 ＋10%</button></div>
-<div class="fields" style="margin-top:11px"><F l="購入諸費用" i="buyCost" v="700" u="万円"></F></div><details class="details"><summary>その他の購入詳細条件（税金・控除など）</summary><div class="fields"><F l="固定資産税等" i="taxAnnual" v="25" u="万円/年"></F><F l="管理費・修繕積立金" i="mgmt" v="0" u="万円/月"></F><F l="その他維持費" i="ownerOther" v="0" u="万円/年"></F><F l="住宅ローン控除 見込額" i="creditAnnual" v="0" u="万円/年"></F><F l="住宅ローン控除 適用年数" i="creditYears" v="0" u="年"></F><F l="売却時諸費用" i="sellCost" v="350" u="万円"></F></div></details>
+<div class="fields" style="margin-top:11px"><F l="購入諸費用" i="buyCost" v="700" u="万円"></F><F l="固定資産税等" i="taxAnnual" v="25" u="万円/年"></F><F l="管理費・修繕積立金" i="mgmt" v="0" u="万円/月"></F><F l="売却時諸費用" i="sellCost" v="350" u="万円"></F></div><details class="details"><summary>その他の購入条件（控除・維持費など）</summary><div class="fields"><F l="その他維持費" i="ownerOther" v="0" u="万円/年"></F><F l="住宅ローン控除 見込額" i="creditAnnual" v="0" u="万円/年"></F><F l="住宅ローン控除 適用年数" i="creditYears" v="0" u="年"></F></div></details>
 <p class="note">価格変動率0%＝購入価格維持。住宅ローン控除は制度を自動判定せず、実際に見込む控除額を入力します。</p>
 </div>
 </section>
@@ -45,16 +45,15 @@
 <div class="err" id="err" role="alert"></div>
 
 <section id="out" style="display:none" aria-live="polite">
-<div class="headlineResult" id="resultTop"><small>比較期間終了時の資産差額（購入 − 賃貸）</small><div class="value" id="headlineDiff"></div><div class="sub" id="headlineText"></div><div class="scenario" id="scenario"></div></div>
+<div class="headlineResult" id="resultTop"><small id="headlinePeriod">比較期間終了時に残る資産</small><div class="pathGrid" style="margin-top:10px"><div class="path" style="background:#242424;border-color:#444"><small style="color:#c9c9c4">賃貸｜金融資産</small><div class="value" id="heroRFinal"></div></div><div class="path" style="background:#242424;border-color:#444"><small style="color:#c9c9c4">購入｜住宅純資産＋金融資産</small><div class="value" id="heroBFinal"></div></div></div><div class="sub" id="headlineText"></div><div class="scenario" id="scenario"></div></div>
 
-<div class="keyGrid">
-<div class="keyCard"><small>期間終了時に残る資産</small><div class="pair"><span>賃貸</span><b id="keyRFinal"></b></div><div class="pair"><span>購入</span><b id="keyBFinal"></b></div></div>
+<div class="keyGrid" style="grid-template-columns:repeat(3,1fr)">
 <div class="keyCard"><small>初月の毎月負担</small><div class="pair"><span>賃貸</span><b id="keyRMonth"></b></div><div class="pair"><span>購入</span><b id="keyBMonth"></b></div></div>
 <div class="keyCard"><small>期間中の実質住居費</small><div class="pair"><span>賃貸</span><b id="keyREff"></b></div><div class="pair"><span>購入</span><b id="keyBEff"></b></div></div>
-<div class="keyCard"><small>購入側の住宅純資産</small><div class="pair"><span>想定価格−ローン残高−売却費</span><b id="keyHomeEquity"></b></div></div>
+<div class="keyCard"><small>購入側の元本→資産化</small><div class="pair"><span>元本返済累計</span><b id="keyPrincipal"></b></div><div class="pair"><span>住宅純資産</span><b id="keyHomeEquity"></b></div></div>
 </div>
 
-<div class="explain"><h3>購入の負担を4つに分けて見る</h3><p class="note">住宅ローン返済額をそのまま住宅コストとは扱いません。キャッシュアウトと経済的な消費、元本返済、最後に残る住宅純資産を分けます。</p><div class="conceptGrid"><div class="concept"><small>① 家計から出ていく金額</small><b id="conceptCash"></b><p>自己資金・購入諸費用・返済・保有費から住宅ローン控除を差し引いた期間中のキャッシュアウト</p></div><div class="concept"><small>② 経済的に消費された金額</small><b id="conceptConsumed"></b><p>購入諸費用・利息・保有費・売却費・価格変動等を反映した実質住居費</p></div><div class="concept"><small>③ 資産へ振り替わった元本</small><b id="conceptPrincipal"></b><p>期間中の元本返済累計。キャッシュアウトだが、そのまま消費にはしない</p></div><div class="concept"><small>④ 最後に残る住宅純資産</small><b id="conceptEquity"></b><p>想定不動産価格 − ローン残高 − 売却時諸費用</p></div></div></div>
+<details class="resultDetails"><summary>購入の支払いを「消費」と「資産」に分けて見る</summary><div class="explain" style="border:0;margin-top:0;padding:0"><h3>購入の負担を4つに分けて見る</h3><p class="note">住宅ローン返済額をそのまま住宅コストとは扱いません。キャッシュアウトと経済的な消費、元本返済、最後に残る住宅純資産を分けます。</p><div class="conceptGrid"><div class="concept"><small>① 家計から出ていく金額</small><b id="conceptCash"></b><p>自己資金・購入諸費用・返済・保有費から住宅ローン控除を差し引いた期間中のキャッシュアウト</p></div><div class="concept"><small>② 経済的に消費された金額</small><b id="conceptConsumed"></b><p>購入諸費用・利息・保有費・売却費・価格変動等を反映した実質住居費</p></div><div class="concept"><small>③ 資産へ振り替わった元本</small><b id="conceptPrincipal"></b><p>期間中の元本返済累計。キャッシュアウトだが、そのまま消費にはしない</p></div><div class="concept"><small>④ 最後に残る住宅純資産</small><b id="conceptEquity"></b><p>想定不動産価格 − ローン残高 − 売却時諸費用</p></div></div></div></details>
 
 <div class="explain"><h3>なぜこの差になったか</h3><p class="note">同じ初期資金と月々の家計負担を前提に、最後に残る資産を比較しています。</p><div class="pathGrid"><div class="path"><h4>賃貸</h4><div class="pathLine"><span>購入に使わなかった初期資金</span><b id="flowInit"></b><span class="arrow">＋</span><span>住居費差分の貯蓄</span><b id="flowRSave"></b><span class="arrow">＝</span><span>最終資産</span><b id="flowRFinal"></b></div></div><div class="path"><h4>購入</h4><div class="pathLine"><span>住宅純資産</span><b id="flowNet"></b><span class="arrow">＋</span><span>住居費差分の貯蓄</span><b id="flowBSave"></b><span class="arrow">＝</span><span>最終資産</span><b id="flowBFinal"></b></div></div></div></div>
 
@@ -69,7 +68,7 @@
 </div></details>
 
 <div class="explain"><h3>この結果の見方</h3><p class="note"><b>住宅純資産</b>：想定不動産価格から、同時点の住宅ローン残高と想定売却時コストを差し引いた金額です。</p><p class="note"><b>最終資産</b>：賃貸は「購入に使わなかった初期資金＋住居費差分の貯蓄」、購入は「住宅純資産＋住居費差分の貯蓄」です。</p><p class="note"><b>実質住居費</b>：比較期間中に住むために使い、最後に資産として戻らない金額の目安です。購入ではローン元本をそのまま消費とは扱いません。</p><p class="note">このツールは購入・賃貸のどちらかを推奨するものではありません。この前提条件で、設定期間後の資産残高がどのようになるかを確認するための試算です。</p></div>
-<div class="explain"><h3>数字に換算しない判断材料</h3><p class="note"><b>インフレ：</b>住宅ローン残高は名目額で返済するため、インフレが続く場合は借入金の実質的な価値が低下する可能性があります。ただし、インフレ率・所得上昇率・不動産価格上昇率・住宅ローン金利は同じものではなく、自動的に連動する前提にはしません。</p><p class="note"><b>団信の保障価値：</b>住宅ローンには団体信用生命保険が付帯する商品が多く、所定の死亡・高度障害等でローン残高がなくなる可能性があります。保障内容は金融機関・商品で異なるため、このツールでは一律に金額換算しません。</p><p class="note"><b>生命保険との関係：</b>団信加入によって必要保障額が変わる可能性はありますが、生命保険が不要になるとは限りません。家族構成、収入、教育費、生活費、既存資産等を含めて確認が必要です。</p><p class="note"><b>地域と資産価値：</b>将来価格は地域名だけで自動判定しません。駅距離、土地需要、人口動態、供給量、再開発、流動性、物件種別、築年数、管理状態などを踏まえ、価格シナリオを変えて検証します。</p></div>
+<details class="resultDetails"><summary>数字だけでは比較できない4つのポイント</summary><div class="explain" style="border:0;margin-top:0;padding:0"><h3>数字に換算しない判断材料</h3><p class="note"><b>インフレ：</b>住宅ローン残高は名目額で返済するため、インフレが続く場合は借入金の実質的な価値が低下する可能性があります。ただし、インフレ率・所得上昇率・不動産価格上昇率・住宅ローン金利は同じものではなく、自動的に連動する前提にはしません。</p><p class="note"><b>団信の保障価値：</b>住宅ローンには団体信用生命保険が付帯する商品が多く、所定の死亡・高度障害等でローン残高がなくなる可能性があります。保障内容は金融機関・商品で異なるため、このツールでは一律に金額換算しません。</p><p class="note"><b>生命保険との関係：</b>団信加入によって必要保障額が変わる可能性はありますが、生命保険が不要になるとは限りません。家族構成、収入、教育費、生活費、既存資産等を含めて確認が必要です。</p><p class="note"><b>地域と資産価値：</b>将来価格は地域名だけで自動判定しません。駅距離、土地需要、人口動態、供給量、再開発、流動性、物件種別、築年数、管理状態などを踏まえ、価格シナリオを変えて検証します。</p></div></details>
 <div class="warn">本ツールは比較試算です。将来の不動産価格、運用益、インフレ、金利、賃料、税金、管理費・修繕積立金、住宅ローン控除、団信の保障内容等を保証しません。住宅ローン控除の適用可否・金額や団信の保障条件は、最新制度・金融機関・商品・個別条件をご確認ください。</div>
 </section>
 <div class="foot">基準仕様 2026/09/26 ｜ PDFを使用しないWebツール版</div>
@@ -111,11 +110,10 @@ function calc(shouldScroll=false){
   const principalPaid=n('loan')-bal,interest=mort-principalPaid,priceImpact=n('price')-future,bEff=n('buyCost')+interest+own-cred+n('sellCost')+priceImpact,rEff=rentTot,ad=bFinal-rFinal,bMonth=p+fBO;
   const A={rMonth:fRH,rSaveM:fRS,rHousing:rentTot,rSave:rSaveTot,rInit,bMortgage:p,bOther:fBO,bSaveM:fBS,bOut,bMortgageTotal:mort,bPrincipal:principalPaid,bInterest:interest,bBalance:bal,bSale:future,bHomeEquity:homeEquity,bCreditTotal:cred,bSave:bSaveTot,rFinal,bFinal,rentEff:rEff,buyEff:bEff,costBuy:n('buyCost'),costInterest:interest,costOwner:own,costCredit:-cred,costSell:n('sellCost'),costPrice:priceImpact,costTotal:bEff};
   Object.entries(A).forEach(([k,v])=>document.getElementById(k).textContent=fmt(v));
-  document.getElementById('keyRFinal').textContent=fmt(rFinal);document.getElementById('keyBFinal').textContent=fmt(bFinal);document.getElementById('keyRMonth').textContent=fmt(fRH);document.getElementById('keyBMonth').textContent=fmt(bMonth);document.getElementById('keyREff').textContent=fmt(rEff);document.getElementById('keyBEff').textContent=fmt(bEff);document.getElementById('keyHomeEquity').textContent=fmt(homeEquity);
+  document.getElementById('heroRFinal').textContent=fmt(rFinal);document.getElementById('heroBFinal').textContent=fmt(bFinal);document.getElementById('headlinePeriod').textContent=`${n('years')}年後に残る資産`;document.getElementById('keyRMonth').textContent=fmt(fRH);document.getElementById('keyBMonth').textContent=fmt(bMonth);document.getElementById('keyREff').textContent=fmt(rEff);document.getElementById('keyBEff').textContent=fmt(bEff);document.getElementById('keyPrincipal').textContent=fmt(principalPaid);document.getElementById('keyHomeEquity').textContent=fmt(homeEquity);
   document.getElementById('conceptCash').textContent=fmt(bOut);document.getElementById('conceptConsumed').textContent=fmt(bEff);document.getElementById('conceptPrincipal').textContent=fmt(principalPaid);document.getElementById('conceptEquity').textContent=fmt(homeEquity);
   document.getElementById('flowInit').textContent=fmt(rInit);document.getElementById('flowRSave').textContent=fmt(rSaveTot);document.getElementById('flowRFinal').textContent=fmt(rFinal);document.getElementById('flowNet').textContent=fmt(homeEquity);document.getElementById('flowBSave').textContent=fmt(bSaveTot);document.getElementById('flowBFinal').textContent=fmt(bFinal);
-  document.getElementById('headlineDiff').textContent=(ad>=0?'+':'')+fmt(ad);
-  document.getElementById('headlineText').textContent=`この前提条件では、${n('years')}年後の資産残高は賃貸 ${fmt(rFinal)}、購入 ${fmt(bFinal)} です。`;
+  document.getElementById('headlineText').textContent=`この前提条件での資産残高を並べています。差額は ${(ad>=0?'+':'')+fmt(ad)}（購入 − 賃貸）です。購入・賃貸のどちらかを推奨する表示ではありません。`;
   document.getElementById('scenario').textContent=`将来価格シナリオ：${n('priceChange')>0?'価格上昇':n('priceChange')<0?'価格下落':'価格維持'}（期間全体 ${n('priceChange')>=0?'+':''}${n('priceChange')}%）。将来価格を保証するものではありません。`;
   document.getElementById('out').style.display='block';setScenarioActive();
   if(shouldScroll)document.getElementById('resultTop').scrollIntoView({behavior:'smooth',block:'start'});
