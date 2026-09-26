@@ -24,6 +24,36 @@ function buildHtml() {
 .loanHelpFold[open]>summary b:after{content:'−'}
 .loanHelpFold>summary small{display:block;margin-top:5px;font-size:11px;line-height:1.55;color:#6b665f;font-weight:500}
 .loanHelpFold>.loanHelpCard{margin:0;border:0;border-top:1px solid #eadfc8;border-radius:0;box-shadow:none;background:linear-gradient(135deg,#fffdf8,#f8f1e2)}
+/* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
+.screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
+.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-weight:800}
+/* Make the detailed numbers section useful before it is opened. */
+.moreWrap{padding:0!important;overflow:hidden;border:1px solid #d8d1c5!important;border-radius:18px!important;background:#fff;margin-top:22px!important}
+.moreWrap>.moreSummary{list-style:none;padding:16px 16px 15px;display:block;background:linear-gradient(180deg,#fbfaf7,#f7f4ed);cursor:pointer}
+.moreWrap>.moreSummary::-webkit-details-marker{display:none}
+.moreSummaryHead{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;font-weight:900;color:#171512}
+.moreSummaryHead:after{content:'＋';width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#111;color:#fff;font-size:17px;line-height:1;flex:none}
+.moreWrap[open]>.moreSummary .moreSummaryHead:after{content:'−'}
+.moreSummarySub{display:block;margin-top:5px;font-size:11px;font-weight:600;line-height:1.55;color:#716b61}
+.moreSummaryGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
+.moreSummaryItem{display:block;padding:9px 8px;border:1px solid #e1dbd0;border-radius:11px;background:#fff;min-width:0}
+.moreSummaryItem em{display:block;font-style:normal;font-size:9.5px;line-height:1.35;color:#777065;font-weight:700;margin-bottom:3px}
+.moreSummaryItem strong{display:block;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif!important;font-size:12.5px;line-height:1.35;color:#171512;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moreWrap>.moreBlock{margin:0 16px!important;padding:20px 0!important;border-top:1px solid #e7e1d7!important}
+.moreWrap>.moreBlock:first-of-type{margin-top:0!important;border-top:1px solid #e7e1d7!important}
+.moreWrap>.moreBlock>h2,.moreWrap>.moreBlock>h3{margin:0 0 12px!important;font-size:18px!important;line-height:1.45}
+.moreWrap .detailCards{gap:8px;margin-top:8px}
+.moreWrap .detailCard{padding:13px 14px;border-radius:13px;background:#fff}
+.moreWrap .detailCard.ref{background:#f8f6f1}
+.moreWrap .detailCard b{font-size:11.5px;line-height:1.55;color:#34302a}
+.moreWrap .detailCard strong{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif!important;font-size:24px;font-weight:900;letter-spacing:-.02em;margin:5px 0}
+.moreWrap .detailCard span{font-size:10.8px;line-height:1.65}
+.moreWrap .netWorthList{gap:8px}
+.moreWrap .netWorthCard{padding:13px 14px;border-radius:13px;background:#fff}
+.moreWrap .netWorthCard b{font-size:12px;margin-bottom:7px}
+.moreWrap .netWorthCard .nwGrid{font-size:10.8px;line-height:1.55;gap:3px}
+.moreWrap .netWorthCard .nwFinal{font-size:18px!important;line-height:1.45;margin-top:8px;padding-top:8px;border-top:1px solid #ece7de}
+@media(max-width:480px){.moreSummaryGrid{gap:5px}.moreSummaryItem{padding:8px 6px}.moreSummaryItem em{font-size:8.8px}.moreSummaryItem strong{font-size:11.5px}.moreWrap>.moreBlock{margin:0 13px!important}}
 `;
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
@@ -55,6 +85,21 @@ function buildHtml() {
     missingMarkers.push('loan_help_fold');
     console.warn('stress_test_missing_marker', 'loan_help_fold');
   }
+
+  html = replaceOnce(
+    html,
+    '<summary>数字をもっと詳しく見る（自己資金・金利・10年後の見通し）</summary>',
+    `<summary class="moreSummary">
+          <span class="moreSummaryHead">計算の内訳を見る</span>
+          <span class="moreSummarySub">自己資金・金利上昇時の余力・10年後の住宅純資産を確認できます。</span>
+          <span class="moreSummaryGrid">
+            <span class="moreSummaryItem"><em>金利3%時の家計余力</em><strong id="moreStressSummary">—</strong></span>
+            <span class="moreSummaryItem"><em>10年後ローン残高</em><strong id="moreBalanceSummary">—</strong></span>
+            <span class="moreSummaryItem"><em>横ばい時の住宅純資産</em><strong id="moreNetWorthSummary">—</strong></span>
+          </span>
+        </summary>`,
+    'detail_summary_ui'
+  );
 
   html = replaceOnce(
     html,
@@ -99,6 +144,19 @@ function buildHtml() {
     "if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');",
     "if(v.netOverride>v.gross*1.05)arr.push('年間手取りが額面年収を上回っています。入力値をご確認ください。');if(!(v.term>=1&&v.term<=50))arr.push('返済期間は1〜50年の範囲で入力してください。');if(v.term>35&&v.age>=20&&v.age<=75&&v.term>maxLongTermByAge(v.age))arr.push('35年を超える返済期間は、完済80歳を目安にすると現在の年齢では'+maxLongTermByAge(v.age)+'年までです。');",
     'term_validation'
+  );
+
+  html = replaceOnce(
+    html,
+    "const curLoan=v.loanAmount,stdStress=stressMargin(curLoan,v,net,STRESS_STANDARD),strictStress=stressMargin(curLoan,v,net,STRESS_STRICT);",
+    "const curLoan=v.loanAmount,stdStress=stressMargin(curLoan,v,net,STRESS_STANDARD),strictStress=stressMargin(curLoan,v,net,STRESS_STRICT);$('#moreStressSummary').textContent=money(stdStress.annualLeft)+'/年';$('#moreBalanceSummary').textContent=money(stdStress.bal10);",
+    'detail_summary_stress_values'
+  );
+  html = replaceOnce(
+    html,
+    "const nw=netWorthScenarios(v),nwLabel=",
+    "const nw=netWorthScenarios(v);$('#moreNetWorthSummary').textContent=money(nw[1].netWorth);const nwLabel=",
+    'detail_summary_networth_value'
   );
 
   html = replaceOnce(
