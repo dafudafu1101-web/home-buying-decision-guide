@@ -40,9 +40,17 @@
         const errs=window.validate(window.inputs());if(errs&&errs.length)return;
       }
       if(typeof window.show==='function')window.show(3);
-      if(v.selected){
-        setTimeout(()=>{const el=document.querySelector('[data-choice="'+v.selected+'"]');if(el)el.click()},0);
-      }
+      setTimeout(()=>{
+        if(v.selected){
+          const el=document.querySelector('[data-choice="'+v.selected+'"]');if(el)el.click();
+        }
+        const resultScreen=document.querySelector('.screen[data-step="3"]');
+        if(resultScreen){
+          resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true});
+          resultScreen.scrollTop=0;
+        }
+        window.scrollTo({top:0,left:0,behavior:'auto'});
+      },0);
     }catch(_){}
   }
   window.createHousingResultToken=token;
