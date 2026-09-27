@@ -51,7 +51,7 @@ jobs:
             method:'POST',
             headers:{origin:'https://example.test',host:'example.test','content-type':'application/json','sec-fetch-site':'same-origin','x-forwarded-for':'127.0.0.1'},
             body:{
-              email:'customer@example.com',eventId:'smoke-result-1',
+              email:'customer@example.com',eventId:'smoke-result-1',shareToken:'4~zzzzzz~2p8~0~0~0~3n0w~5k~0~q9hc~rsrs~2p8~3m~2p8~0~0~2',
               basic:{age:35,children:0,childStage:'',borrowMethod:'単独で借り入れる',grossIncome:1700,cash:2000,investments:0,price:12000,loanAmount:12840,living:35,rate:1.3,term:35,netOverride:0,rateType:'変動金利・期間固定'},
               result:{zone:'住宅と月々の負担を両立する配分',margin:'比較ラインまで ＋1,770万円',estimatedNet:1190,selectedStrategy:'balance'},
               strategies:[
@@ -143,7 +143,16 @@ jobs:
             const modes=new Set((payload.interests||[]).map(x=>x.mode));
             for(const mode of ['loan','lifeplan','property'])if(!modes.has(mode))throw new Error('interest missing '+mode);
             if(payload.result?.selectedStrategy!=='balance')throw new Error('selected strategy missing');
-            console.log('live consolidated result-email flow passed');
+            if(!payload.shareToken||!payload.shareToken.startsWith('4~'))throw new Error('result share token missing');
+            const resultUrl=PREVIEW_URL+'#s='+payload.shareToken;
+            await page.goto(resultUrl,{waitUntil:'domcontentloaded',timeout:30000});
+            await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
+            if((await page.locator('#grossIncome').inputValue())!=='1700')throw new Error('shared input not restored');
+            if((await page.locator('#price').inputValue())!=='12000')throw new Error('shared price not restored');
+            await page.waitForTimeout(100);
+            const selected=await page.locator('[data-choice="balance"]').evaluate(el=>el.classList.contains('selected'));
+            if(!selected)throw new Error('shared selected strategy not restored');
+            console.log('live consolidated result-email and RESULT URL flow passed');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
