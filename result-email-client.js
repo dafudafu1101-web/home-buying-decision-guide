@@ -27,7 +27,7 @@
       const response=await fetch('/api/result-email',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email,eventId,...snapshot})
+        body:JSON.stringify({email,eventId,shareToken:(typeof window.createHousingResultToken==='function'?window.createHousingResultToken(snapshot):''),...snapshot})
       });
       const payload=await response.json().catch(()=>({}));
       if(!response.ok||payload.ok!==true)throw new Error(payload.error||'send_failed');
