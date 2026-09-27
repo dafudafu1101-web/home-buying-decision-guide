@@ -152,7 +152,11 @@ jobs:
             await page.waitForTimeout(100);
             const selected=await page.locator('[data-choice="balance"]').evaluate(el=>el.classList.contains('on'));
             if(!selected)throw new Error('shared selected strategy not restored');
-            console.log('live consolidated result-email and RESULT URL flow passed');
+            const closedDetails=await page.locator('.screen[data-step="3"] details:not([open])').count();
+            if(closedDetails!==0)throw new Error('shared RESULT still has closed detail sections: '+closedDetails);
+            const resultDetails=await page.locator('.screen[data-step="3"] details').count();
+            if(resultDetails<1)throw new Error('shared RESULT detail sections missing');
+            console.log('live consolidated result-email and fully expanded RESULT URL flow passed');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
