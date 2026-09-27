@@ -48,6 +48,8 @@ jobs:
             await mobile.click('#calcBtn');
             await mobile.waitForFunction(()=>getComputedStyle(document.querySelector('#out')).display!=='none');
             if(await mobile.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='static') throw new Error('mobile actions should stop being sticky after results render');
+            const keyGridColumns=await mobile.locator('.keyGrid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length);
+            if(keyGridColumns!==1) throw new Error('mobile key result cards should stack in one column');
             for(const id of ['heroRFinal','heroBFinal','keyRMonth','keyBMonth','keyPrincipal','keyHomeEquity','scenarioDown','scenarioFlat','scenarioUp','equityFinal']){
               const value=(await mobile.locator('#'+id).textContent()||'').trim();
               if(!value) throw new Error(id+' did not render');
