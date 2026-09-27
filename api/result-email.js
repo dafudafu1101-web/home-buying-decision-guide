@@ -37,6 +37,14 @@ module.exports=async function handler(req,res){
   const email=text(body.email,240),eventId=text(body.eventId,128);
   if(!validEmail(email)||!eventId)return json(res,400,{ok:false,error:'invalid_input'});
 
+  const shareToken=text(body.shareToken,900);
+  if(!/^[34]~[a-z0-9]+(?:~[a-z0-9]+){14,15}$/.test(shareToken))return json(res,400,{ok:false,error:'invalid_result_link'});
+  let resultUrl='';
+  try{
+    const origin=new URL(req.headers.origin);
+    resultUrl=origin.origin+'/stress-test#s='+shareToken;
+  }catch(_){return json(res,400,{ok:false,error:'invalid_result_link'});}
+
   const b=body.basic||{},r=body.result||{};
   const basic={
     age:num(b.age,100),children:num(b.children,20),childStage:text(b.childStage,80),borrowMethod:text(b.borrowMethod,120),
@@ -74,7 +82,9 @@ module.exports=async function handler(req,res){
   ]);
   const customerBody=[
     'ADCAST｜3分 住宅予算の決め方チェック','',
-    '今回の診断結果をお送りします。','',
+    '今回の診断結果は、下記URLからそのまま確認できます。','',
+    '診断結果を見る：'+resultUrl,
+    '※この結果URLは90日間有効です。','',
     '【入力内容】',...basicLines,'',
     '【RESULT】',
     '診断ゾーン：'+(result.zone||'—'),
