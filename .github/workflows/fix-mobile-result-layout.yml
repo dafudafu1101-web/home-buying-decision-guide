@@ -1,0 +1,49 @@
+name: Fix mobile result layout
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.head_commit.message != 'Fix mobile key result layout'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch mobile key result layout and its regression check
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          s = index.read_text()
+          old = '<div class="keyGrid" style="grid-template-columns:repeat(3,1fr)">'
+          new = '<div class="keyGrid">'
+          if old not in s:
+              raise SystemExit('target keyGrid markup not found')
+          index.write_text(s.replace(old, new, 1))
+
+          wf = Path('.github/workflows/verify-code.yml')
+          w = wf.read_text()
+          anchor = "            if(await mobile.locator('.actions').evaluate(el=>getComputedStyle(el).position)!=='static') throw new Error('mobile actions should stop being sticky after results render');\n"
+          check = "            const keyGridColumns=await mobile.locator('.keyGrid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.trim().split(/\\s+/).length);\n            if(keyGridColumns!==1) throw new Error('mobile key result cards should stack in one column');\n"
+          if check not in w:
+              if anchor not in w:
+                  raise SystemExit('verify-code anchor not found')
+              w = w.replace(anchor, anchor + check, 1)
+              wf.write_text(w)
+          PY
+      - name: Remove one-time patch workflow
+        run: rm .github/workflows/fix-mobile-result-layout.yml
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/verify-code.yml .github/workflows/fix-mobile-result-layout.yml
+          git commit -m "Fix mobile key result layout"
+          git push origin HEAD:main
