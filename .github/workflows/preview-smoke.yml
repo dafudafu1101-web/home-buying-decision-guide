@@ -154,6 +154,8 @@ jobs:
             await page.waitForTimeout(700);
             const selected=await page.locator('[data-choice="balance"]').evaluate(el=>el.classList.contains('on'));
             if(!selected)throw new Error('shared selected strategy not restored');
+            const restoreState=await page.evaluate(()=>({hash:location.hash,ready:document.readyState,details:[...document.querySelectorAll('.screen[data-step="3"] details')].map(d=>({cls:d.className,open:d.open}))}));
+            console.error('RESULT restore state',JSON.stringify(restoreState));
             const closedLocator=page.locator('.screen[data-step="3"] details:not([open])');
             const closedDetails=await closedLocator.count();
             if(closedDetails!==0){
