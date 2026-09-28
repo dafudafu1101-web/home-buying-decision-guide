@@ -76,7 +76,7 @@ jobs:
           for i in $(seq 1 10); do
             code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
             echo "attempt=$i status=$code"
-            if [ "$code" = "200" ]; then ok=1; break; fi
+            if [ "$code" = "200" ] && grep -q 'result-link-client.js?v=20260928-1950' page.html; then ok=1; break; fi
             sleep 6
           done
           [ "$ok" = "1" ] || { cat page.html || true; exit 1; }
