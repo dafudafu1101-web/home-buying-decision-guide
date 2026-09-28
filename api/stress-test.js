@@ -214,5 +214,15 @@ module.exports = function handler(req, res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   if (missingMarkers.length) res.setHeader('X-Stress-Test-Warnings', missingMarkers.join(',').slice(0, 900));
-  res.end(renderedHtml);
+  let outputHtml = renderedHtml;
+  try {
+    const requestUrl = new URL(req.url || '/stress-test', 'https://local.invalid');
+    const sharedToken = requestUrl.searchParams.get('s') || '';
+    if (/^[34]~[a-z0-9]+(?:~[a-z0-9]+){14,15}$/.test(sharedToken)) {
+      outputHtml = outputHtml
+        .replace('<details class="whyAmount">', '<details class="whyAmount" open>')
+        .replace('<details class="moreWrap">', '<details class="moreWrap" open>');
+    }
+  } catch (_) {}
+  res.end(outputHtml);
 };
