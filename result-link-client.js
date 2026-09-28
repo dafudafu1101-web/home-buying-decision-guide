@@ -31,8 +31,9 @@
     try{window.syncChildStage&&window.syncChildStage();window.syncBorrowMethod&&window.syncBorrowMethod();window.normalizeTermForAge&&window.normalizeTermForAge();window.liveCalc&&window.liveCalc()}catch(_){}
   }
   function restore(){
-    if(!location.hash.startsWith('#s='))return;
-    const v=unpack(location.hash.slice(3));if(!v)return;
+    const sharedToken=new URLSearchParams(location.search).get('s')||(location.hash.startsWith('#s=')?location.hash.slice(3):'');
+    if(!sharedToken)return;
+    const v=unpack(sharedToken);if(!v)return;
     if(v.expired){setTimeout(()=>alert('この診断結果URLは90日間の有効期限を過ぎています。新しく診断してください。'),50);return}
     apply(v);
     try{
@@ -68,7 +69,7 @@
       window.scrollTo({top:0,left:0,behavior:'auto'});
     },0);
   }
-  window.RESULT_LINK_VERSION='20260928-1945';
+  window.RESULT_LINK_VERSION='20260928-1950';
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
