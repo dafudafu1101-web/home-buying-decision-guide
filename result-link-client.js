@@ -44,11 +44,15 @@
         if(v.selected){
           const el=document.querySelector('[data-choice="'+v.selected+'"]');if(el)el.click();
         }
-        const resultScreen=document.querySelector('.screen[data-step="3"]');
-        if(resultScreen){
+        const expandResultDetails=()=>{
+          const resultScreen=document.querySelector('.screen[data-step="3"]');
+          if(!resultScreen)return;
           resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true});
           resultScreen.scrollTop=0;
-        }
+        };
+        expandResultDetails();
+        setTimeout(expandResultDetails,120);
+        setTimeout(expandResultDetails,450);
         window.scrollTo({top:0,left:0,behavior:'auto'});
       },0);
     }catch(_){}
