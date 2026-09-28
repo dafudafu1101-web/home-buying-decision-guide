@@ -40,34 +40,33 @@
         const errs=window.validate(window.inputs());if(errs&&errs.length)return;
       }
       if(typeof window.show==='function')window.show(3);
-      setTimeout(()=>{
-        const resultScreen=document.querySelector('.screen[data-step="3"]');
-        const expandResultDetails=()=>{
-          if(!resultScreen)return;
-          resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true;detail.setAttribute('open','')});
-          resultScreen.scrollTop=0;
-        };
-        let expandObserver=null;
-        if(resultScreen&&typeof MutationObserver!=='undefined'){
-          expandObserver=new MutationObserver(()=>expandResultDetails());
-          expandObserver.observe(resultScreen,{subtree:true,attributes:true,attributeFilter:['open']});
-          setTimeout(()=>expandObserver&&expandObserver.disconnect(),1500);
-        }
-        expandResultDetails();
-        try{
-          if(v.selected){
-            const el=document.querySelector('[data-choice="'+v.selected+'"]');if(el)el.click();
-          }
-        }finally{
-          expandResultDetails();
-          setTimeout(expandResultDetails,120);
-          setTimeout(expandResultDetails,450);
-        }
-        window.scrollTo({top:0,left:0,behavior:'auto'});
-      },0);
     }catch(_){}
+    setTimeout(()=>{
+      const resultScreen=document.querySelector('.screen[data-step="3"]');
+      const expandResultDetails=()=>{
+        if(!resultScreen)return;
+        resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true;detail.setAttribute('open','')});
+        resultScreen.scrollTop=0;
+      };
+      let expandObserver=null;
+      if(resultScreen&&typeof MutationObserver!=='undefined'){
+        expandObserver=new MutationObserver(()=>expandResultDetails());
+        expandObserver.observe(resultScreen,{subtree:true,attributes:true,attributeFilter:['open']});
+        setTimeout(()=>expandObserver&&expandObserver.disconnect(),1500);
+      }
+      expandResultDetails();
+      try{
+        if(v.selected){
+          const el=document.querySelector('[data-choice="'+v.selected+'"]');if(el)el.click();
+        }
+      }catch(_){}
+      expandResultDetails();
+      setTimeout(expandResultDetails,120);
+      setTimeout(expandResultDetails,450);
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+    },0);
   }
-  window.RESULT_LINK_VERSION='20260928-1935';
+  window.RESULT_LINK_VERSION='20260928-1940';
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
