@@ -148,7 +148,7 @@ jobs:
             await page.goto(resultUrl,{waitUntil:'domcontentloaded',timeout:30000});
             await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
             const resultLinkVersion=await page.evaluate(()=>window.RESULT_LINK_VERSION||'');
-            if(resultLinkVersion!=='20260928-1940')throw new Error('stale result-link client '+resultLinkVersion);
+            if(resultLinkVersion!=='20260928-1945')throw new Error('stale result-link client '+resultLinkVersion);
             if((await page.locator('#grossIncome').inputValue())!=='1700')throw new Error('shared input not restored');
             if((await page.locator('#price').inputValue())!=='12000')throw new Error('shared price not restored');
             await page.waitForTimeout(700);
