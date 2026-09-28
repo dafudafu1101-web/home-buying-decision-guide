@@ -56,3 +56,4 @@
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
+// RESULT email-link restore verified target: full RESULT with all details expanded.
