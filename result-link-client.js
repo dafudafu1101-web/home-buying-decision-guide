@@ -52,7 +52,7 @@
       if(resultScreen&&typeof MutationObserver!=='undefined'){
         expandObserver=new MutationObserver(()=>expandResultDetails());
         expandObserver.observe(resultScreen,{subtree:true,attributes:true,attributeFilter:['open']});
-        setTimeout(()=>expandObserver&&expandObserver.disconnect(),1500);
+        setTimeout(()=>expandObserver&&expandObserver.disconnect(),5000);
       }
       expandResultDetails();
       try{
@@ -63,10 +63,12 @@
       expandResultDetails();
       setTimeout(expandResultDetails,120);
       setTimeout(expandResultDetails,450);
+      setTimeout(expandResultDetails,1200);
+      setTimeout(expandResultDetails,2500);
       window.scrollTo({top:0,left:0,behavior:'auto'});
     },0);
   }
-  window.RESULT_LINK_VERSION='20260928-1940';
+  window.RESULT_LINK_VERSION='20260928-1945';
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
