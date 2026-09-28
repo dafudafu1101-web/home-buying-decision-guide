@@ -42,7 +42,7 @@ module.exports=async function handler(req,res){
   let resultUrl='';
   try{
     const origin=new URL(req.headers.origin);
-    resultUrl=origin.origin+'/stress-test#s='+shareToken;
+    resultUrl=origin.origin+'/stress-test?s='+encodeURIComponent(shareToken);
   }catch(_){return json(res,400,{ok:false,error:'invalid_result_link'});}
 
   const b=body.basic||{},r=body.result||{};
