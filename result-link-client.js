@@ -44,7 +44,7 @@
         const expandResultDetails=()=>{
           const resultScreen=document.querySelector('.screen[data-step="3"]');
           if(!resultScreen)return;
-          resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true});
+          resultScreen.querySelectorAll('details').forEach(detail=>{detail.open=true;detail.setAttribute('open','')});
           resultScreen.scrollTop=0;
         };
         expandResultDetails();
@@ -61,6 +61,7 @@
       },0);
     }catch(_){}
   }
+  window.RESULT_LINK_VERSION='20260928-1930';
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
