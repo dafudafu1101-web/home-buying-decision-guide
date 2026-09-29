@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
+          timeout 90s node <<'NODE'
           const handler=require('./api/stress-test.js');
           let body='',status=0;const headers={};
           const res={set statusCode(v){status=v},get statusCode(){return status},setHeader(k,v){headers[k]=v},end(v){body=String(v||'')}};
