@@ -37,9 +37,6 @@
     if(v.expired){setTimeout(()=>alert('この診断結果URLは90日間の有効期限を過ぎています。新しく診断してください。'),50);return}
     apply(v);
     try{
-      if(typeof window.inputs==='function'&&typeof window.validate==='function'){
-        const errs=window.validate(window.inputs());if(errs&&errs.length)return;
-      }
       if(typeof window.show==='function')window.show(3);
       const resultScreen=document.querySelector('.screen[data-step="3"]');
       if(resultScreen&&!resultScreen.classList.contains('active')){
@@ -79,8 +76,8 @@
       window.scrollTo({top:0,left:0,behavior:'auto'});
     },0);
   }
-  window.RESULT_LINK_VERSION='20260930-0215';
+  window.RESULT_LINK_VERSION='20260930-0225';
   window.createHousingResultToken=token;
-  document.addEventListener('DOMContentLoaded',restore);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',restore,{once:true});else restore();
 })();
 // RESULT email-link restore verified target: full RESULT with all details expanded.
