@@ -7,10 +7,13 @@
       "maxDuration": 10
     },
     "api/stress-test.js": {
-      "includeFiles": "stress-test.html",
+      "includeFiles": "{stress-test.html,lifeplan-bridge.css,lifeplan-bridge.html}",
       "maxDuration": 10
     },
     "api/consultation.js": {
+      "maxDuration": 10
+    },
+    "api/result-email.js": {
       "maxDuration": 10
     }
   },

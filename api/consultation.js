@@ -90,7 +90,10 @@ module.exports = async function handler(req, res) {
   const body = parseBody(req);
   if (!body) return json(res, 400, { ok: false, error: 'invalid_json' });
 
-  const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : '';
+  const mode = body.mode === 'lifeplan' ? 'lifeplan' : body.mode === 'property' ? 'property' : body.mode === 'loan' ? 'loan' : '';
+  // The currently deployed Apps Script accepts lifeplan/property only. Keep loan delivery compatible
+  // by routing it through the property channel; the summary itself clearly identifies it as a loan consultation.
+  const deliveryMode = mode === 'loan' ? 'property' : mode;
   const name = String(body.name || '').trim().slice(0, 120);
   const email = String(body.email || '').trim().slice(0, 240);
   const phone = String(body.phone || '').trim().slice(0, 80);
@@ -108,7 +111,7 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ mode, name, email, phone, summary, requestId })
+      body: JSON.stringify({ mode: deliveryMode, name, email, phone, summary, requestId })
     });
 
     const text = await upstream.text();
