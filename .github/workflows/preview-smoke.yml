@@ -76,7 +76,7 @@ jobs:
           for i in $(seq 1 10); do
             code=$(curl -sS -L -o page.html -w '%{http_code}' "$URL" || true)
             echo "attempt=$i status=$code"
-            if [ "$code" = "200" ] && grep -q 'result-link-client.js?v=20260930-0215' page.html; then ok=1; break; fi
+            if [ "$code" = "200" ] && grep -q 'result-link-client.js?v=20260930-0225' page.html; then ok=1; break; fi
             sleep 6
           done
           [ "$ok" = "1" ] || { cat page.html || true; exit 1; }
@@ -163,7 +163,7 @@ jobs:
             console.log('RESULT_RESTORE_DIAG '+JSON.stringify({...restoreDiag,console:diag.console,pageErrors:diag.pageErrors}));
             await page.locator('.screen[data-step="3"].active').waitFor({state:'visible',timeout:5000});
             const resultLinkVersion=await page.evaluate(()=>window.RESULT_LINK_VERSION||'');
-            if(resultLinkVersion!=='20260930-0215')throw new Error('stale result-link client '+resultLinkVersion);
+            if(resultLinkVersion!=='20260930-0225')throw new Error('stale result-link client '+resultLinkVersion);
             if((await page.locator('#grossIncome').inputValue())!=='1700')throw new Error('shared input not restored');
             if((await page.locator('#price').inputValue())!=='12000')throw new Error('shared price not restored');
             await page.waitForTimeout(700);
