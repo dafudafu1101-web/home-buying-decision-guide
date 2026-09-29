@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
+          timeout 90s node <<'NODE'
           const {chromium}=require('playwright');
           const PREVIEW_URL='https://home-buying-decision-guide-git-feat-li-1c96bc-dafudafu1101-7512.vercel.app/stress-test';
           (async()=>{
