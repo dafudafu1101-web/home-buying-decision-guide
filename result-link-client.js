@@ -41,6 +41,12 @@
         const errs=window.validate(window.inputs());if(errs&&errs.length)return;
       }
       if(typeof window.show==='function')window.show(3);
+      const resultScreen=document.querySelector('.screen[data-step="3"]');
+      if(!resultScreen||!resultScreen.classList.contains('active')){
+        const start=document.querySelector('#start');if(start)start.click();
+        apply(v);
+        const next=document.querySelector('#next');if(next)next.click();
+      }
     }catch(_){}
     setTimeout(()=>{
       const resultScreen=document.querySelector('.screen[data-step="3"]');
