@@ -79,7 +79,7 @@
       window.scrollTo({top:0,left:0,behavior:'auto'});
     },0);
   }
-  window.RESULT_LINK_VERSION='20260930-0210';
+  window.RESULT_LINK_VERSION='20260930-0215';
   window.createHousingResultToken=token;
   document.addEventListener('DOMContentLoaded',restore);
 })();
