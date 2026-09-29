@@ -145,8 +145,22 @@ jobs:
             if(payload.result?.selectedStrategy!=='balance')throw new Error('selected strategy missing');
             if(!payload.shareToken||!payload.shareToken.startsWith('4~'))throw new Error('result share token missing');
             const resultUrl=PREVIEW_URL+'?s='+encodeURIComponent(payload.shareToken);
+            const diag={console:[],pageErrors:[]};
+            page.on('console',m=>{if(['error','warning'].includes(m.type()))diag.console.push({type:m.type(),text:m.text()})});
+            page.on('pageerror',e=>diag.pageErrors.push(String(e&&e.stack||e)));
             await page.goto(resultUrl,{waitUntil:'domcontentloaded',timeout:30000});
-            await page.locator('.screen[data-step="3"].active').waitFor({state:'visible'});
+            await page.waitForTimeout(1500);
+            const restoreDiag=await page.evaluate(()=>({
+              href:location.href,version:window.RESULT_LINK_VERSION||null,
+              hasShare:new URL(location.href).searchParams.has('s'),
+              shareLength:(new URL(location.href).searchParams.get('s')||'').length,
+              activeScreens:[...document.querySelectorAll('.screen.active')].map(x=>x.getAttribute('data-step')),
+              step3Class:document.querySelector('.screen[data-step="3"]')?.className||null,
+              appFns:{show:typeof window.show,render:typeof window.render,inputs:typeof window.inputs,validate:typeof window.validate},
+              readyState:document.readyState
+            }));
+            console.log('RESULT_RESTORE_DIAG '+JSON.stringify({...restoreDiag,console:diag.console,pageErrors:diag.pageErrors}));
+            await page.locator('.screen[data-step="3"].active').waitFor({state:'visible',timeout:5000});
             const resultLinkVersion=await page.evaluate(()=>window.RESULT_LINK_VERSION||'');
             if(resultLinkVersion!=='20260930-0215')throw new Error('stale result-link client '+resultLinkVersion);
             if((await page.locator('#grossIncome').inputValue())!=='1700')throw new Error('shared input not restored');
