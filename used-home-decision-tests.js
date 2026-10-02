@@ -1,0 +1,109 @@
+const assert=require('assert');
+const D=require('./used-home-decision.js');
+
+function base(){
+  return {
+    desiredValue:'希望エリアと土地価値を守る',
+    locationFit:'yes',
+    layoutFit:'yes',
+    buildingAcceptance:'yes',
+    householdAgreement:'agree',
+    budgetRoom:'yes',
+    acquisitionTotalKnown:true,
+    residualFundsAdequate:'yes',
+    exitViewComplete:true,
+    confirmedCosts:[],
+    nearTermCosts:[],
+    uncertainRisks:[],
+    hardToChangeIssues:[],
+    specialistChecks:[],
+    preOfferChecks:[],
+    postOfferPreContractChecks:[],
+    customerJourneyState:'proceed',
+    propertyGate:'detail'
+  };
+}
+
+// 1. 建物状態が未確認という理由だけで自動見送りにならない。
+{
+  const x=base();
+  x.buildingAcceptance='unknown';
+  x.specialistChecks=[{key:'inspection',decisionCritical:true,resolved:false}];
+  const r=D.evaluateInspection(x);
+  assert.notStrictEqual(r.status,D.INSPECTION.PASS);
+}
+
+// 2. 直しにくい重大不一致がある場合、無条件で買付可にならない。
+{
+  const x=base();
+  x.hardToChangeIssues=[{key:'road',severity:'major',accepted:false}];
+  const r=D.evaluateOffer(x);
+  assert.notStrictEqual(r.status,D.OFFER.PROCEED);
+}
+
+// 3. 専門確認が必要な項目は未解決のまま保持される。
+{
+  const x=base();
+  x.specialistChecks=[{key:'leak',decisionCritical:true,resolved:false}];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.specialistChecks[0].resolved,false);
+  assert.strictEqual(r.offer.status,D.OFFER.CONDITIONAL);
+  assert.strictEqual(r.contract.status,D.CONTRACT.NOT_READY);
+}
+
+// 4. 確定費用・近い将来の費用・不確定リスクを混同しない。
+{
+  const x=base();
+  x.confirmedCosts=[{name:'給湯器',amount:30}];
+  x.nearTermCosts=[{name:'外壁',amount:150}];
+  x.uncertainRisks=[{name:'床下',decisionCritical:false,resolved:false}];
+  const r=D.evaluate(x);
+  assert.deepStrictEqual(r.costs.confirmed,x.confirmedCosts);
+  assert.deepStrictEqual(r.costs.nearTerm,x.nearTermCosts);
+  assert.deepStrictEqual(r.costs.uncertain,x.uncertainRisks);
+}
+
+// 5. 買付可と契約可を同一状態として扱わない。
+{
+  const x=base();
+  x.postOfferPreContractChecks=[{key:'boundary',decisionCritical:true,resolved:false}];
+  const offer=D.evaluateOffer(x);
+  const contract=D.evaluateContract(x);
+  assert.strictEqual(offer.status,D.OFFER.CONDITIONAL);
+  assert.strictEqual(contract.status,D.CONTRACT.NOT_READY);
+}
+
+// 6. 重大な未確認事項が残る場合、契約可を出さない。
+{
+  const x=base();
+  x.uncertainRisks=[{key:'rebuild',decisionCritical:true,resolved:false}];
+  assert.strictEqual(D.evaluateContract(x).status,D.CONTRACT.NOT_READY);
+}
+
+// 7. 物件単位Gateと顧客全体状態を別管理する。
+{
+  const x=base();
+  x.customerJourneyState='proceed';
+  x.propertyGate='investigate';
+  const r=D.evaluate(x);
+  assert.strictEqual(r.customerJourneyState,'proceed');
+  assert.strictEqual(r.propertyGate,'investigate');
+}
+
+// 8. 価格の安さだけで買付可を出さない。
+{
+  const x=base();
+  x.lowPriceOnlyReason=true;
+  x.desiredValue='';
+  assert.strictEqual(D.evaluateOffer(x).status,D.OFFER.INVESTIGATE);
+}
+
+// 正常系: 重大な未確認事項がなく、価値・費用・出口・合意が揃えば進められる。
+{
+  const x=base();
+  assert.strictEqual(D.evaluateInspection(x).status,D.INSPECTION.PROCEED_DETAIL);
+  assert.strictEqual(D.evaluateOffer(x).status,D.OFFER.PROCEED);
+  assert.strictEqual(D.evaluateContract(x).status,D.CONTRACT.READY);
+}
+
+console.log('PASS: used-home inspection/detail/offer/contract decision gates');
