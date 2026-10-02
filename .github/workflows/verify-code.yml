@@ -25,6 +25,8 @@ jobs:
           node --check /tmp/index-script.js
       - name: Run calculation regression tests
         run: node calculation-tests.js
+      - name: Run used-home decision gate tests
+        run: node used-home-decision-tests.js
       - name: Install browser smoke-test dependency
         run: npm install --no-save playwright@1.55.0
       - name: Install Chromium
