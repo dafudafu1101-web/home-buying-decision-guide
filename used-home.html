@@ -79,6 +79,20 @@ details{border:1px solid #dfe5ee;border-radius:12px;padding:12px 14px;background
           <label for="nearTermAmount">金額（万円）</label><input id="nearTermAmount" type="number" min="0" step="1" value="0">
         </div>
 
+        <div class="group wide">
+          <h3>中古価格の確認｜売出価格だけで判断しない</h3>
+          <p class="hint">土地価値＋建物価値と、初期改修・近い将来修繕・出口コストを分けて確認します。ここでは割安／割高を自動判定せず、確認済み根拠との差額だけを表示します。</p>
+          <div class="grid">
+            <div><label for="askingPrice">売出価格（万円）</label><input id="askingPrice" type="number" min="0" step="10" value="0"></div>
+            <div><label for="landValue">土地価値の確認値（万円）</label><input id="landValue" type="number" min="0" step="10" value="0"><div class="row-check"><input type="checkbox" id="landEvidenceConfirmed"><label for="landEvidenceConfirmed">根拠確認済み</label></div></div>
+            <div><label for="buildingValue">建物価値の確認値（万円）</label><input id="buildingValue" type="number" min="0" step="10" value="0"><div class="row-check"><input type="checkbox" id="buildingEvidenceConfirmed"><label for="buildingEvidenceConfirmed">根拠確認済み</label></div></div>
+            <div><label for="initialRepair">初期改修（万円）</label><input id="initialRepair" type="number" min="0" step="10" value="0"></div>
+            <div><label for="nearTermRepair">近い将来の修繕（万円）</label><input id="nearTermRepair" type="number" min="0" step="10" value="0"></div>
+            <div><label for="exitCost">出口時に想定するコスト（万円）</label><input id="exitCost" type="number" min="0" step="10" value="0"></div>
+            <div class="row-check"><input type="checkbox" id="repairEvidenceConfirmed"><label for="repairEvidenceConfirmed">改修・修繕費の根拠を確認した</label></div>
+          </div>
+        </div>
+
         <div class="group">
           <div class="row-check"><input type="checkbox" id="uncertainEnabled"><label for="uncertainEnabled">不確定リスクがある</label></div>
           <label for="uncertainName">内容</label><input id="uncertainName" data-owner="uncertain" type="text" placeholder="例：床下・雨漏り履歴">
@@ -89,6 +103,19 @@ details{border:1px solid #dfe5ee;border-radius:12px;padding:12px 14px;background
         <div class="group">
           <div class="row-check"><input type="checkbox" id="specialistEnabled"><label for="specialistEnabled">専門確認が必要</label></div>
           <label for="specialistName">確認内容</label><input id="specialistName" data-owner="specialist" type="text" placeholder="例：インスペクション、耐震、越境">
+          <label for="specialistCategory">確認先</label><select id="specialistCategory" data-owner="specialist">
+            <option value="unspecified">未指定</option>
+            <option value="property_survey">物件調査｜権利・法令・接道・境界・インフラ等</option>
+            <option value="building_inspection">建物専門確認｜劣化・耐震・雨漏り・床傾斜等</option>
+            <option value="construction_estimate">工事見積｜修繕・改修・設備交換</option>
+            <option value="funding_review">資金確認｜取得総額・残存資金・修繕余力</option>
+            <option value="onsite_confirmation">追加現地確認｜騒音・日照・道路・生活動線等</option>
+          </select>
+          <label for="specialistTiming">確認タイミング</label><select id="specialistTiming" data-owner="specialist">
+            <option value="before_offer">買付前</option>
+            <option value="before_contract" selected>買付後・契約前</option>
+            <option value="after_contract">契約後に確認可能な項目</option>
+          </select>
           <div class="row-check"><input data-owner="specialist" type="checkbox" id="specialistCritical"><label for="specialistCritical">判断に重大な影響</label></div>
           <div class="row-check"><input data-owner="specialist" type="checkbox" id="specialistResolved"><label for="specialistResolved">確認済み</label></div>
           <div class="hint">AIは安全・問題なしを断定せず、未確認のまま保持します。</div>
@@ -142,6 +169,7 @@ details{border:1px solid #dfe5ee;border-radius:12px;padding:12px 14px;background
         <div class="result-row"><b>近い将来の想定費用</b><span id="nearTermSummary"></span></div>
         <div class="result-row"><b>まだ分からないこと</b><span id="unknownSummary"></span></div>
         <div class="result-row"><b>専門確認が必要なこと</b><span id="specialistSummary"></span></div>
+        <div class="result-row"><b>中古価格の確認</b><span id="priceSummary"></span></div>
         <div class="result-row"><b>保有期間・売却時築年</b><span id="exitSummary"></span></div>
         <div class="result-row next"><b>次に決めること</b><span id="nextDecision"></span></div>
         <div class="result-row next"><b>次にやること</b><span id="nextAction"></span></div>
@@ -161,12 +189,16 @@ details{border:1px solid #dfe5ee;border-radius:12px;padding:12px 14px;background
         <div><b>確認済み費用計</b><span id="internalConfirmedTotal"></span></div>
         <div><b>近い将来費用計</b><span id="internalNearTermTotal"></span></div>
         <div><b>未確認・専門確認件数</b><span id="internalUnknownCount"></span></div>
+        <div><b>価格レビュー</b><span id="internalPriceReady"></span></div>
+        <div><b>共通データversion</b><span id="internalDecisionVersion"></span></div>
         <div><b>現在Gate</b><span id="internalGate"></span></div>
         <div><b>顧客全体状態</b><span id="internalJourney"></span></div>
       </div>
     </details>
   </section>
 </main>
+<script src="/decision-core.js"></script>
+<script src="/used-home-price-review.js"></script>
 <script src="/used-home-decision.js"></script>
 <script src="/used-home-ui.js"></script>
 </body>
