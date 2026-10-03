@@ -25,6 +25,10 @@
     {
       "source": "/stress-test",
       "destination": "/api/stress-test"
+    },
+    {
+      "source": "/used-home",
+      "destination": "/used-home.html"
     }
   ],
   "headers": [
