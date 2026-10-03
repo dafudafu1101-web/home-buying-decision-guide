@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>中古戸建 判断整理｜住宅購入意思決定ツール</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;color:#172033;background:#f5f7fb}
+*{box-sizing:border-box} body{margin:0;background:#f5f7fb} main{max-width:980px;margin:0 auto;padding:24px 16px 72px}
+.hero,.card{background:#fff;border:1px solid #e3e8f1;border-radius:18px;box-shadow:0 8px 24px rgba(20,34,60,.05)}
+.hero{padding:24px;margin-bottom:18px}.hero h1{font-size:28px;margin:0 0 8px}.hero p{margin:0;color:#5a6475;line-height:1.7}
+.flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.flow span{padding:8px 12px;border-radius:999px;background:#eef2f8;font-weight:700;font-size:13px}
+.card{padding:20px;margin:16px 0}.section-title{font-size:20px;margin:0 0 4px}.section-sub{margin:0 0 18px;color:#687386;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.wide{grid-column:1/-1}
+label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}.hint{font-size:12px;color:#7a8494;margin-top:5px;line-height:1.5}
+input[type="text"],input[type="number"],select,textarea{width:100%;padding:11px 12px;border:1px solid #cfd7e6;border-radius:10px;background:#fff;font:inherit}
+textarea{min-height:76px;resize:vertical}.row-check{display:flex;align-items:center;gap:8px;margin:8px 0}.row-check label{margin:0;font-weight:600}
+.group{border:1px solid #e2e7f0;border-radius:14px;padding:14px;background:#fafbfe}.group h3{font-size:15px;margin:0 0 12px}
+.actions{display:flex;gap:10px;position:sticky;bottom:0;padding:12px 0;background:linear-gradient(180deg,rgba(245,247,251,0),#f5f7fb 26%)}
+button{border:0;border-radius:12px;padding:13px 18px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:#172033;color:#fff;flex:1}.secondary{background:#e9edf5;color:#283247}
+.result{margin-top:28px}.status-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.status{padding:16px;border-radius:14px;background:#f3f6fb}.status b{display:block;font-size:12px;color:#667085;margin-bottom:6px}.status strong{font-size:20px}
+.result-list{display:grid;gap:10px;margin-top:14px}.result-row{padding:14px;border:1px solid #e4e9f2;border-radius:12px}.result-row b{display:block;font-size:12px;color:#6a7485;margin-bottom:5px}.next{background:#172033;color:white}.next b{color:#cbd3df}
+details{border:1px solid #dfe5ee;border-radius:12px;padding:12px 14px;background:#fff;margin-top:12px}summary{font-weight:800;cursor:pointer}
+.internal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.internal-grid div{background:#f7f9fc;border-radius:10px;padding:12px}.internal-grid b{display:block;font-size:12px;color:#70798a;margin-bottom:5px}
+.note{font-size:12px;color:#687386;line-height:1.7;margin-top:14px}
+@media(max-width:720px){main{padding:14px 12px 60px}.hero h1{font-size:23px}.grid,.status-grid,.internal-grid{grid-template-columns:1fr}.wide{grid-column:auto}.card,.hero{padding:16px}.actions{padding-bottom:calc(10px + env(safe-area-inset-bottom))}}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>中古戸建の判断整理</h1>
+    <p>「中古だから安い／不安」で決めず、守れる価値・直しにくい要素・費用・未確認事項・出口を分けて、次に何を確認すべきか整理します。</p>
+    <div class="flow"><span>SELF｜何を守るか</span><span>MARKET｜物件と費用を確認</span><span>DECIDE｜次の判断へ</span></div>
+  </section>
+
+  <form id="usedHomeForm">
+    <section class="card">
+      <h2 class="section-title">SELF｜この中古で何を守りたいか</h2>
+      <p class="section-sub">条件そのものではなく、中古を選ぶことで取りにいく価値を整理します。</p>
+      <div class="grid">
+        <div class="wide">
+          <label for="desiredValue">この物件で守りたい価値</label>
+          <textarea id="desiredValue" placeholder="例：希望エリアを変えずに、土地の広さと建物グレードを確保したい"></textarea>
+        </div>
+        <div><label for="locationFit">立地・周辺環境</label><select id="locationFit"><option value="unknown">未確認</option><option value="yes">概ね合う</option><option value="no">重大な不一致あり</option></select></div>
+        <div><label for="layoutFit">広さ・間取り・動線</label><select id="layoutFit"><option value="unknown">未確認</option><option value="yes">概ね合う</option><option value="no">重大な不一致あり</option></select></div>
+        <div><label for="buildingAcceptance">中古特有の使用感・状態</label><select id="buildingAcceptance"><option value="unknown">まだ判断できない</option><option value="yes">受け入れられる</option><option value="no">受け入れにくい</option></select></div>
+        <div><label for="householdAgreement">意思決定者間の状態</label><select id="householdAgreement"><option value="unknown">未確認</option><option value="agree">一致</option><option value="allow">片方重視・片方許容</option><option value="conflict">重大な意見不一致</option></select></div>
+        <div><label for="customerJourneyState">顧客全体の現在地</label><select id="customerJourneyState"><option value="proceed">進める</option><option value="adjust" selected>調整する</option><option value="wait">待つ</option></select><div class="hint">この物件単位のGateとは別管理します。</div></div>
+        <div class="row-check"><input type="checkbox" id="lowPriceOnlyReason"><label for="lowPriceOnlyReason">「安いことだけ」が買う理由になっている</label></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">MARKET｜直しにくい要素・費用・専門確認</h2>
+      <p class="section-sub">状態の良し悪しを一括判定せず、直せること・費用・専門確認・直しにくいことへ分けます。</p>
+      <div class="grid">
+        <div><label for="budgetRoom">修繕・改修を含める予算余地</label><select id="budgetRoom"><option value="unknown">未確認</option><option value="yes">余地あり</option><option value="no">不足</option></select></div>
+        <div class="row-check"><input type="checkbox" id="hardEnabled"><label for="hardEnabled">直しにくい問題がある</label></div>
+
+        <div class="group wide">
+          <h3>直しにくい要素</h3>
+          <div class="grid">
+            <div><label for="hardName">内容</label><input id="hardName" data-owner="hard" type="text" placeholder="例：接道、敷地形状、日照、間取り制約"></div>
+            <div><label for="hardSeverity">重要度</label><select id="hardSeverity" data-owner="hard"><option value="minor">軽微</option><option value="major">重大</option><option value="blocking">致命的</option></select></div>
+            <div><label for="hardAccepted">本人が受け入れているか</label><select id="hardAccepted" data-owner="hard"><option value="no">まだ受け入れていない</option><option value="yes">理解して受け入れている</option></select></div>
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>確認済み費用</h3>
+          <label for="confirmedName">内容</label><input id="confirmedName" type="text" placeholder="例：給湯器交換">
+          <label for="confirmedAmount">金額（万円）</label><input id="confirmedAmount" type="number" min="0" step="1" value="0">
+        </div>
+        <div class="group">
+          <h3>近い将来の想定費用</h3>
+          <label for="nearTermName">内容</label><input id="nearTermName" type="text" placeholder="例：外壁・屋根">
+          <label for="nearTermAmount">金額（万円）</label><input id="nearTermAmount" type="number" min="0" step="1" value="0">
+        </div>
+
+        <div class="group">
+          <div class="row-check"><input type="checkbox" id="uncertainEnabled"><label for="uncertainEnabled">不確定リスクがある</label></div>
+          <label for="uncertainName">内容</label><input id="uncertainName" data-owner="uncertain" type="text" placeholder="例：床下・雨漏り履歴">
+          <label for="uncertainAmount">仮置き金額（万円・任意）</label><input id="uncertainAmount" data-owner="uncertain" type="number" min="0" step="1" value="0">
+          <div class="row-check"><input data-owner="uncertain" type="checkbox" id="uncertainCritical"><label for="uncertainCritical">判断に重大な影響</label></div>
+          <div class="row-check"><input data-owner="uncertain" type="checkbox" id="uncertainResolved"><label for="uncertainResolved">確認済み</label></div>
+        </div>
+        <div class="group">
+          <div class="row-check"><input type="checkbox" id="specialistEnabled"><label for="specialistEnabled">専門確認が必要</label></div>
+          <label for="specialistName">確認内容</label><input id="specialistName" data-owner="specialist" type="text" placeholder="例：インスペクション、耐震、越境">
+          <div class="row-check"><input data-owner="specialist" type="checkbox" id="specialistCritical"><label for="specialistCritical">判断に重大な影響</label></div>
+          <div class="row-check"><input data-owner="specialist" type="checkbox" id="specialistResolved"><label for="specialistResolved">確認済み</label></div>
+          <div class="hint">AIは安全・問題なしを断定せず、未確認のまま保持します。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">DECIDE｜買付と契約を分けて判断</h2>
+      <p class="section-sub">買付申込は契約可と同義ではありません。買付前必須と契約前確認を分離します。</p>
+      <div class="grid">
+        <div class="group">
+          <div class="row-check"><input type="checkbox" id="preOfferEnabled"><label for="preOfferEnabled">買付前に確認必須の事項がある</label></div>
+          <label for="preOfferName">内容</label><input id="preOfferName" data-owner="preOffer" type="text" placeholder="例：再建築可否">
+          <div class="row-check"><input data-owner="preOffer" type="checkbox" id="preOfferCritical" checked><label for="preOfferCritical">判断に重大な影響</label></div>
+          <div class="row-check"><input data-owner="preOffer" type="checkbox" id="preOfferResolved"><label for="preOfferResolved">確認済み</label></div>
+        </div>
+        <div class="group">
+          <div class="row-check"><input type="checkbox" id="postOfferEnabled"><label for="postOfferEnabled">買付後・契約前の確認事項がある</label></div>
+          <label for="postOfferName">内容</label><input id="postOfferName" data-owner="postOffer" type="text" placeholder="例：境界、建物専門確認">
+          <div class="row-check"><input data-owner="postOffer" type="checkbox" id="postOfferCritical" checked><label for="postOfferCritical">判断に重大な影響</label></div>
+          <div class="row-check"><input data-owner="postOffer" type="checkbox" id="postOfferResolved"><label for="postOfferResolved">確認済み</label></div>
+        </div>
+        <div class="row-check"><input type="checkbox" id="acquisitionTotalKnown"><label for="acquisitionTotalKnown">確定費用を含めた取得総額を把握した</label></div>
+        <div><label for="residualFundsAdequate">購入後に残す資金</label><select id="residualFundsAdequate"><option value="unknown">未確認</option><option value="yes">十分と確認</option><option value="no">不足</option></select></div>
+        <div class="row-check"><input type="checkbox" id="exitViewComplete"><label for="exitViewComplete">保有期間・出口を整理した</label></div>
+        <div></div>
+        <div><label for="purchaseAge">購入時築年</label><input id="purchaseAge" type="number" min="0" max="100" step="1" placeholder="例：15"></div>
+        <div><label for="holdYears">保有予定期間</label><input id="holdYears" type="number" min="1" max="60" step="1" placeholder="例：15"></div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="secondary" id="resetBtn">リセット</button>
+      <button type="button" class="primary" id="evaluateBtn">判断を整理する</button>
+    </div>
+  </form>
+
+  <section id="result" class="result" hidden>
+    <section class="card">
+      <h2 class="section-title">顧客向け結果</h2>
+      <p class="section-sub">結論を押しつけず、今どこまで確認できていて、次に何を決めるかを表示します。</p>
+      <div class="status-grid">
+        <div class="status"><b>顧客全体の現在地</b><strong id="customerState"></strong></div>
+        <div class="status"><b>この中古物件の判断段階</b><strong id="propertyGate"></strong></div>
+      </div>
+      <div class="result-list">
+        <div class="result-row"><b>この物件で守れる価値</b><span id="protectedValue"></span></div>
+        <div class="result-row"><b>直しにくい要素</b><span id="hardSummary"></span></div>
+        <div class="result-row"><b>確認できた費用</b><span id="confirmedSummary"></span></div>
+        <div class="result-row"><b>近い将来の想定費用</b><span id="nearTermSummary"></span></div>
+        <div class="result-row"><b>まだ分からないこと</b><span id="unknownSummary"></span></div>
+        <div class="result-row"><b>専門確認が必要なこと</b><span id="specialistSummary"></span></div>
+        <div class="result-row"><b>保有期間・売却時築年</b><span id="exitSummary"></span></div>
+        <div class="result-row next"><b>次に決めること</b><span id="nextDecision"></span></div>
+        <div class="result-row next"><b>次にやること</b><span id="nextAction"></span></div>
+      </div>
+      <p class="note">この表示は建物の安全性・法的適法性を判定するものではありません。専門確認が必要な事項は、確認先へつなぐための整理項目です。</p>
+    </section>
+
+    <details>
+      <summary>内部確認ビューを見る</summary>
+      <div class="internal-grid">
+        <div><b>内見Gate</b><span id="internalInspection"></span></div>
+        <div><b>買付Gate</b><span id="internalOffer"></span></div>
+        <div><b>契約Gate</b><span id="internalContract"></span></div>
+        <div><b>内見理由</b><span id="internalInspectionReasons"></span></div>
+        <div><b>買付理由</b><span id="internalOfferReasons"></span></div>
+        <div><b>契約理由</b><span id="internalContractReasons"></span></div>
+        <div><b>確認済み費用計</b><span id="internalConfirmedTotal"></span></div>
+        <div><b>近い将来費用計</b><span id="internalNearTermTotal"></span></div>
+        <div><b>未確認・専門確認件数</b><span id="internalUnknownCount"></span></div>
+        <div><b>現在Gate</b><span id="internalGate"></span></div>
+        <div><b>顧客全体状態</b><span id="internalJourney"></span></div>
+      </div>
+    </details>
+  </section>
+</main>
+<script src="/used-home-decision.js"></script>
+<script src="/used-home-ui.js"></script>
+</body>
+</html>
