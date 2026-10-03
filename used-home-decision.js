@@ -104,10 +104,12 @@
     const priceReview=x.priceReviewInput&&Price&&Price.evaluatePriceReview?Price.evaluatePriceReview(x.priceReviewInput):null;
     const criticalRisk=unresolvedCritical(x.uncertainRisks);
     const criticalSpecialist=unresolvedCritical(x.specialistChecks);
+    const preOfferSpecialist=criticalSpecialist.filter(v=>v.timing==='before_offer');
 
-    if(pre.length||(priceReview&&priceReview.askingPrice>0&&!priceReview.ready)||!x.acquisitionTotalKnown||x.residualFundsAdequate==='no'){
+    if(pre.length||preOfferSpecialist.length||(priceReview&&priceReview.askingPrice>0&&!priceReview.ready)||!x.acquisitionTotalKnown||x.residualFundsAdequate==='no'){
       return {status:OFFER.INVESTIGATE,reasons:[
         ...(pre.length?['pre_offer_checks_unresolved']:[]),
+        ...(preOfferSpecialist.length?['specialist_check_required_before_offer']:[]),
         ...((priceReview&&priceReview.askingPrice>0&&!priceReview.ready)?['price_review_incomplete']:[]),
         ...(!x.acquisitionTotalKnown?['acquisition_total_unknown']:[]),
         ...(x.residualFundsAdequate==='no'?['residual_funds_inadequate']:[])
