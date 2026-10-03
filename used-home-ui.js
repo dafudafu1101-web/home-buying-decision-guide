@@ -31,6 +31,7 @@
     critical_uncertain_risk_after_offer:'判断に影響する不確定リスクが残る',
     critical_specialist_check_after_offer:'専門確認が必要な重要事項が残る',
     post_offer_pre_contract_checks:'買付後・契約前の確認事項が残る',
+    price_review_incomplete:'売出価格・土地価値・建物価値・修繕費の根拠確認が不足',
     offer_inputs_sufficient:'買付判断に必要な主要条件が揃っている',
     decision_critical_unknowns_remain:'契約判断に重大な未確認事項が残る',
     residual_funds_not_confirmed:'購入後残存資金が十分と確認できていない',
@@ -47,12 +48,17 @@
   function itemFrom(prefix){
     const enabled=checked('#'+prefix+'Enabled');
     if(!enabled)return [];
-    return [{
+    const item={
       key:prefix,
       name:$('#'+prefix+'Name').value.trim()||prefix,
       decisionCritical:checked('#'+prefix+'Critical'),
       resolved:checked('#'+prefix+'Resolved')
-    }];
+    };
+    const category=$('#'+prefix+'Category');
+    const timing=$('#'+prefix+'Timing');
+    if(category)item.category=category.value;
+    if(timing)item.timing=timing.value;
+    return [item];
   }
   function hardIssues(){
     if(!checked('#hardEnabled'))return [];
@@ -81,6 +87,17 @@
       uncertainRisks:uncertain,
       hardToChangeIssues:hardIssues(),
       specialistChecks:specialist,
+      priceReviewInput:Number($('#askingPrice').value||0)>0?{
+        askingPrice:Number($('#askingPrice').value||0),
+        landValue:Number($('#landValue').value||0),
+        buildingValue:Number($('#buildingValue').value||0),
+        initialRepair:Number($('#initialRepair').value||0),
+        nearTermRepair:Number($('#nearTermRepair').value||0),
+        exitCost:Number($('#exitCost').value||0),
+        landEvidenceConfirmed:checked('#landEvidenceConfirmed'),
+        buildingEvidenceConfirmed:checked('#buildingEvidenceConfirmed'),
+        repairEvidenceConfirmed:checked('#repairEvidenceConfirmed')
+      }:null,
       preOfferChecks:itemFrom('preOffer'),
       postOfferPreContractChecks:itemFrom('postOffer'),
       acquisitionTotalKnown:checked('#acquisitionTotalKnown'),
@@ -95,7 +112,16 @@
   function yenMan(v){return Number(v||0).toLocaleString('ja-JP')+'万円'}
   function listText(items,empty){
     if(!items.length)return empty;
-    return items.map(x=>x.name+(Number(x.amount||0)?'（'+yenMan(x.amount)+'）':'')).join('、');
+    return items.map(x=>{
+      const route=x.routeLabel?'［'+x.routeLabel+'］':'';
+      return route+x.name+(Number(x.amount||0)?'（'+yenMan(x.amount)+'）':'');
+    }).join('、');
+  }
+  function priceSummary(r){
+    if(!r)return '売出価格の比較は未入力';
+    if(!r.ready)return '根拠確認が不足：'+r.missing.join(' / ');
+    const sign=r.askingGap>0?'+':'';
+    return '売出 '+yenMan(r.askingPrice)+' / 根拠確認済みの土地＋建物 '+yenMan(r.referenceAssetValue)+' / 差額 '+sign+yenMan(r.askingGap)+' / 初期改修込み取得負担 '+yenMan(r.acquisitionBurden);
   }
   function reasons(list){
     if(!list||!list.length)return '—';
@@ -117,6 +143,7 @@
     setText('#nearTermSummary',listText(r.costs.nearTerm,'近い将来の想定費用なし'));
     setText('#unknownSummary',listText(r.costs.uncertain,'登録なし'));
     setText('#specialistSummary',listText(r.specialistChecks,'専門確認の登録なし'));
+    setText('#priceSummary',priceSummary(r.priceReview));
     setText('#exitSummary',purchaseAge&&holdYears?('購入時築'+purchaseAge+'年 → '+holdYears+'年保有 → 売却時築'+saleAge+'年'):'未入力');
     setText('#nextDecision',r.nextDecision);
     setText('#nextAction',r.nextAction);
@@ -130,6 +157,8 @@
     setText('#internalConfirmedTotal',yenMan(sum(r.costs.confirmed)));
     setText('#internalNearTermTotal',yenMan(sum(r.costs.nearTerm)));
     setText('#internalUnknownCount',String(r.costs.uncertain.length+r.specialistChecks.length));
+    setText('#internalPriceReady',r.priceReview?(r.priceReview.ready?'根拠確認済み':'根拠不足'):'未入力');
+    setText('#internalDecisionVersion',String(r.decisionRecord&&r.decisionRecord.version||'—'));
     setText('#internalGate',r.currentGate);
     setText('#internalJourney',x.customerJourneyState);
 
