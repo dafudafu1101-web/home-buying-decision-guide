@@ -124,3 +124,79 @@ console.log('PASS: used-home inspection/detail/offer/contract decision gates');
   assert.strictEqual(r.currentGate,'detail');
   assert.ok(r.nextAction.includes('取得総額'));
 }
+
+
+// 10. 売出価格レビューを使う場合、根拠未確認なら買付判断を進めない。
+{
+  const x=base();
+  x.priceReviewInput={
+    askingPrice:9000,
+    landValue:7000,
+    buildingValue:1500,
+    initialRepair:300
+  };
+  const r=D.evaluate(x);
+  assert.strictEqual(r.offer.status,D.OFFER.INVESTIGATE);
+  assert.ok(r.offer.reasons.includes('price_review_incomplete'));
+}
+
+// 11. 価格根拠が揃えば、差額情報をMARKETデータとして保持する。
+{
+  const x=base();
+  x.priceReviewInput={
+    askingPrice:9000,
+    landValue:7000,
+    buildingValue:1500,
+    initialRepair:300,
+    nearTermRepair:200,
+    exitCost:150,
+    landEvidenceConfirmed:true,
+    buildingEvidenceConfirmed:true,
+    repairEvidenceConfirmed:true
+  };
+  const r=D.evaluate(x);
+  assert.strictEqual(r.priceReview.ready,true);
+  assert.strictEqual(r.priceReview.askingGap,500);
+  assert.strictEqual(r.decisionRecord.propertyType,'used_home');
+  assert.strictEqual(r.decisionRecord.market.priceReview.askingGap,500);
+}
+
+// 12. 専門確認の明示区分を共通データへ保持する。
+{
+  const x=base();
+  x.specialistChecks=[{name:'越境確認',category:'property_survey',decisionCritical:true,resolved:false}];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.specialistChecks[0].routeLabel,'物件調査');
+  assert.strictEqual(r.decisionRecord.market.specialistChecks[0].category,'property_survey');
+}
+
+
+// 13. 買付前に必要な重大専門確認は、買付Gateを進めない。
+{
+  const x=base();
+  x.specialistChecks=[{
+    name:'再建築・接道確認',
+    category:'property_survey',
+    timing:'before_offer',
+    decisionCritical:true,
+    resolved:false
+  }];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.offer.status,D.OFFER.INVESTIGATE);
+  assert.ok(r.offer.reasons.includes('specialist_check_required_before_offer'));
+}
+
+// 14. 契約前確認の重大専門確認は、買付は条件付き・契約は未準備。
+{
+  const x=base();
+  x.specialistChecks=[{
+    name:'建物インスペクション',
+    category:'building_inspection',
+    timing:'before_contract',
+    decisionCritical:true,
+    resolved:false
+  }];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.offer.status,D.OFFER.CONDITIONAL);
+  assert.strictEqual(r.contract.status,D.CONTRACT.NOT_READY);
+}

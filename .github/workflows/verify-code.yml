@@ -23,12 +23,16 @@ jobs:
           fs.writeFileSync('/tmp/index-script.js', m[1]);
           NODE
           node --check /tmp/index-script.js
+          node --check decision-core.js
+          node --check used-home-price-review.js
           node --check used-home-decision.js
           node --check used-home-ui.js
       - name: Run calculation regression tests
         run: node calculation-tests.js
       - name: Run used-home decision gate tests
         run: node used-home-decision-tests.js
+      - name: Run common decision and price review tests
+        run: node decision-core-tests.js
       - name: Install browser smoke-test dependency
         run: npm install --no-save playwright@1.55.0
       - name: Install Chromium
@@ -105,13 +109,28 @@ jobs:
             if(!(await used.locator('#result').isVisible())) throw new Error('used-home result did not render');
             if(!(await used.locator('#propertyGate').textContent()||'').includes('買付申込へ進む')) throw new Error('used-home offer gate did not render expected proceed state');
             if(!(await used.locator('#exitSummary').textContent()||'').includes('売却時築30年')) throw new Error('used-home exit age did not render');
+            await used.fill('#askingPrice','9000');
+            await used.fill('#landValue','7000');
+            await used.fill('#buildingValue','1500');
+            await used.fill('#initialRepair','300');
+            await used.fill('#nearTermRepair','200');
+            await used.fill('#exitCost','150');
+            await used.check('#landEvidenceConfirmed');
+            await used.check('#buildingEvidenceConfirmed');
+            await used.check('#repairEvidenceConfirmed');
             await used.check('#specialistEnabled');
             await used.fill('#specialistName','建物インスペクション');
+            await used.selectOption('#specialistCategory','building_inspection');
+            await used.selectOption('#specialistTiming','before_contract');
             await used.check('#specialistCritical');
             await used.click('#evaluateBtn');
             if(!(await used.locator('#propertyGate').textContent()||'').includes('条件付き')) throw new Error('used-home specialist check should make offer conditional');
+            if(!(await used.locator('#specialistSummary').textContent()||'').includes('建物専門確認')) throw new Error('used-home specialist route did not render');
+            if(!(await used.locator('#priceSummary').textContent()||'').includes('差額 +500万円')) throw new Error('used-home price gap did not render');
             await used.locator('summary').filter({hasText:'内部確認ビューを見る'}).click();
             if(!(await used.locator('#internalContract').textContent()||'').includes('未確認事項')) throw new Error('used-home contract gate should remain not ready');
+            if((await used.locator('#internalPriceReady').textContent()||'').trim()!=='根拠確認済み') throw new Error('used-home price review should be ready');
+            if((await used.locator('#internalDecisionVersion').textContent()||'').trim()!=='1') throw new Error('common decision version missing');
             if(usedErrors.length) throw new Error('used-home page errors: '+usedErrors.join(' | '));
             await used.screenshot({path:'artifacts/used-home-mobile-result.png',fullPage:true});
 

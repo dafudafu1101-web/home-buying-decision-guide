@@ -1,8 +1,11 @@
 (function(root,factory){
-  const api=factory();
-  if(typeof module==='object'&&module.exports)module.exports=api;
+  const isNode=typeof module==='object'&&module.exports;
+  const Core=isNode?require('./decision-core.js'):(root&&root.HousingDecisionCore);
+  const Price=isNode?require('./used-home-price-review.js'):(root&&root.UsedHomePriceReview);
+  const api=factory(Core,Price);
+  if(isNode)module.exports=api;
   if(root)root.UsedHomeDecision=api;
-})(typeof globalThis!=='undefined'?globalThis:this,function(){
+})(typeof globalThis!=='undefined'?globalThis:this,function(Core,Price){
   'use strict';
 
   const INSPECTION={
@@ -42,7 +45,8 @@
       nearTermCosts:arr(x.nearTermCosts),
       uncertainRisks:arr(x.uncertainRisks),
       hardToChangeIssues:arr(x.hardToChangeIssues),
-      specialistChecks:arr(x.specialistChecks),
+      specialistChecks:arr(x.specialistChecks).map(v=>Price&&Price.routeSpecialistCheck?Price.routeSpecialistCheck(v):v),
+      priceReviewInput:x.priceReviewInput||null,
       preOfferChecks:arr(x.preOfferChecks),
       postOfferPreContractChecks:arr(x.postOfferPreContractChecks),
       acquisitionTotalKnown:truth(x.acquisitionTotalKnown),
@@ -97,12 +101,16 @@
     if(x.lowPriceOnlyReason||!x.desiredValue)return {status:OFFER.INVESTIGATE,reasons:[x.lowPriceOnlyReason?'low_price_only_reason':'desired_value_missing']};
 
     const pre=arr(x.preOfferChecks).filter(unresolved);
+    const priceReview=x.priceReviewInput&&Price&&Price.evaluatePriceReview?Price.evaluatePriceReview(x.priceReviewInput):null;
     const criticalRisk=unresolvedCritical(x.uncertainRisks);
     const criticalSpecialist=unresolvedCritical(x.specialistChecks);
+    const preOfferSpecialist=criticalSpecialist.filter(v=>v.timing==='before_offer');
 
-    if(pre.length||!x.acquisitionTotalKnown||x.residualFundsAdequate==='no'){
+    if(pre.length||preOfferSpecialist.length||(priceReview&&priceReview.askingPrice>0&&!priceReview.ready)||!x.acquisitionTotalKnown||x.residualFundsAdequate==='no'){
       return {status:OFFER.INVESTIGATE,reasons:[
         ...(pre.length?['pre_offer_checks_unresolved']:[]),
+        ...(preOfferSpecialist.length?['specialist_check_required_before_offer']:[]),
+        ...((priceReview&&priceReview.askingPrice>0&&!priceReview.ready)?['price_review_incomplete']:[]),
         ...(!x.acquisitionTotalKnown?['acquisition_total_unknown']:[]),
         ...(x.residualFundsAdequate==='no'?['residual_funds_inadequate']:[])
       ]};
@@ -183,12 +191,51 @@
     return {currentGate:'contract',nextDecision:'確認済み条件を前提に契約判断へ進むか',nextAction:'最終条件・費用・残存資金・出口を再確認する'};
   }
 
+  function toDecisionRecord(x,summary,priceReview){
+    const record={
+      propertyType:'used_home',
+      journeyState:x.customerJourneyState,
+      self:{
+        desiredValues:x.desiredValue?[x.desiredValue]:[],
+        householdAgreement:x.householdAgreement,
+        unknowns:[
+          ...(x.locationFit==='unknown'?['location_fit']:[]),
+          ...(x.layoutFit==='unknown'?['layout_fit']:[]),
+          ...(x.buildingAcceptance==='unknown'?['building_acceptance']:[])
+        ]
+      },
+      market:{
+        facts:[
+          {key:'location_fit',value:x.locationFit},
+          {key:'layout_fit',value:x.layoutFit},
+          {key:'building_acceptance',value:x.buildingAcceptance},
+          {key:'budget_room',value:x.budgetRoom}
+        ],
+        confirmedCosts:x.confirmedCosts,
+        nearTermCosts:x.nearTermCosts,
+        uncertainRisks:x.uncertainRisks,
+        specialistChecks:x.specialistChecks,
+        priceReview:priceReview||null
+      },
+      decide:{
+        journeyState:x.customerJourneyState,
+        propertyGate:x.propertyGate,
+        currentGate:summary.currentGate,
+        nextDecision:summary.nextDecision,
+        nextAction:summary.nextAction
+      }
+    };
+    return Core&&Core.normalizeDecisionRecord?Core.normalizeDecisionRecord(record):record;
+  }
+
   function evaluate(raw){
     const x=normalize(raw);
     const inspection=evaluateInspection(x);
     const offer=evaluateOffer(x);
     const contract=evaluateContract(x);
     const summary=decisionSummary(x);
+    const priceReview=x.priceReviewInput&&Price&&Price.evaluatePriceReview?Price.evaluatePriceReview(x.priceReviewInput):null;
+    const decisionRecord=toDecisionRecord(x,summary,priceReview);
     return {
       inspection,
       offer,
@@ -199,6 +246,8 @@
         uncertain:x.uncertainRisks
       },
       specialistChecks:x.specialistChecks,
+      priceReview,
+      decisionRecord,
       customerJourneyState:x.customerJourneyState,
       propertyGate:x.propertyGate,
       currentGate:summary.currentGate,
@@ -207,5 +256,5 @@
     };
   }
 
-  return {INSPECTION,OFFER,CONTRACT,normalize,evaluateInspection,evaluateOffer,evaluateContract,decisionSummary,evaluate};
+  return {INSPECTION,OFFER,CONTRACT,normalize,evaluateInspection,evaluateOffer,evaluateContract,decisionSummary,toDecisionRecord,evaluate};
 });

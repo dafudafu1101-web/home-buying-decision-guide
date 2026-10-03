@@ -25,4 +25,6 @@ jobs:
           used_body="$(curl --fail --silent --show-error --location --retry 6 --retry-delay 10 --max-time 20 "$USED_URL")"
           printf '%s' "$used_body" | grep -q '中古戸建の判断整理'
           printf '%s' "$used_body" | grep -q 'SELF｜この中古で何を守りたいか'
+          printf '%s' "$used_body" | grep -q '中古価格の確認｜売出価格だけで判断しない'
+          printf '%s' "$used_body" | grep -q '建物専門確認｜劣化・耐震・雨漏り・床傾斜等'
           echo "Used-home production URL verified: $USED_URL"
