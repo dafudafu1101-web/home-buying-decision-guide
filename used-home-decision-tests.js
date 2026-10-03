@@ -107,3 +107,20 @@ function base(){
 }
 
 console.log('PASS: used-home inspection/detail/offer/contract decision gates');
+
+
+// 9. 次に決めること・次にやることをGateに応じて返す。
+{
+  const x=base();
+  const r=D.evaluate(x);
+  assert.strictEqual(r.currentGate,'contract');
+  assert.ok(r.nextDecision);
+  assert.ok(r.nextAction);
+}
+{
+  const x=base();
+  x.acquisitionTotalKnown=false;
+  const r=D.evaluate(x);
+  assert.strictEqual(r.currentGate,'detail');
+  assert.ok(r.nextAction.includes('取得総額'));
+}
