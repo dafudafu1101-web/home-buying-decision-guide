@@ -24,6 +24,7 @@
     unaccepted_hard_to_change_issue:'直しにくい要素が未受容',
     low_price_only_reason:'安さだけが買付理由になっている',
     pre_offer_checks_unresolved:'買付前に確認必須の事項が未完了',
+    specialist_check_required_before_offer:'買付前に完了すべき専門確認が未完了',
     acquisition_total_unknown:'取得総額が未確定',
     residual_funds_inadequate:'購入後に残す資金が不足',
     residual_funds_unknown:'購入後残存資金が未確認',
