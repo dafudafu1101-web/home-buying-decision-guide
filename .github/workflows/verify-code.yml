@@ -23,6 +23,8 @@ jobs:
           fs.writeFileSync('/tmp/index-script.js', m[1]);
           NODE
           node --check /tmp/index-script.js
+          node --check used-home-decision.js
+          node --check used-home-ui.js
       - name: Run calculation regression tests
         run: node calculation-tests.js
       - name: Run used-home decision gate tests
@@ -86,6 +88,32 @@ jobs:
             if(!heroBox||heroBox.width<800) throw new Error('desktop result headline is unexpectedly narrow');
             if(desktopErrors.length) throw new Error('desktop page errors: '+desktopErrors.join(' | '));
             await desktop.screenshot({path:'artifacts/desktop-result.png',fullPage:true});
+
+            const used=await browser.newPage({viewport:{width:390,height:844}});
+            const usedErrors=[];
+            used.on('pageerror',e=>usedErrors.push(String(e)));
+            await used.goto('http://127.0.0.1:4173/used-home.html',{waitUntil:'networkidle'});
+            if(await used.locator('#result').isVisible()) throw new Error('used-home result should be hidden before evaluation');
+            if(await used.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth+1)) throw new Error('used-home mobile page has horizontal overflow');
+            await used.fill('#desiredValue','希望エリアと土地価値を守る');
+            for(const [id,value] of [['#locationFit','yes'],['#layoutFit','yes'],['#buildingAcceptance','yes'],['#householdAgreement','agree'],['#budgetRoom','yes'],['#residualFundsAdequate','yes']]) await used.selectOption(id,value);
+            await used.check('#acquisitionTotalKnown');
+            await used.check('#exitViewComplete');
+            await used.fill('#purchaseAge','15');
+            await used.fill('#holdYears','15');
+            await used.click('#evaluateBtn');
+            if(!(await used.locator('#result').isVisible())) throw new Error('used-home result did not render');
+            if(!(await used.locator('#propertyGate').textContent()||'').includes('買付申込へ進む')) throw new Error('used-home offer gate did not render expected proceed state');
+            if(!(await used.locator('#exitSummary').textContent()||'').includes('売却時築30年')) throw new Error('used-home exit age did not render');
+            await used.check('#specialistEnabled');
+            await used.fill('#specialistName','建物インスペクション');
+            await used.check('#specialistCritical');
+            await used.click('#evaluateBtn');
+            if(!(await used.locator('#propertyGate').textContent()||'').includes('条件付き')) throw new Error('used-home specialist check should make offer conditional');
+            await used.locator('summary').filter({hasText:'内部確認ビューを見る'}).click();
+            if(!(await used.locator('#internalContract').textContent()||'').includes('未確認事項')) throw new Error('used-home contract gate should remain not ready');
+            if(usedErrors.length) throw new Error('used-home page errors: '+usedErrors.join(' | '));
+            await used.screenshot({path:'artifacts/used-home-mobile-result.png',fullPage:true});
 
             await browser.close();
             console.log('PASS: browser render/click/mobile/desktop/reset UX smoke test');

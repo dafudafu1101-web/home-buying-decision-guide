@@ -156,12 +156,43 @@
     return {status:CONTRACT.READY,reasons:['decision_critical_checks_resolved']};
   }
 
+  function decisionSummary(raw){
+    const x=normalize(raw);
+    const inspection=evaluateInspection(x);
+    const offer=evaluateOffer(x);
+    const contract=evaluateContract(x);
+
+    if(inspection.status===INSPECTION.PASS){
+      return {currentGate:'inspection',nextDecision:'この物件を見送る理由を整理する',nextAction:'次に探す物件で守る条件と再開条件を整理する'};
+    }
+    if(inspection.status===INSPECTION.CONFIRM_MORE){
+      return {currentGate:'inspection',nextDecision:'この中古を詳しく調べる価値があるか',nextAction:'未確認の立地・間取り・中古許容度・世帯合意を確認する'};
+    }
+    if(inspection.status===INSPECTION.ADJUST){
+      return {currentGate:'inspection',nextDecision:'直しにくい不一致を受け入れるか',nextAction:'不一致の内容と守りたい価値を比較して整理する'};
+    }
+    if(offer.status===OFFER.INVESTIGATE){
+      return {currentGate:'detail',nextDecision:'買付判断に必要な確認が揃ったか',nextAction:'買付前確認・取得総額・購入後残存資金・出口を確認する'};
+    }
+    if(offer.status===OFFER.CONDITIONAL){
+      return {currentGate:'offer',nextDecision:'残る不確定要素を買付後・契約前に確認できるか',nextAction:'専門確認と契約前確認の担当・期限・判断への影響を明確にする'};
+    }
+    if(offer.status===OFFER.PROCEED&&contract.status===CONTRACT.NOT_READY){
+      return {currentGate:'offer',nextDecision:'契約判断に影響する未確認事項が解消したか',nextAction:'契約前の重大確認を完了させる'};
+    }
+    return {currentGate:'contract',nextDecision:'確認済み条件を前提に契約判断へ進むか',nextAction:'最終条件・費用・残存資金・出口を再確認する'};
+  }
+
   function evaluate(raw){
     const x=normalize(raw);
+    const inspection=evaluateInspection(x);
+    const offer=evaluateOffer(x);
+    const contract=evaluateContract(x);
+    const summary=decisionSummary(x);
     return {
-      inspection:evaluateInspection(x),
-      offer:evaluateOffer(x),
-      contract:evaluateContract(x),
+      inspection,
+      offer,
+      contract,
       costs:{
         confirmed:x.confirmedCosts,
         nearTerm:x.nearTermCosts,
@@ -169,9 +200,12 @@
       },
       specialistChecks:x.specialistChecks,
       customerJourneyState:x.customerJourneyState,
-      propertyGate:x.propertyGate
+      propertyGate:x.propertyGate,
+      currentGate:summary.currentGate,
+      nextDecision:summary.nextDecision,
+      nextAction:summary.nextAction
     };
   }
 
-  return {INSPECTION,OFFER,CONTRACT,normalize,evaluateInspection,evaluateOffer,evaluateContract,evaluate};
+  return {INSPECTION,OFFER,CONTRACT,normalize,evaluateInspection,evaluateOffer,evaluateContract,decisionSummary,evaluate};
 });

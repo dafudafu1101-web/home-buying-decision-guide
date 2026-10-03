@@ -20,3 +20,9 @@ jobs:
           body="$(curl --fail --silent --show-error --location --retry 6 --retry-delay 10 --max-time 20 "$URL")"
           printf '%s' "$body" | grep -q '住宅購入 vs 賃貸'
           echo "Production URL verified: $URL"
+          USED_URL="$URL/used-home"
+          echo "Checking $USED_URL"
+          used_body="$(curl --fail --silent --show-error --location --retry 6 --retry-delay 10 --max-time 20 "$USED_URL")"
+          printf '%s' "$used_body" | grep -q '中古戸建の判断整理'
+          printf '%s' "$used_body" | grep -q 'SELF｜この中古で何を守りたいか'
+          echo "Used-home production URL verified: $USED_URL"
