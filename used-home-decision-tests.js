@@ -169,3 +169,34 @@ console.log('PASS: used-home inspection/detail/offer/contract decision gates');
   assert.strictEqual(r.specialistChecks[0].routeLabel,'物件調査');
   assert.strictEqual(r.decisionRecord.market.specialistChecks[0].category,'property_survey');
 }
+
+
+// 13. 買付前に必要な重大専門確認は、買付Gateを進めない。
+{
+  const x=base();
+  x.specialistChecks=[{
+    name:'再建築・接道確認',
+    category:'property_survey',
+    timing:'before_offer',
+    decisionCritical:true,
+    resolved:false
+  }];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.offer.status,D.OFFER.INVESTIGATE);
+  assert.ok(r.offer.reasons.includes('specialist_check_required_before_offer'));
+}
+
+// 14. 契約前確認の重大専門確認は、買付は条件付き・契約は未準備。
+{
+  const x=base();
+  x.specialistChecks=[{
+    name:'建物インスペクション',
+    category:'building_inspection',
+    timing:'before_contract',
+    decisionCritical:true,
+    resolved:false
+  }];
+  const r=D.evaluate(x);
+  assert.strictEqual(r.offer.status,D.OFFER.CONDITIONAL);
+  assert.strictEqual(r.contract.status,D.CONTRACT.NOT_READY);
+}
