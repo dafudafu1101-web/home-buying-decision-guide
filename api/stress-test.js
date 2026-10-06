@@ -261,6 +261,14 @@ function buildHtml() {
     $('#rdAmount').textContent=zone==='housing'?'比較ライン付近':money(Math.abs(margin))+' 上回る';
     $('#rdLead').textContent='購入できないという意味ではありません。人生全体の支出まで含めて、この価格を住宅へ配分してよいか詳しく確認したい位置です。';
   }
+  const peekData=[
+    {emoji:'🟢',name:'月々の返済を抑える',price:refs.safe},
+    {emoji:'🔵',name:'住宅と月々の負担を両立する',price:refs.balance},
+    {emoji:'🟣',name:'住宅への配分を高める',price:refs.housing}
+  ];
+  const peek=$('#strategyPeekList'),detail=$('#strategyDetailList'),source=$('#strategies');
+  if(peek)peek.innerHTML=peekData.map(d=>{const acq=acquisitionFor(d.price,assumedEquity),pm=paymentMetrics(acq.loan,v);return '<div class="strategyPeekRow"><b>'+d.emoji+' '+d.name+'</b><strong>'+money(d.price)+'・月約'+money(pm.monthly)+'</strong></div>'}).join('');
+  if(detail&&source)detail.innerHTML=source.innerHTML;
   $('#marginCurrent').textContent=money(v.price);`,
     'result_first_view_logic'
   );
