@@ -24,6 +24,20 @@ function buildHtml() {
 .loanHelpFold[open]>summary b:after{content:'−'}
 .loanHelpFold>summary small{display:block;margin-top:5px;font-size:11px;line-height:1.55;color:#6b665f;font-weight:500}
 .loanHelpFold>.loanHelpCard{margin:0;border:0;border-top:1px solid #eadfc8;border-radius:0;box-shadow:none;background:linear-gradient(135deg,#fffdf8,#f8f1e2)}
+
+/* Result first-view: decision clarity layer. */
+.resultDecision{margin:14px 0 18px;border:1px solid #d9cfb8;border-radius:20px;padding:18px;background:linear-gradient(145deg,#fffdf8,#f7f1e4)}
+.resultDecision .rdKicker{font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#8a6117}
+.resultDecision h2{font-family:inherit;font-size:21px;line-height:1.45;margin:7px 0 5px}
+.resultDecision .rdAmount{font-size:34px;font-weight:900;letter-spacing:-.035em;color:#171512;line-height:1.2;margin:5px 0}
+.resultDecision .rdLead{font-size:12.5px;line-height:1.7;color:#4d473d;margin:6px 0 14px}
+.rdChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.rdChoice{background:#fff;border:1px solid #e2dbcf;border-radius:12px;padding:11px 8px;min-width:0}
+.rdChoice b{display:block;font-size:11.5px;line-height:1.4;margin-bottom:4px}.rdChoice span{display:block;font-size:10px;line-height:1.45;color:#756e63}
+.rdBridge{margin-top:12px;padding:11px 12px;border-radius:11px;background:#171717;color:#fff;font-size:11.5px;line-height:1.65}.rdBridge b{color:#e1bf6e}
+.resultDecision.over .rdAmount{font-size:25px}
+@media(max-width:480px){.rdChoices{grid-template-columns:1fr}.resultDecision .rdAmount{font-size:30px}.rdChoice{padding:10px 11px}}
+
 /* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
 .screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
 .screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-weight:800}
@@ -85,6 +99,24 @@ function buildHtml() {
     missingMarkers.push('loan_help_fold');
     console.warn('stress_test_missing_marker', 'loan_help_fold');
   }
+
+  html = replaceOnce(
+    html,
+    '<div class="resultHero" id="resultHero">',
+    `<div class="resultDecision" id="resultDecision">
+        <div class="rdKicker">まず見るところ</div>
+        <h2 id="rdTitle">今の予算と、住宅への配分余地</h2>
+        <div class="rdAmount" id="rdAmount">—</div>
+        <p class="rdLead" id="rdLead"></p>
+        <div class="rdChoices">
+          <div class="rdChoice"><b>💰 現金で残す</b><span>生活防衛・教育・将来支出への余力</span></div>
+          <div class="rdChoice"><b>📈 金融資産へ</b><span>住宅以外の資産形成に配分</span></div>
+          <div class="rdChoice"><b>🏠 住宅へ</b><span>立地・広さ・利便性・資産性の改善へ</span></div>
+        </div>
+        <div class="rdBridge"><b>この差額をそのまま住宅に使ってよい、という意味ではありません。</b><br>教育・車・旅行・働き方・保険・老後などを入れると、家庭ごとの「住宅への余白」が分かります。</div>
+      </div>\n      <div class="resultHero" id="resultHero">`,
+    'result_first_view'
+  );
 
   html = replaceOnce(
     html,
@@ -157,6 +189,26 @@ function buildHtml() {
     "const nw=netWorthScenarios(v),nwLabel=",
     "const nw=netWorthScenarios(v);$('#moreNetWorthSummary').textContent=money(nw[1].netWorth);const nwLabel=",
     'detail_summary_networth_value'
+  );
+
+  html = replaceOnce(
+    html,
+    "const margin=refs.housing-v.price;$('#marginCurrent').textContent=money(v.price);",
+    `const margin=refs.housing-v.price;
+  const rd=$('#resultDecision');
+  if(margin>0){
+    rd.classList.remove('over');
+    $('#rdTitle').textContent='今の予算には、住宅への配分を考えられる余地があります';
+    $('#rdAmount').textContent='比較ラインまで ＋'+money(margin);
+    $('#rdLead').textContent='この差は、住宅・現金・金融資産のどこへ配分するかを考えるための比較値です。住宅条件を改善したい理由がなければ、無理に予算を上げる必要はありません。';
+  }else{
+    rd.classList.add('over');
+    $('#rdTitle').textContent='今の予算は、簡易比較ラインを超える水準です';
+    $('#rdAmount').textContent=zone==='housing'?'比較ライン付近':money(Math.abs(margin))+' 上回る';
+    $('#rdLead').textContent='購入できないという意味ではありません。人生全体の支出まで含めて、この価格を住宅へ配分してよいか詳しく確認したい位置です。';
+  }
+  $('#marginCurrent').textContent=money(v.price);`,
+    'result_first_view_logic'
   );
 
   html = replaceOnce(
