@@ -38,6 +38,27 @@ function buildHtml() {
 .resultDecision.over .rdAmount{font-size:25px}
 @media(max-width:480px){.rdChoices{grid-template-columns:1fr}.resultDecision .rdAmount{font-size:30px}.rdChoice{padding:10px 11px}}
 
+
+/* 2026-10 result simplification: keep the first view decision-focused. */
+.screen[data-step="3"]>.resultHero,
+.screen[data-step="3"]>.summaryGrid,
+.screen[data-step="3"]>h2[style*="font-size:22px"],
+.screen[data-step="3"]>h2[style*="font-size:22px"] + .lead,
+.screen[data-step="3"]>#strategies,
+.screen[data-step="3"]>#strategies + .hint,
+.screen[data-step="3"]>#longTermNote,
+.screen[data-step="3"]>.choiceMargin,
+.screen[data-step="3"]>.portfolioCard,
+.screen[data-step="3"]>.selectPrompt,
+.screen[data-step="3"]>.lifeplanBridge{display:none!important}
+.resultDecision{margin-top:4px}
+.resultDecision .rdKicker:after{content:"｜RESULT"}
+.resultDecision .rdBridge{margin-bottom:0}
+.screen[data-step="3"]>.moreWrap{margin-top:14px}
+.screen[data-step="3"]>.cta{margin-top:18px}
+.screen[data-step="3"]>.agentLinkCard{margin-top:10px}
+.screen[data-step="3"]>.resultEmailBox{margin-top:14px}
+
 /* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
 .screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
 .screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-weight:800}
@@ -72,7 +93,7 @@ function buildHtml() {
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
   html = replaceOnce(html, '</style>', bridgeCss + '\n</style>', 'bridge_css');
-  html = replaceOnce(html, '<div class="cta">', bridgeHtml + '\n<div class="cta">', 'bridge_markup');
+  // The detailed life-plan bridge is intentionally omitted from the RESULT first view; the CTA below is the concise handoff.
 
   const loanAmountOrderPattern = /(\s*<div class="loanHelpCard">[\s\S]*?<p class="loanHelpFoot">[\s\S]*?<\/p>\s*<\/div>)\s*(<div class="helperBtns">[\s\S]*?<\/div>\s*<div class="hint" id="loanRefHint">[\s\S]*?<\/div>)/;
   if (loanAmountOrderPattern.test(html)) {
