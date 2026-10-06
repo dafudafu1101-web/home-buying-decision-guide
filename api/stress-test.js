@@ -65,15 +65,28 @@ function buildHtml() {
 .resultDecision .rdChoice b{font-size:12.5px}
 .resultDecision .rdChoice span{font-size:10.5px}
 .resultDecision .rdChoice:nth-child(3) span:after{content:"。配分を厚くするなら、物件の資産性・売りやすさも確認"}
+.rdMonthly{margin:-2px 0 12px;font-size:11.5px;line-height:1.6;color:#5f584e;font-weight:700}
+.rdMonthly strong{color:#171512}
+.strategyPeek{margin:14px 0 0;border:1px solid #ddd5c7;border-radius:14px;background:#fff;overflow:hidden}
+.strategyPeek>summary{list-style:none;cursor:pointer;padding:13px 14px;font-size:13px;font-weight:900}
+.strategyPeek>summary::-webkit-details-marker{display:none}
+.strategyPeek>summary:after{content:"＋";float:right}
+.strategyPeek[open]>summary:after{content:"−"}
+.strategyPeekList{display:grid;gap:6px;padding:0 12px 12px}
+.strategyPeekRow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 10px;border-radius:10px;background:#f7f4ee;font-size:11px;line-height:1.45}
+.strategyPeekRow b{font-size:11.5px}.strategyPeekRow strong{white-space:nowrap}
+.strategyDetail{padding:0 12px 12px}
+.strategyDetail .strategyWrap{margin-top:0}
 .lifeplanBridge{margin:16px 0!important;padding:18px!important;border-radius:18px!important}
-.lifeplanBridge .lpIntro,.lifeplanBridge .lpFactorGrid,.lifeplanBridge .lpAllocation,.lifeplanBridge .lpClosing{display:none!important}
-.lifeplanBridge .lpChartCard{margin:0!important;padding:14px!important}
-.lifeplanBridge .lpChartCard h3{font-size:15px!important;margin:0 0 5px!important}
-.lifeplanBridge .lpChartCard p{font-size:10.8px!important;line-height:1.55!important;margin:0 0 8px!important}
-.lifeplanBridge .lpChart{max-height:230px!important}
-.lifeplanBridge:before{content:"家庭ごとの違いを見る";display:block;font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#8a6117;margin-bottom:8px}
-.lifeplanBridge:after{content:"教育・車・旅行・働き方などを入れると、この余白は家庭ごとに変わります。自分の場合の住宅への余白は、詳細ライフプランで確認できます。";display:block;margin-top:11px;font-size:11.5px;line-height:1.7;font-weight:700;color:#312c25}
-@media(max-width:480px){.lifeplanBridge{padding:13px!important}.lifeplanBridge .lpChart{max-height:190px!important}}
+.lifeplanBridge .bridgeIntro,.lifeplanBridge .allocationCard{display:none!important}
+.lifeplanBridge .bridgeKicker{font-size:10.5px!important}
+.lifeplanBridge>h2{font-size:20px!important}
+.lifeplanBridge>.lead{font-size:12px!important;line-height:1.7!important;margin-bottom:12px!important}
+.lifeplanBridge .bridgeGrid{gap:7px!important;margin:10px 0 14px!important}
+.lifeplanBridge .bridgeItem{padding:10px!important}
+.lifeplanBridge .assetChart{margin-top:12px!important;padding:13px!important}
+.lifeplanBridge .bridgeQuestion{font-size:12px!important;line-height:1.7!important;margin:12px 0 0!important}
+@media(max-width:480px){.lifeplanBridge{padding:14px!important}.strategyPeekRow{grid-template-columns:1fr}.strategyPeekRow strong{font-size:12px}}
 
 /* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
 .screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
@@ -144,13 +157,15 @@ function buildHtml() {
         <div class="rdKicker">まず見るところ</div>
         <h2 id="rdTitle">今の予算と、住宅への配分余地</h2>
         <div class="rdAmount" id="rdAmount">—</div>
+        <div class="rdMonthly" id="rdMonthly">—</div>
         <p class="rdLead" id="rdLead"></p>
         <div class="rdChoices">
           <div class="rdChoice"><b>💰 現金で残す</b><span>生活防衛・教育・将来支出への余力</span></div>
           <div class="rdChoice"><b>📈 金融資産へ</b><span>住宅以外の資産形成に配分</span></div>
           <div class="rdChoice"><b>🏠 住宅へ</b><span>立地・広さ・利便性・資産性の改善へ</span></div>
         </div>
-        <div class="rdBridge"><b>この差額をそのまま住宅に使ってよい、という意味ではありません。</b><br>教育・車・旅行・働き方・保険・老後などを入れると、家庭ごとの「住宅への余白」が分かります。</div>
+        <div class="rdBridge"><b>どれか1つが正解ではありません。</b> 必要な現金を残し、住宅・現金・金融資産の配分を家庭ごとに考えます。</div>
+        <details class="strategyPeek" id="strategyPeek"><summary>3つの資産配分戦略を見る</summary><div class="strategyPeekList" id="strategyPeekList"></div><div class="strategyDetail"><div class="strategyWrap" id="strategyDetailList"></div></div></details>
       </div>\n      <div class="resultHero" id="resultHero">`,
     'result_first_view'
   );
@@ -233,6 +248,8 @@ function buildHtml() {
     "const margin=refs.housing-v.price;$('#marginCurrent').textContent=money(v.price);",
     `const margin=refs.housing-v.price;
   const rd=$('#resultDecision');
+  const curMonthly=paymentMetrics(v.loanAmount,v).monthly, lineAcq=acquisitionFor(refs.housing,assumedEquity), lineMonthly=paymentMetrics(lineAcq.loan,v).monthly, monthlyDiff=lineMonthly-curMonthly;
+  $('#rdMonthly').innerHTML=margin>0?'住宅へ配分した場合の月返済差 <strong>約＋'+money(Math.max(0,monthlyDiff))+'/月</strong> <span>（'+v.term+'年・金利'+v.rate+'%の比較）</span>':'現在の月返済目安 <strong>約'+money(curMonthly)+'/月</strong>';
   if(margin>0){
     rd.classList.remove('over');
     $('#rdTitle').textContent='今の予算には、住宅への配分を考えられる余地があります';
