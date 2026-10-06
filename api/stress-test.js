@@ -72,7 +72,7 @@ function buildHtml() {
 .strategyPeek>summary::-webkit-details-marker{display:none}
 .strategyPeek>summary:after{content:"＋";float:right}
 .strategyPeek[open]>summary:after{content:"−"}
-.strategyPeekList{display:grid;gap:6px;padding:0 12px 12px}
+.strategyPeek:not([open]) .strategyPeekList,.strategyPeek:not([open]) .strategyDetail{display:none}.strategyPeek[open] .strategyPeekList{display:grid;gap:6px;padding:0 12px 12px}
 .strategyPeekRow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 10px;border-radius:10px;background:#f7f4ee;font-size:11px;line-height:1.45}
 .strategyPeekRow b{font-size:11.5px}.strategyPeekRow strong{white-space:nowrap}
 .strategyDetail{padding:0 12px 12px}
