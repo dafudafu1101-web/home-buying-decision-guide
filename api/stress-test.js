@@ -49,8 +49,7 @@ function buildHtml() {
 .screen[data-step="3"]>#longTermNote,
 .screen[data-step="3"]>.choiceMargin,
 .screen[data-step="3"]>.portfolioCard,
-.screen[data-step="3"]>.selectPrompt,
-.screen[data-step="3"]>.lifeplanBridge{display:none!important}
+.screen[data-step="3"]>.selectPrompt{display:none!important}
 .resultDecision{margin-top:4px}
 .resultDecision .rdKicker:after{content:"｜RESULT"}
 .resultDecision .rdBridge{margin-bottom:0}
@@ -58,6 +57,23 @@ function buildHtml() {
 .screen[data-step="3"]>.cta{margin-top:18px}
 .screen[data-step="3"]>.agentLinkCard{margin-top:10px}
 .screen[data-step="3"]>.resultEmailBox{margin-top:14px}
+
+
+/* Final RESULT story: preserve the useful three-allocation idea without restoring the long explanation. */
+.resultDecision .rdChoices{margin-top:12px}
+.resultDecision .rdChoice{padding:13px 11px}
+.resultDecision .rdChoice b{font-size:12.5px}
+.resultDecision .rdChoice span{font-size:10.5px}
+.resultDecision .rdChoice:nth-child(3) span:after{content:"。配分を厚くするなら、物件の資産性・売りやすさも確認"}
+.lifeplanBridge{margin:16px 0!important;padding:18px!important;border-radius:18px!important}
+.lifeplanBridge .lpIntro,.lifeplanBridge .lpFactorGrid,.lifeplanBridge .lpAllocation,.lifeplanBridge .lpClosing{display:none!important}
+.lifeplanBridge .lpChartCard{margin:0!important;padding:14px!important}
+.lifeplanBridge .lpChartCard h3{font-size:15px!important;margin:0 0 5px!important}
+.lifeplanBridge .lpChartCard p{font-size:10.8px!important;line-height:1.55!important;margin:0 0 8px!important}
+.lifeplanBridge .lpChart{max-height:230px!important}
+.lifeplanBridge:before{content:"家庭ごとの違いを見る";display:block;font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#8a6117;margin-bottom:8px}
+.lifeplanBridge:after{content:"教育・車・旅行・働き方などを入れると、この余白は家庭ごとに変わります。自分の場合の住宅への余白は、詳細ライフプランで確認できます。";display:block;margin-top:11px;font-size:11.5px;line-height:1.7;font-weight:700;color:#312c25}
+@media(max-width:480px){.lifeplanBridge{padding:13px!important}.lifeplanBridge .lpChart{max-height:190px!important}}
 
 /* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
 .screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
@@ -93,7 +109,7 @@ function buildHtml() {
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
   html = replaceOnce(html, '</style>', bridgeCss + '\n</style>', 'bridge_css');
-  // The detailed life-plan bridge is intentionally omitted from the RESULT first view; the CTA below is the concise handoff.
+  html = replaceOnce(html, '<div class="cta">', bridgeHtml + '\n<div class="cta">', 'bridge_markup');
 
   const loanAmountOrderPattern = /(\s*<div class="loanHelpCard">[\s\S]*?<p class="loanHelpFoot">[\s\S]*?<\/p>\s*<\/div>)\s*(<div class="helperBtns">[\s\S]*?<\/div>\s*<div class="hint" id="loanRefHint">[\s\S]*?<\/div>)/;
   if (loanAmountOrderPattern.test(html)) {
