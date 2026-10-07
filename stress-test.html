@@ -66,6 +66,21 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
   .moreWrap .useCard .pro,.moreWrap .useCard .con{font-size:10.5px;line-height:1.55}
 }
 </style>
+<style id="finalPolishStyles">
+.netWorthDetailFold{margin-top:10px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.netWorthDetailFold>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:12px;font-weight:900}
+.netWorthDetailFold>summary::-webkit-details-marker{display:none}
+.netWorthDetailFold>summary:after{content:"＋";float:right}
+.netWorthDetailFold[open]>summary:after{content:"−"}
+.netWorthDetailFold>.netWorthList,.netWorthDetailFold>.hint{margin-left:10px!important;margin-right:10px!important}
+@media(max-width:480px){
+  .strategyDetail .strategy{padding:12px!important}
+  .strategyDetail .strategyName{font-size:15px}
+  .strategyDetail .strategyDesc{font-size:12px}
+  .strategyDetail .trade div{padding:9px;font-size:10.5px}
+  .strategyDetail .pill{font-size:10px;padding:6px 8px}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -270,8 +285,11 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <h2 style="font-size:21px;margin-top:0">10年後、住宅にどのくらい純資産が残る？</h2>
           <p class="lead">住宅価格が上がる前提だけで判断しないために、下落・横ばい・上昇の4パターンで比較します。</p>
           <div class="netWorthQuick" id="netWorthQuick" aria-label="10年後の住宅純資産4パターン比較"></div>
-          <div class="netWorthList" id="netWorthList"></div>
-          <p class="hint" id="netWorthNote"></p>
+          <details class="netWorthDetailFold">
+            <summary>4パターンの計算根拠を見る</summary>
+            <div class="netWorthList" id="netWorthList"></div>
+            <p class="hint" id="netWorthNote"></p>
+          </details>
 
           <div class="whyCard">
             <b>なぜ4パターンで見るの？</b>
