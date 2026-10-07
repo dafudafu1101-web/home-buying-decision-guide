@@ -36,7 +36,7 @@ function buildHtml() {
 .rdChoice b{display:block;font-size:11.5px;line-height:1.4;margin-bottom:4px}.rdChoice span{display:block;font-size:10px;line-height:1.45;color:#756e63}
 .rdBridge{margin-top:12px;padding:11px 12px;border-radius:11px;background:#171717;color:#fff;font-size:11.5px;line-height:1.65}.rdBridge b{color:#e1bf6e}
 .resultDecision.over .rdAmount{font-size:25px}
-@media(max-width:480px){.rdChoices{grid-template-columns:1fr}.resultDecision .rdAmount{font-size:30px}.rdChoice{padding:10px 11px}}
+@media(max-width:480px){.rdChoices{grid-template-columns:1fr}.resultDecision .rdAmount{font-size:27px;line-height:1.25;letter-spacing:-.025em}.resultDecision h2{font-size:19px}.rdMonthly{font-size:11px;margin-top:2px}.rdChoice{padding:10px 11px}}
 
 
 /* 2026-10 result simplification: keep the first view decision-focused. */
@@ -86,7 +86,7 @@ function buildHtml() {
 .lifeplanBridge .bridgeItem{padding:10px!important}
 .lifeplanBridge .assetChart{margin-top:12px!important;padding:13px!important}
 .lifeplanBridge .bridgeQuestion{font-size:12px!important;line-height:1.7!important;margin:12px 0 0!important}
-@media(max-width:480px){.lifeplanBridge{padding:14px!important}.strategyPeekRow{grid-template-columns:1fr}.strategyPeekRow strong{font-size:12px}}
+@media(max-width:480px){.lifeplanBridge{padding:14px!important}.strategyPeekRow{grid-template-columns:1fr}.strategyPeekRow strong{font-size:12px}.strategyDetail{padding:0 8px 10px}.strategyDetail .strategy{padding:14px}.strategyDetail .strategyHead{display:block}.strategyDetail .strategyPrice{margin-top:6px;font-size:21px}.strategyDetail .trade{grid-template-columns:1fr}.strategyDetail .strategyMeta{margin-top:8px}}
 
 /* Result screen typography: keep the diagnostic UI visually consistent on iPhone/Android. */
 .screen[data-step="3"] h1,.screen[data-step="3"] h2,.screen[data-step="3"] h3,.screen[data-step="3"] .resultHero .title,.screen[data-step="3"] .metric strong,.screen[data-step="3"] .strategyPrice,.screen[data-step="3"] .choiceMargin .big,.screen[data-step="3"] .marginRow strong,.screen[data-step="3"] .flowStep strong,.screen[data-step="3"] .flowResult strong,.screen[data-step="3"] .traceRow strong,.screen[data-step="3"] .equityRow strong,.screen[data-step="3"] .netWorthCard .nwFinal{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif!important;letter-spacing:-.02em}
@@ -268,9 +268,15 @@ function buildHtml() {
   ];
   const peek=$('#strategyPeekList'),detail=$('#strategyDetailList'),source=$('#strategies');
   if(peek)peek.innerHTML=peekData.map(d=>{const acq=acquisitionFor(d.price,assumedEquity),pm=paymentMetrics(acq.loan,v);return '<div class="strategyPeekRow"><b>'+d.emoji+' '+d.name+'</b><strong>'+money(d.price)+'・月約'+money(pm.monthly)+'</strong></div>'}).join('');
-  if(detail&&source)detail.innerHTML=source.innerHTML;
   $('#marginCurrent').textContent=money(v.price);`,
     'result_first_view_logic'
+  );
+
+  html = replaceOnce(
+    html,
+    "$('#overCard').classList.toggle('hidden',zone!=='over');",
+    "const detailList=$('#strategyDetailList');if(detailList)detailList.innerHTML=$('#strategies').innerHTML;$('#overCard').classList.toggle('hidden',zone!=='over');",
+    'strategy_detail_after_render'
   );
 
   html = replaceOnce(
