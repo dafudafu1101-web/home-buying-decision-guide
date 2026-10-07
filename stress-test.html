@@ -49,6 +49,22 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
 .handoffOverlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.56);display:none;align-items:flex-end;justify-content:center;padding:16px}.handoffOverlay.show{display:flex}.handoffCard{width:min(620px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:22px 22px 16px 16px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.25)}.handoffTop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.handoffTop h3{margin:3px 0 6px;font-size:21px}.handoffClose{border:1px solid var(--line);background:#fff;border-radius:999px;width:38px;height:38px;font-size:20px;line-height:1}.handoffDesc{font-size:12.5px;line-height:1.7;color:#4d4942;margin:6px 0 12px}.handoffSummary{white-space:pre-wrap;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:11.5px;line-height:1.65;max-height:230px;overflow:auto}.handoffHint{font-size:11.5px;line-height:1.65;color:var(--muted);margin:10px 0}.handoffActions{display:grid;gap:8px}.handoffActions .primary,.handoffActions .ghost{min-height:50px}.copyState{font-size:11.5px;color:var(--green);min-height:18px;margin-top:7px;font-weight:800}.privacyNote{font-size:10.5px;line-height:1.55;color:var(--muted);margin-top:8px}.directTo{font-size:11.5px;line-height:1.6;color:#3d3933;background:#fff8e9;border:1px solid #ead7a9;border-radius:10px;padding:9px 11px;margin:10px 0}.intakeFields{display:grid;gap:10px;margin:12px 0}.intakeField label{display:block;font-size:11.5px;font-weight:900;margin-bottom:5px}.intakeField input{width:100%;border:1px solid #d5d0c7;border-radius:10px;padding:11px 12px;min-height:46px;font-size:15px}.intakeHelp{font-size:10.5px;line-height:1.5;color:var(--muted);margin:6px 2px 0}.intakeError{display:none;color:var(--red);background:#fff1f0;border:1px solid #f0bbb5;border-radius:10px;padding:9px 11px;font-size:11.5px;line-height:1.55}.intakeError.show{display:block}.disclaimer{font-size:11px;line-height:1.65;color:var(--muted);margin:14px 0}.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:0;width:min(620px,100%);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px}.nav button{flex:1}
 @media(min-width:900px){.app{max-width:780px}.nav{width:min(780px,100%)}.screen{padding-left:28px;padding-right:28px}.screen[data-step="1"]{min-height:auto;padding-bottom:28px}.hero{min-height:auto;justify-content:flex-start;gap:22px}.heroBottom{margin-top:0;margin-bottom:0}.strategy{padding:20px}.strategyPrice{font-size:26px}.trade div{font-size:12px}.trade b{font-size:12px}.pill{font-size:11.5px}.handoffOverlay{align-items:center}.handoffCard{border-radius:22px}}
 @media(max-width:480px){h1{font-size:31px}.screen{padding:20px 16px 130px}.heroBottom{margin-left:-16px;margin-right:-16px}.summaryGrid,.useGrid{grid-template-columns:1fr}.trade{grid-template-columns:1fr}.strategyHead{display:block}.strategyPrice{margin-top:5px}.two{grid-template-columns:1fr}.resultHero .title{font-size:24px}.flowStep strong{font-size:17px}}
+
+.netWorthQuick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 14px}
+.netWorthQuickItem{border:1px solid var(--line);border-radius:11px;padding:9px 7px;background:#fbfaf7;min-width:0}
+.netWorthQuickItem b{display:block;font-size:9.5px;line-height:1.3;color:var(--muted);margin-bottom:3px}
+.netWorthQuickItem strong{display:block;font-size:14px;line-height:1.3;font-weight:900;white-space:nowrap}
+.moreWrap .whyCard,.moreWrap .agentCard{padding:13px 14px!important}
+.moreWrap .whyCard p,.moreWrap .agentCard p{font-size:11px!important;line-height:1.65!important}
+@media(max-width:480px){
+  .netWorthQuick{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .netWorthQuickItem{padding:8px}
+  .netWorthQuickItem strong{font-size:13px}
+  .moreWrap .useGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .moreWrap .useCard{padding:12px 10px}
+  .moreWrap .useCard h3{font-size:14px}
+  .moreWrap .useCard .pro,.moreWrap .useCard .con{font-size:10.5px;line-height:1.55}
+}
 </style>
 </head>
 <body>
@@ -253,23 +269,23 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <div class="moreBlock">
           <h2 style="font-size:21px;margin-top:0">10年後、住宅にどのくらい純資産が残る？</h2>
           <p class="lead">住宅価格が上がる前提だけで判断しないために、下落・横ばい・上昇の4パターンで比較します。</p>
+          <div class="netWorthQuick" id="netWorthQuick" aria-label="10年後の住宅純資産4パターン比較"></div>
           <div class="netWorthList" id="netWorthList"></div>
           <p class="hint" id="netWorthNote"></p>
 
           <div class="whyCard">
             <b>なぜ4パターンで見るの？</b>
-            <p>値上がりを期待するためではなく、住宅価格が下落・横ばい・上昇した場合でも、住宅への資金配分が成立するかを見るためです。</p>
-            <p>価格が少し下がっても、ローン元本の返済によって住宅純資産が残るケースがあります。</p>
+            <p>値上がりを期待するためではなく、下落しても住宅への資金配分が成立するか確認するためです。ローン元本の返済により、価格が少し下がっても純資産が残る場合があります。</p>
           </div>
 
           <div class="whyCard">
             <b>物価上昇と住宅価格について</b>
-            <p>現在の日本では物価上昇を無視しにくい環境です。一方で、住宅価格が物価と同じ割合で上がるとは限りません。住宅価格はエリア・駅距離・土地価値・希少性・築年・需給などによって差が出ます。</p>
+            <p>住宅価格は物価と同じ割合で動くとは限りません。エリア・駅距離・土地価値・希少性・築年・需給によって差が出ます。</p>
           </div>
 
           <div class="agentCard">
             <h3>この物件は、どのシナリオに近そう？</h3>
-            <p>住宅価格の動きは購入するエリアや物件によって大きく異なります。駅距離・土地価値・希少性・周辺供給・築年・売りやすさなどを見ながら、この物件の資産性を営業担当と一緒に確認してください。物件そのものの評価は営業担当と、家計全体の資金計画は詳細ライフプランで、それぞれ確認するのがおすすめです。</p>
+            <p>駅距離・土地価値・希少性・築年・売りやすさは営業担当と確認。家計全体の資金計画は詳細ライフプランで確認します。</p>
           </div>
         </div>
 
@@ -583,7 +599,7 @@ function render(){
   const curLoan=v.loanAmount,stdStress=stressMargin(curLoan,v,net,STRESS_STANDARD),strictStress=stressMargin(curLoan,v,net,STRESS_STRICT);
   if(v.rateType==='fixed'){$('#stressCards').innerHTML=`<div class="detailCard"><b>固定金利なので、返済額はこのまま変わりません。1年でいくら余る？</b><strong>${money(stdStress.annualLeft)}</strong><span>月あたり 約${money(stdStress.annualLeft/12)}。生活費と住宅ローン支払い後に残る概算です。</span></div>`;$('#balanceCards').innerHTML=`<div class="detailCard"><b>10年後に残る住宅ローン</b><strong>${money(stdStress.bal10)}</strong><span>現在金利のままの場合の10年後残高の概算です。</span></div>`}else{$('#stressCards').innerHTML=`<div class="detailCard"><b>金利が3%まで上がった場合、1年でいくら余る？</b><strong>${money(stdStress.annualLeft)}</strong><span>月あたり 約${money(stdStress.annualLeft/12)}。10年後に金利3%になったと仮定した標準シナリオです。</span></div><div class="detailCard ref"><b>さらに厳しく、金利4%の場合（参考）</b><strong>${money(strictStress.annualLeft)}</strong><span>4%への上昇を予測するものではなく、より厳しい条件で確認したい方向けの参考値です。</span></div>`;const gradual=gradualBalance(curLoan,v.rate,STRESS_STANDARD,v.term);$('#balanceCards').innerHTML=`<div class="detailCard"><b>10年後に残る住宅ローン</b><strong>${money(stdStress.bal10)}</strong><span>現在金利のままの場合の10年後残高の概算です。</span></div><div class="detailCard ref"><b>参考：金利が段階的に3%まで上昇した場合</b><strong>${money(gradual)}</strong><span>10年かけて現在の金利から3%まで毎年均等に上昇し、返済額は当初のまま試算した場合の概算です。「10年後に突然3%になる」という前提ではありません。</span></div>`}
   const eq=equityReduction(core,v);$('#equityCard').classList.toggle('hidden',!eq);if(eq){$('#equityLead').textContent=`自己資金を${money(eq.reduction)}減らし、その分を借入に回した場合の比較です。`;$('#eqPayment').textContent='+'+money(eq.paymentIncrease)+'/月';$('#eqAssets').textContent='+'+money(eq.assetsIncrease);$('#eqInterest').textContent='+'+money(eq.interestIncrease)}
-  const nw=netWorthScenarios(v),nwLabel=['住宅価格が年▲1%で推移した場合','住宅価格が横ばいの場合','住宅価格が年＋1%で推移した場合','住宅価格が年＋2%で推移した場合'];$('#netWorthList').innerHTML=nw.map((s,i)=>`<div class="netWorthCard"><b>${nwLabel[i]}</b><div class="nwGrid"><span>想定売却価格：${money(s.futurePrice)}（売却費用 ${money(s.saleCost)} を差引後 ${money(s.saleProceeds)}）</span><span>10年後ローン残高：${money(s.bal10)}</span></div><div class="nwFinal">売却後に残る住宅純資産：${money(s.netWorth)}</div></div>`).join('');$('#netWorthNote').textContent='売却費用は想定売却価格の3.5%と仮定しています。将来の価格や売却費用を予測・保証するものではありません。価格が下落するケースでも、ローンの元本が減っていくため住宅の純資産がプラスで残ることがあります。ただし、高い物件ほど資産価値が高いとは限りません。実際の資産性は、立地・土地の価値・希少性・流動性など物件ごとの評価によって変わります。';
+  const nw=netWorthScenarios(v),nwLabel=['住宅価格が年▲1%で推移した場合','住宅価格が横ばいの場合','住宅価格が年＋1%で推移した場合','住宅価格が年＋2%で推移した場合'];const nwQuick=$('#netWorthQuick');if(nwQuick)nwQuick.innerHTML=[['年▲1%',nw[0].netWorth],['横ばい',nw[1].netWorth],['年＋1%',nw[2].netWorth],['年＋2%',nw[3].netWorth]].map(x=>`<div class="netWorthQuickItem"><b>${x[0]}</b><strong>${money(x[1])}</strong></div>`).join('');$('#netWorthList').innerHTML=nw.map((s,i)=>`<div class="netWorthCard"><b>${nwLabel[i]}</b><div class="nwGrid"><span>想定売却価格：${money(s.futurePrice)}（売却費用 ${money(s.saleCost)} を差引後 ${money(s.saleProceeds)}）</span><span>10年後ローン残高：${money(s.bal10)}</span></div><div class="nwFinal">売却後に残る住宅純資産：${money(s.netWorth)}</div></div>`).join('');$('#netWorthNote').textContent='売却費用は想定売却価格の3.5%で試算。将来価格を予測・保証するものではなく、実際の資産性は立地・土地価値・希少性・流動性などで変わります。';
   last={v,net,refs,resultMultiples,zone,core,heavyEquity:core.heavyEquity};updateCta(null);
 }
 
