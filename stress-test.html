@@ -118,18 +118,18 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         <div class="field"><label>主な借入予定者の年齢 <span class="unit">（歳）</span></label><input id="age" type="number" inputmode="numeric" placeholder="例）35"></div>
         <div class="field"><label>お子さまの人数 <span class="unit">（人・将来予定含む）</span></label><input id="children" type="number" inputmode="numeric" min="0" max="6" placeholder="例）2"></div>
       </div>
-      <div class="field" id="childStageWrap"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">選択してください</option><option value="future">今はいない・今後を想定</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">これからお子さまを想定している場合は「今はいない・今後を想定」を選べます。簡易版では年齢帯だけを使い、私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
+      <div class="field" id="childStageWrap"><label>お子さまの年齢帯</label><select id="childStage"><option value="none">選択してください</option><option value="future">今はいない・今後を想定</option><option value="preschool">未就学中心</option><option value="primary">小学生中心</option><option value="teen">中学生・高校生中心</option><option value="college">大学生中心</option><option value="mixed">複数の年代にまたがる</option></select><div class="hint">将来予定の場合は「今はいない・今後を想定」を選択。私立・大学・習い事等は詳細ライフプランで確認します。</div></div>
 
       <div class="groupTitle">借入方法</div>
       <div class="radioGrid" style="margin-top:0">
         <label class="choice"><input type="radio" name="borrowMethod" value="single" checked>単独で借り入れる</label>
         <label class="choice"><input type="radio" name="borrowMethod" value="pair">ペアローン・収入合算で借り入れる</label>
       </div>
-      <p class="hint hidden" id="pairNote">簡易版では夫婦別の年収は聞きません。夫婦の収入バランスや、どちらかの収入が減るケースは詳細ライフプランで確認します。</p>
+      <p class="hint hidden" id="pairNote">夫婦別の年収や収入変化は、詳細ライフプランで確認します。</p>
 
       <div class="groupTitle">家計と住宅</div>
       <div class="field"><label>世帯年収 <span class="unit">（万円・額面）</span></label><input id="grossIncome" type="number" inputmode="decimal" placeholder="例）1500"></div>
-      <div class="sectionNote">将来の昇給・収入増はあえて織り込まず、現在の年収が続く前提で比較しています。昇給・転職・配偶者収入の変化・産休育休・退職金等は詳細ライフプランで確認します。</div>
+      <div class="sectionNote">将来の昇給は織り込まず、現在の年収が続く前提で比較します。転職・配偶者収入・産休育休・退職金等は詳細ライフプランで確認します。</div>
 
       <div class="field"><label>現金・預金 <span class="unit">（万円）</span></label><input id="cash" type="number" inputmode="decimal" placeholder="例）800"></div>
       <div class="field"><label>投資資産 <span class="unit">（万円・株/投信/NISA等）</span></label><input id="investments" type="number" inputmode="decimal" placeholder="例）700"></div>
@@ -137,7 +137,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
       <div class="field">
         <label>借入予定額 <span class="unit">（万円）</span></label>
         <input id="loanAmount" type="number" inputmode="decimal" placeholder="例）6500">
-        <div class="hint">借入予定額から、購入時に必要な自己資金と購入後に残る金融資産を計算します。</div>
+        <div class="hint">借入予定額から、必要自己資金と購入後に残る金融資産を計算します。</div>
         <div class="loanHelpCard">
           <div class="loanHelpEyebrow">物件が決まる前でもOK｜無料</div>
           <h3>住宅ローン、いくらまで借りられる？</h3>
@@ -153,7 +153,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <button type="button" class="miniBtn" id="loanFromPrice">物件価格だけ借りる</button>
           <button type="button" class="miniBtn" id="loanFromTotal">諸費用まで借りる</button>
         </div>
-        <div class="hint" id="loanRefHint">購入諸費用は物件価格の約7%が目安です。諸費用まで借りる予定の場合は、物件価格＋約7%を目安に入力してください。実際に諸費用まで借りられるかは金融機関・審査条件によって異なります。</div>
+        <div class="hint" id="loanRefHint">購入諸費用は物件価格の約7%が目安です。諸費用まで借りられるかは金融機関・審査条件によって異なります。</div>
       </div>
       <div class="field"><label>住宅費を除く月間生活費 <span class="unit">（万円）</span></label><input id="living" type="number" inputmode="decimal" placeholder="例）35"><div class="hint">住宅ローン返済後に、家計にどのくらい余白が残るかを見るために使います。</div></div>
 
@@ -176,7 +176,7 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
           <div class="field"><label>現在金利 <span class="unit">（%）</span></label><input id="rate" type="number" step="0.1" value="1.3"></div>
           <div class="field"><label>返済期間 <span class="unit">（年）</span></label><input id="term" type="number" inputmode="numeric" min="1" max="50" step="1" value="35"></div>
         </div>
-        <p class="hint">返済期間は<b>35年を基準</b>に試算します。詳細設定で35年を超える期間も選べますが、40年・50年ローンの取扱い、金利上乗せ、完済時年齢などの条件は金融機関・商品によって異なります。35年超を選ぶ場合、この簡易診断では「80歳－現在年齢」を上限の目安として調整します。</p><p class="hint" id="termAgeNote"></p>
+        <p class="hint">35年を基準に試算し、35年超は完済80歳を目安に自動調整します。詳細設定で35年を超える期間も選べますが、40年・50年ローンの取扱い、金利上乗せ、完済時年齢などの条件は金融機関・商品によって異なります。35年超を選ぶ場合、この簡易診断では「80歳－現在年齢」を上限の目安として調整します。</p><p class="hint" id="termAgeNote"></p>
         <div class="field"><label>実際の年間手取り <span class="unit">（万円・任意）</span></label><input id="netOverride" type="number" inputmode="decimal" placeholder="空欄なら自動推計"></div>
         <div class="radioGrid">
           <label class="choice"><input type="radio" name="rateType" value="variable" checked>変動金利・期間固定</label>
@@ -589,7 +589,7 @@ function liveCalc(){
   $('#livePostCash').textContent=price>0?money(postCash):'—';$('#livePostInv').textContent=price>0?money(postInvestments):'—';
   $('#financedCostsNote').classList.toggle('hidden',!(financedCosts>0));if(financedCosts>0)$('#financedCostsNote').textContent=`諸費用のうち約${money(financedCosts)}も借入予定です。`;
   $('#investSaleNote').classList.toggle('show',price>0&&requiredEquity>cash&&requiredEquity<=totalAssets);$('#insufficientNote').classList.toggle('show',price>0&&requiredEquity>totalAssets);
-  $('#loanRefHint').textContent=price>0?`参考：諸費用込みで借りる場合 約${money(price*(1+COST_RATE))}。購入諸費用は物件価格の約7%が目安です。実際に諸費用まで借りられるかは金融機関・審査条件によって異なります。`:'購入諸費用は物件価格の約7%が目安です。諸費用まで借りる予定の場合は、物件価格＋約7%を目安に入力してください。実際に諸費用まで借りられるかは金融機関・審査条件によって異なります。';
+  $('#loanRefHint').textContent=price>0?`物件価格 ${money(price)} → 諸費用込 約${money(price*(1+COST_RATE))}。実際に諸費用まで借りられるかは金融機関・審査条件によって異なります。`:'購入諸費用は物件価格の約7%が目安です。諸費用まで借りられるかは金融機関・審査条件によって異なります。';
 }
 
 function render(){
