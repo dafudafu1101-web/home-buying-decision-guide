@@ -117,23 +117,7 @@ function buildHtml() {
 .moreWrap .netWorthCard b{font-size:12px;margin-bottom:7px}
 .moreWrap .netWorthCard .nwGrid{font-size:10.8px;line-height:1.55;gap:3px}
 .moreWrap .netWorthCard .nwFinal{font-size:18px!important;line-height:1.45;margin-top:8px;padding-top:8px;border-top:1px solid #ece7de}
-.netWorthCompare{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 12px}
-.netWorthCompare .nwCompareItem{border:1px solid #ddd6ca;border-radius:12px;padding:10px 8px;background:#fbfaf7;min-width:0}
-.netWorthCompare .nwCompareItem b{display:block;font-size:10px;line-height:1.35;color:#6f685d;margin-bottom:4px}
-.netWorthCompare .nwCompareItem strong{display:block;font-size:15px;line-height:1.3;font-weight:900;letter-spacing:-.02em}
-.calcFold,.ideaFold{border:1px solid #ddd6ca;border-radius:14px;background:#fff;overflow:hidden}
-.calcFold>summary,.ideaFold>summary{list-style:none;cursor:pointer;padding:13px 14px;font-size:12.5px;font-weight:900}
-.calcFold>summary::-webkit-details-marker,.ideaFold>summary::-webkit-details-marker{display:none}
-.calcFold>summary:after,.ideaFold>summary:after{content:"＋";float:right}
-.calcFold[open]>summary:after,.ideaFold[open]>summary:after{content:"−"}
-.calcFold>.netWorthList,.calcFold>.hint,.calcFold>.whyCard,.calcFold>.agentCard{margin-left:12px!important;margin-right:12px!important}
-.compactWhy,.compactAgent{padding:12px 13px!important}
-.compactWhy p,.compactAgent p{font-size:11px!important;line-height:1.65!important;margin:5px 0 0!important}
-.ideaFold>summary b{display:block;font-size:14px}
-.ideaFold>summary span{display:block;margin-top:4px;font-size:10.5px;color:#756e63;font-weight:600}
-.ideaFold .useGrid{padding:0 12px 12px}
-.moreWrap>.moreBlock{padding-top:18px!important;padding-bottom:18px!important}
-@media(max-width:480px){.netWorthCompare{grid-template-columns:repeat(2,minmax(0,1fr))}.netWorthCompare .nwCompareItem strong{font-size:14px}.calcFold>.netWorthList,.calcFold>.hint,.calcFold>.whyCard,.calcFold>.agentCard{margin-left:8px!important;margin-right:8px!important}.moreSummaryGrid{gap:5px}.moreSummaryItem{padding:8px 6px}.moreSummaryItem em{font-size:8.8px}.moreSummaryItem strong{font-size:11.5px}.moreWrap>.moreBlock{margin:0 13px!important}}
+@media(max-width:480px){.moreSummaryGrid{gap:5px}.moreSummaryItem{padding:8px 6px}.moreSummaryItem em{font-size:8.8px}.moreSummaryItem strong{font-size:11.5px}.moreWrap>.moreBlock{margin:0 13px!important}}
 `;
   const bridgeHtml = fs.readFileSync(path.join(root, 'lifeplan-bridge.html'), 'utf8');
 
@@ -255,7 +239,7 @@ function buildHtml() {
   html = replaceOnce(
     html,
     "const nw=netWorthScenarios(v),nwLabel=",
-    "const nw=netWorthScenarios(v);$('#moreNetWorthSummary').textContent=money(nw[1].netWorth);const nwCompare=$('#netWorthCompare');if(nwCompare)nwCompare.innerHTML=[['年▲1%',nw[0].netWorth],['横ばい',nw[1].netWorth],['年＋1%',nw[2].netWorth],['年＋2%',nw[3].netWorth]].map(x=>'<div class="nwCompareItem"><b>'+x[0]+'</b><strong>'+money(x[1])+'</strong></div>').join('');const nwLabel=",
+    "const nw=netWorthScenarios(v);$('#moreNetWorthSummary').textContent=money(nw[1].netWorth);const nwLabel=",
     'detail_summary_networth_value'
   );
 
