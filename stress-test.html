@@ -241,46 +241,44 @@ details{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:
         </div>
 
         <div class="moreBlock">
-          <h3>金利が上がった場合の余力</h3>
+          <h3>① 金利が上がっても払える？</h3>
           <div class="detailCards" id="stressCards"></div>
         </div>
 
         <div class="moreBlock">
-          <h3>10年後に残る住宅ローン</h3>
+          <h3>② 10年後、ローンはいくら残る？</h3>
           <div class="detailCards" id="balanceCards"></div>
         </div>
 
         <div class="moreBlock">
-          <h2 style="font-size:21px;margin-top:0">10年後、住宅にどのくらい純資産が残る？</h2>
+          <h2 style="font-size:21px;margin-top:0">③ 10年後、住宅にいくら純資産が残る？</h2>
           <p class="lead">住宅価格が上がる前提だけで判断しないために、下落・横ばい・上昇の4パターンで比較します。</p>
-          <div class="netWorthList" id="netWorthList"></div>
-          <p class="hint" id="netWorthNote"></p>
-
-          <div class="whyCard">
-            <b>なぜ4パターンで見るの？</b>
-            <p>値上がりを期待するためではなく、住宅価格が下落・横ばい・上昇した場合でも、住宅への資金配分が成立するかを見るためです。</p>
-            <p>価格が少し下がっても、ローン元本の返済によって住宅純資産が残るケースがあります。</p>
-          </div>
-
-          <div class="whyCard">
-            <b>物価上昇と住宅価格について</b>
-            <p>現在の日本では物価上昇を無視しにくい環境です。一方で、住宅価格が物価と同じ割合で上がるとは限りません。住宅価格はエリア・駅距離・土地価値・希少性・築年・需給などによって差が出ます。</p>
-          </div>
-
-          <div class="agentCard">
-            <h3>この物件は、どのシナリオに近そう？</h3>
-            <p>住宅価格の動きは購入するエリアや物件によって大きく異なります。駅距離・土地価値・希少性・周辺供給・築年・売りやすさなどを見ながら、この物件の資産性を営業担当と一緒に確認してください。物件そのものの評価は営業担当と、家計全体の資金計画は詳細ライフプランで、それぞれ確認するのがおすすめです。</p>
-          </div>
+          <div class="netWorthCompare" id="netWorthCompare"></div>
+          <details class="calcFold">
+            <summary>4パターンの計算内訳を見る</summary>
+            <div class="netWorthList" id="netWorthList"></div>
+            <p class="hint" id="netWorthNote"></p>
+            <div class="whyCard compactWhy">
+              <b>なぜ4パターン？</b>
+              <p>値上がりを期待するためではなく、下落しても住宅への資金配分が成立するか確認するためです。</p>
+            </div>
+            <div class="agentCard compactAgent">
+              <h3>この物件はどのシナリオ？</h3>
+              <p>立地・土地価値・希少性・築年・売りやすさは営業担当と確認。家計全体の資金計画は詳細ライフプランで確認します。</p>
+            </div>
+          </details>
         </div>
 
         <div class="moreBlock">
-          <h3>余白を住宅以外に使うなら</h3>
-          <div class="useGrid">
+          <details class="ideaFold">
+            <summary><b>④ 余白を住宅以外に使うなら</b><span>現金・運用・住環境・資産性の考え方</span></summary>
+            <div class="useGrid">
             <div class="useCard"><div class="icon">💰</div><h3>現金として残す</h3><div class="pro"><b>メリット</b>教育・転職・病気などへの対応力が上がる</div><div class="con"><b>注意点</b>現金だけではインフレ時に実質価値が目減りすることも</div></div>
             <div class="useCard"><div class="icon">📈</div><h3>資産運用に回す</h3><div class="pro"><b>メリット</b>住宅以外にも資産を分散できる</div><div class="con"><b>注意点</b>価格変動があり、元本保証ではない</div></div>
             <div class="useCard"><div class="icon">📍</div><h3>住環境へ使う</h3><div class="pro"><b>メリット</b>駅距離・広さ・学区・生活利便性を改善できる</div><div class="con"><b>注意点</b>月返済と総支払額は増える</div></div>
             <div class="useCard"><div class="icon">🏠</div><h3>資産性の高い住宅を狙う</h3><div class="pro"><b>メリット</b>立地・土地価値・希少性・流動性を改善できる可能性</div><div class="con"><b>注意点</b>高い物件＝資産価値が高い、ではない</div></div>
-          </div>
+            </div>
+          </details>
         </div>
       </details>
 
